@@ -111,6 +111,7 @@ window.TOPO = {
     'foot.contact': 'Contact',
     'foot.licence': 'Licence',
     'foot.licence.p': 'Apache-2.0, core under a proprietary licence. Published releases are free to use.',
+    'foot.source': 'Source code on GitHub',
     'foot.privacy': 'Privacy',
     'foot.privacy.p': 'This site sets no cookie and loads nothing from third parties.',
     'foot.legal': 'Legal notice'

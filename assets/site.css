@@ -433,7 +433,7 @@ svg { display: block; }
 .foot-brand { display: flex; align-items: center; gap: 10px; color: var(--text); font-weight: 650; }
 .foot-slogan { margin-left: 10px; color: var(--text-muted); font-weight: 400; }
 .foot-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-.foot-cols p { display: grid; gap: 4px; }
+.foot-cols p { display: grid; gap: 4px; align-content: start; }
 .foot-cols b { color: var(--text); font-weight: 600; }
 .foot-cols a { text-decoration: none; color: var(--accent-strong); }
 .foot-copy { font-size: 13px; }
