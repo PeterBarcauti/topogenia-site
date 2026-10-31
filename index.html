@@ -20,6 +20,9 @@
   <meta property="og:locale:alternate" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="https://topogenia.com/">
+  <link rel="alternate" hreflang="fr" href="https://topogenia.com/">
+  <link rel="alternate" hreflang="en" href="https://topogenia.com/en/">
+  <link rel="alternate" hreflang="x-default" href="https://topogenia.com/en/">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -60,8 +63,8 @@
     </nav>
     <div class="nav-end">
       <div class="lang" role="group" aria-label="Langue / Language">
-        <button type="button" data-lang="fr" aria-pressed="true">FR</button>
-        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        <a href="./" data-lang="fr" aria-current="page">FR</a>
+        <a href="en/" data-lang="en" hreflang="en" lang="en">EN</a>
       </div>
       <a class="btn btn-primary btn-small" href="#telecharger" data-i18n="cta.download">Télécharger</a>
     </div>
@@ -125,7 +128,7 @@
             </aside>
           </div>
         </div>
-        <div class="stories" role="tablist" aria-label="Exemples">
+        <div class="stories" role="tablist" aria-label="Exemples" data-i18n-aria="stories.aria">
           <button type="button" role="tab" data-story="0" data-i18n="story.0">Notes de frais</button>
           <button type="button" role="tab" data-story="1" data-i18n="story.1">Commande client</button>
           <button type="button" role="tab" data-story="2" data-i18n="story.2">Accueil d'un arrivant</button>
@@ -287,10 +290,10 @@
           </article>
         </div>
         <div class="stats">
-          <div class="stat reveal"><span class="num" data-count="18">0</span><span data-i18n="mg.s1">langues</span></div>
-          <div class="stat reveal"><span class="num" data-count="2">0</span><span data-i18n="mg.s2">modes : poste ou serveur</span></div>
+          <div class="stat reveal"><span class="num" data-count="18">18</span><span data-i18n="mg.s1">langues</span></div>
+          <div class="stat reveal"><span class="num" data-count="2">2</span><span data-i18n="mg.s2">modes : poste ou serveur</span></div>
           <div class="stat reveal"><span class="num" data-count="0">0</span><span data-i18n="mg.s3">installation sur le poste</span></div>
-          <div class="stat reveal"><span class="num" data-count="16">0</span><span data-i18n="mg.s4">points de contrôle de complétude</span></div>
+          <div class="stat reveal"><span class="num" data-count="16">16</span><span data-i18n="mg.s4">points de contrôle de complétude</span></div>
         </div>
       </div>
     </section>

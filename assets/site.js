@@ -76,34 +76,11 @@
 
   /* ---------------------------------------------------------------- language */
 
-  const i18nNodes = $$('[data-i18n]').map((element) => ({ element, key: element.dataset.i18n, fr: element.innerHTML }));
-  const ariaNodes = $$('[data-i18n-aria]').map((element) => ({ element, key: element.dataset.i18nAria, fr: element.getAttribute('aria-label') }));
-  const frTitle = document.title;
-  const description = $('meta[name="description"]');
-  const frDescription = description.content;
-  let lang = store.get('topogenia.lang') || ((navigator.language || 'fr').toLowerCase().startsWith('fr') ? 'fr' : 'en');
+  // One page per language (index.html, en/index.html): the page's language drives the texts drawn here,
+  // and is remembered for the legal notice
+  const lang = document.documentElement.lang === 'en' ? 'en' : 'fr';
+  store.set('topogenia.lang', lang);
   const languageListeners = [];
-
-  const applyLanguage = (next) => {
-    lang = next;
-    document.documentElement.lang = next;
-    for (const { element, key, fr } of i18nNodes) {
-      if (next === 'fr') element.innerHTML = fr; else if (T.en[key] !== undefined) element.textContent = T.en[key];
-    }
-    for (const { element, key, fr } of ariaNodes) element.setAttribute('aria-label', next === 'fr' ? fr : T.en[key] ?? fr);
-    document.title = next === 'fr' ? frTitle : T.en['meta.title'];
-    description.content = next === 'fr' ? frDescription : T.en['meta.desc'];
-    for (const button of $$('.lang button')) button.setAttribute('aria-pressed', String(button.dataset.lang === next));
-    for (const listener of languageListeners) listener(next);
-  };
-  for (const button of $$('.lang button')) {
-    button.addEventListener('click', () => {
-      if (button.dataset.lang === lang) return;
-      store.set('topogenia.lang', button.dataset.lang);
-      if (document.startViewTransition && !reduced) document.startViewTransition(() => applyLanguage(button.dataset.lang));
-      else applyLanguage(button.dataset.lang);
-    });
-  }
 
   /* ---------------------------------------------------------------- the map */
 
@@ -719,10 +696,13 @@
 
   /* ---------------------------------------------------------------- reveals and counters */
 
+  // The page holds the real figures; they count up only for a visitor who scrolls down to them
+  let scrolled = false;
+  addEventListener('scroll', () => { scrolled = true; }, { once: true, passive: true });
   const count = (element) => {
     const target = Number(element.dataset.count);
     const from = target === 0 ? 12 : 0;
-    if (reduced) { element.textContent = String(target); return; }
+    if (reduced || !scrolled) return;
     tween(1500, (p) => { element.textContent = String(Math.round(from + (target - from) * p)); }, easeOut);
   };
   const revealObserver = new IntersectionObserver((entries) => {
@@ -833,5 +813,5 @@ void main() {
 
   /* ---------------------------------------------------------------- start */
 
-  applyLanguage(lang);
+  for (const listener of languageListeners) listener(lang);
 })();
