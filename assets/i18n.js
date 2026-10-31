@@ -1,10 +1,14 @@
 // i18n.js
-// Textes anglais de la vitrine (le français est dans index.html) et contenus de la démonstration dans les deux langues
+// Textes anglais de la vitrine (le français est dans index.html ; en/index.html en est fabriquée par outils/page-en.cjs)
+// et contenus de la démonstration dans les deux langues
 
 window.TOPO = {
   en: {
     'meta.title': 'Topogenia · From story to diagrams',
     'meta.desc': 'Topogenia turns the story of a process into a swimlane map: the AI proposes, you adjust by hand. Free, nothing to install, your data stays with you.',
+    'meta.og': 'Tell the work. Topogenia draws it.',
+    'meta.ogalt': 'Topogenia: a story typed to the assistant becomes a swimlane map',
+    'stories.aria': 'Examples',
     'skip': 'Skip to content',
     'nav.how': 'How it works',
     'nav.features': 'Features',
