@@ -114,7 +114,8 @@ window.TOPO = {
     'foot.source': 'Source code on GitHub',
     'foot.privacy': 'Privacy',
     'foot.privacy.p': 'This site sets no cookie and loads nothing from third parties.',
-    'foot.legal': 'Legal notice'
+    'foot.legal': 'Legal notice',
+    'foot.app_privacy': 'App privacy policy'
   },
 
   // The words of the demonstration and of the cards, in both languages
