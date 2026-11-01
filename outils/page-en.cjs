@@ -74,7 +74,7 @@ once('<a href="./" data-lang="fr" aria-current="page">FR</a>', '<a href="../" da
 once('<a href="en/" data-lang="en" hreflang="en" lang="en">EN</a>', '<a href="./" data-lang="en" aria-current="page">EN</a>');
 
 // Files of the site, one level up
-html = html.replace(/(href|src)="(assets\/|favicon\.svg|mentions-legales\.html)/g, '$1="../$2');
+html = html.replace(/(href|src)="(assets\/|favicon\.svg|mentions-legales\.html|confidentialite\.html)/g, '$1="../$2');
 
 fs.mkdirSync(path.join(site, 'en'), { recursive: true });
 fs.writeFileSync(path.join(site, 'en', 'index.html'), html);

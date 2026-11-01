@@ -1,0 +1,154 @@
+<!doctype html>
+<!-- confidentialite.html -->
+<!-- Politique de confidentialité de l'application Topogenia (version portable et Microsoft Store), en français et en anglais -->
+<html lang="fr" data-title-en="Privacy policy · Topogenia" data-lang-default="browser">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Confidentialité · Topogenia</title>
+  <meta name="description" content="Politique de confidentialité de l'application Topogenia : vos données restent sur votre ordinateur ; l'assistant IA est facultatif.">
+  <meta name="theme-color" content="#5B5BD6">
+  <link rel="canonical" href="https://topogenia.com/confidentialite.html">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/site.css">
+  <script src="assets/legal.js" defer></script>
+</head>
+<body class="legal-page">
+  <header class="nav">
+    <a class="brand" href="./" aria-label="Topogenia">
+      <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><rect x=".5" y=".5" width="23" height="23" rx="6.5" fill="#5B5BD6"/><rect x=".5" y=".5" width="23" height="11.5" rx="6.5" fill="#4343B8" opacity=".35"/><path d="M6 8h4.5a2 2 0 0 1 2 2v4a2 2 0 0 0 2 2H18" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="6" cy="8" r="1.8" fill="#fff"/><circle cx="18" cy="16" r="1.8" fill="#fff"/></svg>
+      <span>Topogenia</span>
+    </a>
+    <div class="nav-end">
+      <div class="lang" role="group" aria-label="Langue / Language">
+        <button type="button" data-lang="fr" aria-pressed="true">FR</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+      <a class="btn btn-ghost btn-small" id="back-link" href="./"><span data-lang-block="fr">Retour au site</span><span data-lang-block="en" hidden>Back to the site</span></a>
+    </div>
+  </header>
+
+  <main id="main" class="legal">
+    <article lang="fr" data-lang-block="fr">
+      <p class="kicker">Application Topogenia</p>
+      <h1>Confidentialité</h1>
+      <p class="lead">Topogenia fonctionne sur votre ordinateur. L'éditeur ne reçoit aucune de vos données.</p>
+      <p>Version du 1er novembre 2026. Elle vaut pour la version portable et pour la version du Microsoft Store, en mode Poste. Le site topogenia.com a ses propres règles, dans les <a href="mentions-legales.html">mentions légales</a>.</p>
+
+      <section>
+        <h2>En bref</h2>
+        <ul>
+          <li>Pas de compte, pas de mesure d'audience, pas de publicité.</li>
+          <li>Vos projets restent dans un fichier de données, sur votre ordinateur.</li>
+          <li>L'assistant IA est facultatif et désactivé par défaut. Si vous le branchez, ce que vous lui demandez part directement de votre ordinateur vers le fournisseur que vous avez choisi, sous votre propre compte.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Ce que l'application garde sur votre ordinateur</h2>
+        <p>Vos projets et l'historique de leurs modifications : cartes, étapes, fiches, rôles RACI, documents cités, et tout ce que vous y écrivez, y compris des noms de personnes si vous en saisissez. Le nom de votre compte Windows, qui signe vos modifications. Des copies de sauvegarde de la base, et un journal technique qui note les opérations sans leur contenu.</p>
+        <p>Version du Microsoft Store : ces fichiers sont dans le dossier de données de l'application, que Windows efface quand vous la désinstallez. Version portable : ils sont dans le dossier <code>%LOCALAPPDATA%\Topogenia</code>, à supprimer vous-même si vous le souhaitez.</p>
+        <p>L'application ouvre son interface dans votre navigateur, à une adresse qui n'est joignable que depuis votre ordinateur. Rien n'est envoyé à l'éditeur.</p>
+      </section>
+
+      <section>
+        <h2>L'assistant IA, si vous l'utilisez</h2>
+        <p>Il se règle dans l'application, et il est désactivé par défaut. Il fonctionne de trois façons :</p>
+        <ul>
+          <li><b>Aucun</b> : rien ne part.</li>
+          <li><b>Copier-coller</b> : l'application ne transmet rien. Elle prépare une consigne, que vous copiez vous-même vers l'IA de votre choix, sous votre responsabilité.</li>
+          <li><b>Anthropic</b> ou <b>AWS Bedrock</b> : quand vous envoyez une demande, l'application transmet, depuis votre ordinateur, votre demande, les fichiers que vous y joignez, et le contenu du projet utile à la réponse. Ce contenu peut comprendre les noms de personnes que vous avez saisis. Le traitement relève de votre contrat avec ce fournisseur et de sa politique de confidentialité (<a href="https://www.anthropic.com/legal/privacy">Anthropic</a>, <a href="https://aws.amazon.com/privacy/">AWS</a>). L'éditeur ne reçoit rien.</li>
+        </ul>
+        <p>Par défaut, seuls les projets classés « Interne » peuvent être envoyés à l'IA. Les projets confidentiels ne partent que si vous l'autorisez dans les réglages.</p>
+        <p>Votre clé d'API Anthropic est enregistrée chiffrée sur votre ordinateur, pour votre seul compte Windows. Aucune clé AWS n'est enregistrée : Bedrock passe par le profil AWS de votre ordinateur.</p>
+        <p>Le contenu produit par une IA peut être inexact. Vous voyez chaque proposition avant de l'appliquer.</p>
+      </section>
+
+      <section>
+        <h2>Signaler une réponse de l'IA</h2>
+        <p>Le drapeau sous une réponse (« Signaler un contenu inapproprié ») ouvre votre messagerie, avec l'adresse de l'éditeur et un objet déjà rempli. Rien n'est joint d'office : vous choisissez ce que vous citez. Le message ne sert qu'à traiter votre signalement.</p>
+      </section>
+
+      <section>
+        <h2>Fichiers que vous exportez</h2>
+        <p>PDF, images, classeurs Excel, fichiers .pmap et paquets d'échange sont enregistrés là où vous le décidez. Un paquet d'échange laisse de côté les personnes du projet, sauf si vous choisissez de les inclure.</p>
+      </section>
+
+      <section>
+        <h2>Microsoft Store</h2>
+        <p>Microsoft traite les données liées à l'installation et aux mises à jour selon sa propre <a href="https://privacy.microsoft.com/">déclaration de confidentialité</a>. Topogenia n'y ajoute aucun service de mesure.</p>
+      </section>
+
+      <section>
+        <h2>Vos droits et le contact</h2>
+        <p>L'éditeur ne détient aucune de vos données : il n'a rien à vous communiquer ni à effacer. Vos données locales s'effacent en désinstallant l'application, ou en supprimant son dossier pour la version portable. Pour ce qui a été envoyé à un fournisseur d'IA, adressez-vous à lui.</p>
+        <p>Topogenia ne s'adresse pas aux enfants.</p>
+        <p>Une question : <a href="mailto:Peter.Barcauti@topogenia.com">Peter.Barcauti@topogenia.com</a>. Toute modification de cette politique est publiée sur cette page, avec sa date.</p>
+      </section>
+    </article>
+
+    <article lang="en" data-lang-block="en" hidden>
+      <p class="kicker">Topogenia app</p>
+      <h1>Privacy policy</h1>
+      <p class="lead">Topogenia runs on your computer. The publisher receives none of your data.</p>
+      <p>Version of 1 November 2026. It covers the portable release and the Microsoft Store release, in desktop mode. The topogenia.com website has its own rules, in the <a href="mentions-legales.html">legal notice</a>.</p>
+
+      <section>
+        <h2>In short</h2>
+        <ul>
+          <li>No account, no analytics, no advertising.</li>
+          <li>Your projects stay in a data file, on your computer.</li>
+          <li>The AI assistant is optional and turned off by default. If you connect it, what you ask goes straight from your computer to the provider you chose, under your own account.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>What the app keeps on your computer</h2>
+        <p>Your projects and the history of their changes: maps, steps, sheets, RACI roles, documents referred to, and whatever you write in them, including names of people if you enter any. The name of your Windows account, which signs your changes. Backup copies of the database, and a technical log that records operations without their content.</p>
+        <p>Microsoft Store release: these files are in the app's data folder, which Windows deletes when you uninstall the app. Portable release: they are in the <code>%LOCALAPPDATA%\Topogenia</code> folder, which you may delete yourself.</p>
+        <p>The app opens its interface in your browser, at an address that can only be reached from your computer. Nothing is sent to the publisher.</p>
+      </section>
+
+      <section>
+        <h2>The AI assistant, if you use it</h2>
+        <p>It is set up in the app, and it is turned off by default. It works in three ways:</p>
+        <ul>
+          <li><b>None</b>: nothing leaves your computer.</li>
+          <li><b>Copy and paste</b>: the app sends nothing. It prepares a prompt, which you copy yourself into the AI of your choice, under your own responsibility.</li>
+          <li><b>Anthropic</b> or <b>AWS Bedrock</b>: when you send a request, the app sends, from your computer, your request, the files you attach to it, and the content of the project needed to answer. This content may include names of people you entered. The processing is governed by your agreement with that provider and its privacy policy (<a href="https://www.anthropic.com/legal/privacy">Anthropic</a>, <a href="https://aws.amazon.com/privacy/">AWS</a>). The publisher receives nothing.</li>
+        </ul>
+        <p>By default, only projects classified as “Internal” can be sent to the AI. Confidential projects are only sent if you allow it in the settings.</p>
+        <p>Your Anthropic API key is stored encrypted on your computer, for your Windows account only. No AWS key is stored: Bedrock uses the AWS profile of your computer.</p>
+        <p>Content produced by an AI may be inaccurate. You see each proposal before you apply it.</p>
+      </section>
+
+      <section>
+        <h2>Reporting an AI reply</h2>
+        <p>The flag under a reply (“Report inappropriate content”) opens your email app, with the publisher's address and a subject filled in. Nothing is attached automatically: you choose what you quote. The message is only used to handle your report.</p>
+      </section>
+
+      <section>
+        <h2>Files you export</h2>
+        <p>PDFs, images, Excel workbooks, .pmap files and exchange packages are saved where you decide. An exchange package leaves out the people of the project, unless you choose to include them.</p>
+      </section>
+
+      <section>
+        <h2>Microsoft Store</h2>
+        <p>Microsoft processes data related to installation and updates under its own <a href="https://privacy.microsoft.com/">privacy statement</a>. Topogenia adds no analytics service to it.</p>
+      </section>
+
+      <section>
+        <h2>Your rights and contact</h2>
+        <p>The publisher holds none of your data: there is nothing to give you or to erase. Your local data is erased by uninstalling the app, or by deleting its folder for the portable release. For anything sent to an AI provider, contact that provider.</p>
+        <p>Topogenia is not directed at children.</p>
+        <p>Any question: <a href="mailto:Peter.Barcauti@topogenia.com">Peter.Barcauti@topogenia.com</a>. Any change to this policy is published on this page, with its date.</p>
+      </section>
+    </article>
+  </main>
+
+  <footer class="footer legal-foot">
+    <p class="foot-copy">© 2026 Peter Barcauti · <a href="mentions-legales.html"><span data-lang-block="fr">Mentions légales</span><span data-lang-block="en" hidden>Legal notice</span></a></p>
+  </footer>
+</body>
+</html>
