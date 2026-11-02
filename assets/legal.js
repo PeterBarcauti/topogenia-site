@@ -13,11 +13,16 @@
   const buttons = [...document.querySelectorAll('.lang button')];
   const titles = { fr: document.title, en: root.dataset.titleEn ?? 'Legal notice · Topogenia' };
   const back = document.getElementById('back-link');
+  const brand = document.querySelector('a.brand');
+  // Les liens d'une page légale à l'autre gardent la langue affichée : sans elle, l'autre page reprendrait son défaut
+  const legal = [...document.querySelectorAll('a[href]')].filter((link) => /^(mentions-legales|confidentialite)\.html(\?|$)/.test(link.getAttribute('href')));
 
   const apply = (lang) => {
     root.lang = lang;
     document.title = titles[lang];
     back.href = lang === 'en' ? 'en/' : './';
+    if (brand) brand.setAttribute('href', lang === 'en' ? 'en/' : './');
+    for (const link of legal) link.setAttribute('href', `${link.getAttribute('href').split('?')[0]}?lang=${lang}`);
     for (const block of blocks) block.hidden = block.dataset.langBlock !== lang;
     for (const button of buttons) button.setAttribute('aria-pressed', String(button.dataset.lang === lang));
   };

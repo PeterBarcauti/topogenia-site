@@ -9,7 +9,8 @@ const path = require('path');
 const vm = require('vm');
 
 const site = path.resolve(__dirname, '..');
-const source = fs.readFileSync(path.join(site, 'index.html'), 'utf8');
+// Fins de ligne ramenées à \n : un index.html enregistré en CRLF par un éditeur de Windows se lit pareil
+const source = fs.readFileSync(path.join(site, 'index.html'), 'utf8').replace(/\r\n/g, '\n');
 const context = { window: {} };
 vm.runInNewContext(fs.readFileSync(path.join(site, 'assets', 'i18n.js'), 'utf8'), context);
 const en = context.window.TOPO.en;
@@ -75,6 +76,8 @@ once('<a href="en/" data-lang="en" hreflang="en" lang="en">EN</a>', '<a href="./
 
 // Files of the site, one level up
 html = html.replace(/(href|src)="(assets\/|favicon\.svg|mentions-legales\.html|confidentialite\.html)/g, '$1="../$2');
+// The legal pages in English from the English page (their default is French, or the language of the browser)
+html = html.replace(/href="\.\.\/(mentions-legales|confidentialite)\.html"/g, 'href="../$1.html?lang=en"');
 
 fs.mkdirSync(path.join(site, 'en'), { recursive: true });
 fs.writeFileSync(path.join(site, 'en', 'index.html'), html);

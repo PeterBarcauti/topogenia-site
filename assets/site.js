@@ -359,6 +359,9 @@
         fade.onfinish = resolve;
         fade.oncancel = resolve;
       });
+      // Another tab chosen during the fade: this story stops before drawing, and the words still flying leave with it.
+      if (token !== demo.token) throw CANCEL;
+      document.querySelectorAll('.flyer').forEach((flyer) => flyer.remove());
       resetPanel(story);
       mapRoot.parentElement.scrollLeft = 0;
       const map = drawMap(mapRoot, story, false);
@@ -621,6 +624,8 @@
       });
     };
     await path(step.x + 10, laneCenter(2) + 6, 900);
+    // The visitor took the step during the gesture: it stays in the visitor's hand, the cursor leaves.
+    if (!pg.auto) { cursor.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200, fill: 'forwards' }); return; }
     step.group.classList.remove('dragging');
     await snap(step);
     await new Promise((resolve) => setTimeout(resolve, 700));
