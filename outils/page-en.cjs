@@ -74,6 +74,9 @@ html = html.replace(/(<span class="chip-code" id="demo-code">)[^<]*(<\/span>)/, 
 once('<a href="./" data-lang="fr" aria-current="page">FR</a>', '<a href="../" data-lang="fr" hreflang="fr" lang="fr">FR</a>');
 once('<a href="en/" data-lang="en" hreflang="en" lang="en">EN</a>', '<a href="./" data-lang="en" aria-current="page">EN</a>');
 
+// The page that answers a search, in English: next to this page, under en/
+once('href="logiciel-diagramme-couloirs-gratuit-hors-ligne/"', 'href="free-swimlane-diagram-software-offline/"');
+
 // Files of the site, one level up
 html = html.replace(/(href|src)="(assets\/|favicon\.svg|mentions-legales\.html|confidentialite\.html)/g, '$1="../$2');
 // The legal pages in English from the English page (their default is French, or the language of the browser)

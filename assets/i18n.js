@@ -4,8 +4,8 @@
 
 window.TOPO = {
   en: {
-    'meta.title': 'Topogenia · From story to diagrams',
-    'meta.desc': 'Topogenia turns the story of a process into a swimlane map: the AI proposes, you adjust by hand. Free, nothing to install, your data stays with you.',
+    'meta.title': 'Topogenia · From story to diagrams · Free swimlane software',
+    'meta.desc': 'Free swimlane diagram software for Windows that works offline. Tell your process, the AI draws the map, you adjust by hand. No account, your data stays on your PC.',
     'meta.og': 'Tell the work. Topogenia draws it.',
     'meta.ogalt': 'Topogenia: a story typed to the assistant becomes a swimlane map',
     'stories.aria': 'Examples',
@@ -19,10 +19,10 @@ window.TOPO = {
     'hero.title1': 'From story',
     'hero.title2': 'to',
     'hero.title3': 'diagrams.',
-    'hero.sub': 'Tell the work as you would to a colleague. Topogenia draws it: lanes, steps, decisions. Then you adjust it by hand, as simply as moving a card on a table.',
+    'hero.sub': 'Topogenia is free swimlane diagram software that works offline. Tell the work as you would to a colleague: it draws lanes, steps and decisions. Then you adjust it by hand, as simply as moving a card on a table.',
     'cta.free': 'Download for free',
     'cta.how': 'See how it works',
-    'hero.note': 'Windows · nothing to install · free, including for companies',
+    'hero.note': 'Windows · works offline · nothing to install · free, including for companies',
     'demo.aria': 'Demonstration: a story typed to the assistant becomes a swimlane map',
     'demo.assistant': 'Assistant',
     'demo.hint': 'Describe a process',
@@ -115,7 +115,8 @@ window.TOPO = {
     'foot.privacy': 'Privacy',
     'foot.privacy.p': 'This site sets no cookie and loads nothing from third parties.',
     'foot.legal': 'Legal notice',
-    'foot.app_privacy': 'App privacy policy'
+    'foot.app_privacy': 'App privacy policy',
+    'foot.landing': 'Free offline swimlane diagram software'
   },
 
   // The words of the demonstration and of the cards, in both languages

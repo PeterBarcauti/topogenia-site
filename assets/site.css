@@ -453,6 +453,8 @@ svg { display: block; }
 .legal section a { color: var(--accent-strong); text-underline-offset: 3px; }
 .legal b { color: var(--text); font-weight: 600; }
 .legal-foot { padding-top: 32px; }
+.legal .landing-cta { margin-top: 40px; }
+.legal section h3 { margin-top: 22px; font-size: 16.5px; letter-spacing: -.005em; }
 
 /* ---------- reveals: driven by the scroll where the browser can, by site.js elsewhere ---------- */
 .js .reveal { opacity: 0; transform: translateY(28px); }
