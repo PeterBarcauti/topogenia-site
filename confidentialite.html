@@ -6,7 +6,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Confidentialité · Topogenia</title>
-  <meta name="description" content="Politique de confidentialité de l'application Topogenia : vos données restent sur votre ordinateur ; l'assistant IA est facultatif.">
+  <meta name="description" content="Politique de confidentialité de l'application Topogenia : vos données restent sur votre ordinateur ; l'assistant IA et les voix en ligne de la présentation sont facultatifs.">
   <meta name="theme-color" content="#5B5BD6">
   <link rel="canonical" href="https://topogenia.com/confidentialite.html">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -34,14 +34,15 @@
       <p class="kicker">Application Topogenia</p>
       <h1>Confidentialité</h1>
       <p class="lead">Topogenia fonctionne sur votre ordinateur. L'éditeur ne reçoit aucune de vos données.</p>
-      <p>Version du 1er novembre 2026. Elle vaut pour la version portable et pour la version du Microsoft Store, en mode Poste. Le site topogenia.com a ses propres règles, dans les <a href="mentions-legales.html">mentions légales</a>.</p>
+      <p>Version du 12 novembre 2026. Elle vaut pour la version portable et pour la version du Microsoft Store, en mode Poste. Le site topogenia.com a ses propres règles, dans les <a href="mentions-legales.html">mentions légales</a>.</p>
 
       <section>
         <h2>En bref</h2>
         <ul>
           <li>Pas de compte, pas de mesure d'audience, pas de publicité.</li>
           <li>Vos projets restent dans un fichier de données, sur votre ordinateur.</li>
-          <li>L'assistant IA est facultatif et désactivé par défaut. Si vous le branchez, ce que vous lui demandez part directement de votre ordinateur vers le fournisseur que vous avez choisi, sous votre propre compte.</li>
+          <li>L'assistant IA est facultatif et désactivé par défaut. Avec un modèle installé sur votre ordinateur, rien ne quitte l'ordinateur. Avec un fournisseur en ligne, ce que vous lui demandez part directement de votre ordinateur vers ce fournisseur, sous votre propre compte.</li>
+          <li>La présentation lit ses phrases avec une voix de votre ordinateur. Une voix naturelle en ligne est facultative : si vous la choisissez, votre navigateur envoie le texte lu à son éditeur (Microsoft pour Edge, Google pour Chrome).</li>
         </ul>
       </section>
 
@@ -54,25 +55,38 @@
 
       <section>
         <h2>L'assistant IA, si vous l'utilisez</h2>
-        <p>Il se règle dans l'application, et il est désactivé par défaut. Il fonctionne de trois façons :</p>
+        <p>Il se règle dans l'application, dans les paramètres de l'IA, et il est désactivé par défaut. Ses connecteurs sont rangés selon le lieu où vont les données :</p>
         <ul>
           <li><b>Aucun</b> : rien ne part.</li>
           <li><b>Copier-coller</b> : l'application ne transmet rien. Elle prépare une consigne, que vous copiez vous-même vers l'IA de votre choix, sous votre responsabilité.</li>
-          <li><b>Anthropic</b> ou <b>AWS Bedrock</b> : quand vous envoyez une demande, l'application transmet, depuis votre ordinateur, votre demande, les fichiers que vous y joignez, et le contenu du projet utile à la réponse. Ce contenu peut comprendre les noms de personnes que vous avez saisis. Le traitement relève de votre contrat avec ce fournisseur et de sa politique de confidentialité (<a href="https://www.anthropic.com/legal/privacy">Anthropic</a>, <a href="https://aws.amazon.com/privacy/">AWS</a>). L'éditeur ne reçoit rien.</li>
+          <li><b>Sur votre ordinateur</b>, Ollama et LM Studio : l'application appelle le programme installé sur votre ordinateur, à son adresse locale. Rien ne quitte l'ordinateur, à condition que le modèle choisi y soit installé : un modèle « cloud » proposé par Ollama est calculé en ligne, chez l'éditeur d'Ollama.</li>
+          <li><b>En ligne</b>, Anthropic, AWS Bedrock, Microsoft Azure OpenAI, OpenAI, Google (Gemini), xAI (Grok), Mistral AI, DeepSeek, Moonshot AI (Kimi) et Alibaba Cloud (Qwen) : quand vous envoyez une demande, l'application transmet, depuis votre ordinateur et vers le seul fournisseur choisi, votre demande, les fichiers que vous y joignez, et le contenu du projet utile à la réponse. Le traitement relève de votre contrat avec ce fournisseur et de sa politique de confidentialité. Certains de ces fournisseurs traitent les données hors de l'Union européenne : choisissez-le en connaissance de cause. L'éditeur ne reçoit rien.</li>
         </ul>
-        <p>Par défaut, seuls les projets classés « Interne » peuvent être envoyés à l'IA. Les projets confidentiels ne partent que si vous l'autorisez dans les réglages.</p>
-        <p>Votre clé d'API Anthropic est enregistrée chiffrée sur votre ordinateur, pour votre seul compte Windows. Aucune clé AWS n'est enregistrée : Bedrock passe par le profil AWS de votre ordinateur.</p>
+        <p>Ce qui part ne porte pas les comptes des membres du projet. Ce que vous avez écrit part tel quel : il peut comprendre des noms de personnes que vous avez saisis, par exemple le responsable d'une action.</p>
+        <p>Par défaut, seuls les projets classés « Interne » peuvent être envoyés à l'IA. Les projets confidentiels ne partent que si vous l'autorisez dans les paramètres de l'IA.</p>
+        <p>La clé d'API du fournisseur choisi est enregistrée chiffrée sur votre ordinateur, pour votre seul compte Windows. Aucune clé AWS n'est enregistrée : Bedrock passe par le profil AWS de votre ordinateur.</p>
         <p>Le contenu produit par une IA peut être inexact. Vous voyez chaque proposition avant de l'appliquer.</p>
       </section>
 
       <section>
         <h2>Signaler une réponse de l'IA</h2>
-        <p>Le drapeau sous une réponse (« Signaler un contenu inapproprié ») ouvre votre messagerie, avec l'adresse de l'éditeur et un objet déjà rempli. Rien n'est joint d'office : vous choisissez ce que vous citez. Le message ne sert qu'à traiter votre signalement.</p>
+        <p>Le drapeau en haut de chaque réponse d'un modèle (« Signaler un contenu inapproprié à l'éditeur ») ouvre votre messagerie, avec l'adresse de l'éditeur et un objet déjà rempli. Rien n'est joint d'office : vous choisissez ce que vous citez. Le message ne sert qu'à traiter votre signalement.</p>
+      </section>
+
+      <section>
+        <h2>La voix de la présentation</h2>
+        <p>La présentation peut lire ses phrases à voix haute, par la synthèse vocale de votre navigateur. La voix est éteinte par défaut.</p>
+        <ul>
+          <li><b>Voix de l'ordinateur</b> : elles sont les seules proposées par défaut. Rien ne quitte l'ordinateur.</li>
+          <li><b>Voix naturelle en ligne</b> : elle n'est proposée qu'après une question qui dit où part le texte, et seulement pour un projet dont la classification est autorisée dans les paramètres de l'IA, la même règle que pour l'assistant. Si vous la choisissez, ce n'est pas Topogenia mais votre navigateur qui envoie le texte lu à son éditeur, Microsoft pour Edge, Google pour Chrome, sous sa propre politique de confidentialité. Ce texte est tout ce que la présentation dit : les étapes, les couloirs, les irritants, les noms des documents et les commentaires de présentation.</li>
+        </ul>
+        <p>Votre choix se change à tout moment, à côté du bouton Voix, par la case « Autoriser les voix en ligne ».</p>
+        <p>Une entreprise peut couper ces voix dans Microsoft Edge par la stratégie <code>ConfigureOnlineTextToSpeech</code> : Edge ne propose plus alors que les voix de l'ordinateur. Chrome n'a pas de stratégie équivalente.</p>
       </section>
 
       <section>
         <h2>Fichiers que vous exportez</h2>
-        <p>PDF, images, classeurs Excel, fichiers .pmap et paquets d'échange sont enregistrés là où vous le décidez. Un paquet d'échange laisse de côté les personnes du projet, sauf si vous choisissez de les inclure.</p>
+        <p>PDF, images PNG et SVG, classeurs Excel, fichiers Markdown, fichiers .pmap et paquets d'échange sont enregistrés là où vous le décidez. Un paquet d'échange laisse de côté les comptes des membres du projet, sauf si vous choisissez de les inclure ; ce que vous avez écrit y reste tel quel, y compris le responsable d'une action.</p>
       </section>
 
       <section>
@@ -82,7 +96,7 @@
 
       <section>
         <h2>Vos droits et le contact</h2>
-        <p>L'éditeur ne détient aucune de vos données : il n'a rien à vous communiquer ni à effacer. Vos données locales s'effacent en désinstallant l'application, ou en supprimant son dossier pour la version portable. Pour ce qui a été envoyé à un fournisseur d'IA, adressez-vous à lui.</p>
+        <p>L'éditeur ne détient aucune de vos données : il n'a rien à vous communiquer ni à effacer. Vos données locales s'effacent en désinstallant l'application, ou en supprimant son dossier pour la version portable. Pour ce qui a été envoyé à un fournisseur d'IA, adressez-vous à lui ; pour le texte lu par une voix en ligne, à l'éditeur de votre navigateur.</p>
         <p>Topogenia ne s'adresse pas aux enfants.</p>
         <p>Une question : <a href="mailto:Peter.Barcauti@topogenia.com">Peter.Barcauti@topogenia.com</a>. Toute modification de cette politique est publiée sur cette page, avec sa date.</p>
       </section>
@@ -92,14 +106,15 @@
       <p class="kicker">Topogenia app</p>
       <h1>Privacy policy</h1>
       <p class="lead">Topogenia runs on your computer. The publisher receives none of your data.</p>
-      <p>Version of 1 November 2026. It covers the portable release and the Microsoft Store release, in desktop mode. The topogenia.com website has its own rules, in the <a href="mentions-legales.html">legal notice</a>.</p>
+      <p>Version of 12 November 2026. It covers the portable release and the Microsoft Store release, in desktop mode. The topogenia.com website has its own rules, in the <a href="mentions-legales.html">legal notice</a>.</p>
 
       <section>
         <h2>In short</h2>
         <ul>
           <li>No account, no analytics, no advertising.</li>
           <li>Your projects stay in a data file, on your computer.</li>
-          <li>The AI assistant is optional and turned off by default. If you connect it, what you ask goes straight from your computer to the provider you chose, under your own account.</li>
+          <li>The AI assistant is optional and turned off by default. With a model installed on your computer, nothing leaves the computer. With an online provider, what you ask goes straight from your computer to that provider, under your own account.</li>
+          <li>The presentation reads its sentences with a voice of your computer. A natural online voice is optional: if you choose it, your browser sends the text read aloud to its maker (Microsoft for Edge, Google for Chrome).</li>
         </ul>
       </section>
 
@@ -112,25 +127,38 @@
 
       <section>
         <h2>The AI assistant, if you use it</h2>
-        <p>It is set up in the app, and it is turned off by default. It works in three ways:</p>
+        <p>It is set up in the app, in the AI settings, and it is turned off by default. Its connectors are grouped by where the data goes:</p>
         <ul>
           <li><b>None</b>: nothing leaves your computer.</li>
           <li><b>Copy and paste</b>: the app sends nothing. It prepares a prompt, which you copy yourself into the AI of your choice, under your own responsibility.</li>
-          <li><b>Anthropic</b> or <b>AWS Bedrock</b>: when you send a request, the app sends, from your computer, your request, the files you attach to it, and the content of the project needed to answer. This content may include names of people you entered. The processing is governed by your agreement with that provider and its privacy policy (<a href="https://www.anthropic.com/legal/privacy">Anthropic</a>, <a href="https://aws.amazon.com/privacy/">AWS</a>). The publisher receives nothing.</li>
+          <li><b>On your computer</b>, Ollama and LM Studio: the app calls the program installed on your computer, at its local address. Nothing leaves the computer, provided the model chosen is installed on it: a “cloud” model offered by Ollama is computed online, by the maker of Ollama.</li>
+          <li><b>Online</b>, Anthropic, AWS Bedrock, Microsoft Azure OpenAI, OpenAI, Google (Gemini), xAI (Grok), Mistral AI, DeepSeek, Moonshot AI (Kimi) and Alibaba Cloud (Qwen): when you send a request, the app sends, from your computer and to the chosen provider only, your request, the files you attach to it, and the content of the project needed to answer. The processing is governed by your agreement with that provider and its privacy policy. Some of these providers process data outside the European Union: choose one knowingly. The publisher receives nothing.</li>
         </ul>
-        <p>By default, only projects classified as “Internal” can be sent to the AI. Confidential projects are only sent if you allow it in the settings.</p>
-        <p>Your Anthropic API key is stored encrypted on your computer, for your Windows account only. No AWS key is stored: Bedrock uses the AWS profile of your computer.</p>
+        <p>What is sent does not carry the accounts of the project members. What you wrote is sent as it is: it may include names of people you entered, for example the owner of an action.</p>
+        <p>By default, only projects classified as “Internal” can be sent to the AI. Confidential projects are only sent if you allow it in the AI settings.</p>
+        <p>The API key of the chosen provider is stored encrypted on your computer, for your Windows account only. No AWS key is stored: Bedrock uses the AWS profile of your computer.</p>
         <p>Content produced by an AI may be inaccurate. You see each proposal before you apply it.</p>
       </section>
 
       <section>
         <h2>Reporting an AI reply</h2>
-        <p>The flag under a reply (“Report inappropriate content”) opens your email app, with the publisher's address and a subject filled in. Nothing is attached automatically: you choose what you quote. The message is only used to handle your report.</p>
+        <p>The flag at the top of each reply of a model (“Report inappropriate content to the publisher”) opens your email app, with the publisher's address and a subject filled in. Nothing is attached automatically: you choose what you quote. The message is only used to handle your report.</p>
+      </section>
+
+      <section>
+        <h2>The presentation voice</h2>
+        <p>The presentation can read its sentences aloud, through the speech synthesis of your browser. The voice is off by default.</p>
+        <ul>
+          <li><b>Voices of the computer</b>: they are the only ones offered by default. Nothing leaves the computer.</li>
+          <li><b>Natural online voice</b>: it is only offered after a question that says where the text goes, and only for a project whose classification is allowed in the AI settings, the same rule as for the assistant. If you choose it, it is not Topogenia but your browser that sends the text read aloud to its maker, Microsoft for Edge, Google for Chrome, under its own privacy policy. This text is everything the presentation says: the steps, the lanes, the pain points, the names of the documents and the presentation comments.</li>
+        </ul>
+        <p>You can change your choice at any time, next to the Voice button, with the “Allow online voices” box.</p>
+        <p>A company can turn these voices off in Microsoft Edge with the <code>ConfigureOnlineTextToSpeech</code> policy: Edge then offers only the voices of the computer. Chrome has no equivalent policy.</p>
       </section>
 
       <section>
         <h2>Files you export</h2>
-        <p>PDFs, images, Excel workbooks, .pmap files and exchange packages are saved where you decide. An exchange package leaves out the people of the project, unless you choose to include them.</p>
+        <p>PDFs, PNG and SVG images, Excel workbooks, Markdown files, .pmap files and exchange packages are saved where you decide. An exchange package leaves out the accounts of the project members, unless you choose to include them; what you wrote stays in it as it is, including the owner of an action.</p>
       </section>
 
       <section>
@@ -140,7 +168,7 @@
 
       <section>
         <h2>Your rights and contact</h2>
-        <p>The publisher holds none of your data: there is nothing to give you or to erase. Your local data is erased by uninstalling the app, or by deleting its folder for the portable release. For anything sent to an AI provider, contact that provider.</p>
+        <p>The publisher holds none of your data: there is nothing to give you or to erase. Your local data is erased by uninstalling the app, or by deleting its folder for the portable release. For anything sent to an AI provider, contact that provider; for the text read by an online voice, the maker of your browser.</p>
         <p>Topogenia is not directed at children.</p>
         <p>Any question: <a href="mailto:Peter.Barcauti@topogenia.com">Peter.Barcauti@topogenia.com</a>. Any change to this policy is published on this page, with its date.</p>
       </section>
