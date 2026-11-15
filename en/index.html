@@ -33,9 +33,10 @@
     "image": "https://topogenia.com/og-image.png",
     "applicationCategory": "BusinessApplication",
     "operatingSystem": "Windows (64 bits)",
-    "softwareVersion": "3.0.2",
-    "downloadUrl": "https://github.com/PeterBarcauti/topogenia-site/releases/download/v3.0.2/Topogenia-3.0.2-portable.zip",
-    "releaseNotes": "https://github.com/PeterBarcauti/topogenia-site/releases/tag/v3.0.2",
+    "softwareVersion": "3.2.0",
+    "downloadUrl": "https://github.com/PeterBarcauti/topogenia-site/releases/download/v3.2.0/Topogenia-3.2.0-portable.zip",
+    "releaseNotes": "https://github.com/PeterBarcauti/topogenia-site/releases/tag/v3.2.0",
+    "installUrl": "https://apps.microsoft.com/detail/9NZ56VV4N6QR",
     "author": { "@type": "Person", "name": "Peter Barcauti" },
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" }
   }
@@ -76,7 +77,7 @@
       <canvas class="aurora" data-palette="light" aria-hidden="true"></canvas>
       <div class="dots" aria-hidden="true"></div>
       <div class="hero-copy">
-        <p class="eyebrow"><span class="ai-dot" aria-hidden="true"></span><span data-i18n="hero.eyebrow">Topogenia 3.0 · AI assistant built in</span></p>
+        <p class="eyebrow"><span class="ai-dot" aria-hidden="true"></span><span data-i18n="hero.eyebrow">Topogenia 3.2 · AI assistant built in</span></p>
         <h1 class="hero-title">
           <span class="t-light" data-i18n="hero.title1">From story</span>
           <span class="t-strong"><span data-i18n="hero.title2">to</span> <em class="grad" data-i18n="hero.title3">diagrams.</em></span>
@@ -89,7 +90,7 @@
           </a>
           <a class="btn btn-ghost" href="#gestes" data-i18n="cta.how">See how it works</a>
         </div>
-        <p class="hero-note" data-i18n="hero.note">Windows · works offline · nothing to install · free, including for companies</p>
+        <p class="hero-note" data-i18n="hero.note">Windows · works offline · portable or Microsoft Store · free, including for companies</p>
       </div>
 
       <!-- The live demonstration: a story typed to the assistant becomes a swimlane map -->
@@ -255,9 +256,31 @@
         <article class="card reveal">
           <div class="card-text">
             <h3 data-i18n="ws.export.t">Exports ready to share</h3>
-            <p data-i18n="ws.export.p">A3 PDF, PNG image, Excel workbook, .pmap format readable by an AI.</p>
+            <p data-i18n="ws.export.p">A3 PDF, PNG, SVG, Excel, Markdown (Mermaid), .pmap readable by an AI, and large print for the wall.</p>
           </div>
-          <div class="exports" aria-hidden="true"><span>PDF A3</span><span>PNG</span><span>XLSX</span><span>.pmap</span></div>
+          <div class="exports" aria-hidden="true"><span>PDF A3</span><span>PNG</span><span>SVG</span><span>XLSX</span><span>MD</span><span>.pmap</span></div>
+        </article>
+
+        <article class="card card-wide reveal">
+          <div class="card-text">
+            <h3 data-i18n="ws.ana.t">Analyse the Makigami way</h3>
+            <p data-i18n="ws.ana.p">The Analysis layer shows where a case loses its time: handoffs, work without value, media breaks. Indicator photos and a target state quantify the gain.</p>
+          </div>
+          <div class="analysis" aria-hidden="true">
+            <span class="an-marks"><span class="an-mark an-relay"><i></i><b data-i18n="ws.ana.1">Handoff</b></span><span class="an-mark an-waste"><i></i><b data-i18n="ws.ana.2">Work without value</b></span><span class="an-mark an-break"><i></i><b data-i18n="ws.ana.3">Media break</b></span></span>
+            <span class="an-bars"><span data-i18n="ws.ana.now">Today</span><span class="an-bar"><i style="--v:1"></i></span><b>48 h</b><span data-i18n="ws.ana.target">Target state</span><span class="an-bar target"><i style="--v:.54"></i></span><b>26 h</b></span>
+          </div>
+        </article>
+
+        <article class="card card-wide reveal">
+          <div class="card-text">
+            <h3 data-i18n="ws.pres.t">Present in a meeting</h3>
+            <p data-i18n="ws.pres.p">The Present button tells the map full screen, step by step: subtitles, an optional voice, counters of work and lead time, a summary. Nothing to prepare.</p>
+          </div>
+          <div class="present" aria-hidden="true">
+            <span class="pr-track"><i></i><i class="on"></i><i></i><span class="pr-light"></span></span>
+            <span class="pr-sub" data-i18n="ws.pres.sub">The manager approves the expense claim.</span>
+          </div>
         </article>
       </div>
     </section>
@@ -286,13 +309,13 @@
           </article>
           <article class="hook reveal">
             <h3 data-i18n="mg.4.t">Your data stays with you</h3>
-            <p data-i18n="mg.4.p">On your workstation, in a single file. The AI is called only when you ask, through your own account: Anthropic or AWS Bedrock.</p>
+            <p data-i18n="mg.4.p">On your workstation, in a single file. The AI is called only when you ask: through a model installed on your workstation (Ollama, LM Studio), or through your own account with a provider (Anthropic, OpenAI, Google, Mistral AI and others).</p>
           </article>
         </div>
         <div class="stats">
           <div class="stat reveal"><span class="num" data-count="18">18</span><span data-i18n="mg.s1">languages</span></div>
           <div class="stat reveal"><span class="num" data-count="1">1</span><span data-i18n="mg.s2">data file, on your workstation</span></div>
-          <div class="stat reveal"><span class="num" data-count="0">0</span><span data-i18n="mg.s3">installation on the workstation</span></div>
+          <div class="stat reveal"><span class="num" data-count="0">0</span><span data-i18n="mg.s3">accounts to create</span></div>
           <div class="stat reveal"><span class="num" data-count="16">16</span><span data-i18n="mg.s4">completeness checkpoints</span></div>
         </div>
       </div>
@@ -330,16 +353,19 @@
       <div class="dl-card reveal">
         <span class="dl-glow" aria-hidden="true"></span>
         <h2 data-i18n="dl.title">Your next process fits in one paragraph.</h2>
-        <p class="lead" data-i18n="dl.lead">Download Topogenia, unzip, launch. The map opens in your browser.</p>
-        <a class="btn btn-primary btn-glow btn-big" id="download-link" href="https://github.com/PeterBarcauti/topogenia-site/releases/download/v3.0.2/Topogenia-3.0.2-portable.zip">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19.5h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span data-i18n="dl.button">Download Topogenia 3.0</span>
-        </a>
+        <p class="lead" data-i18n="dl.lead">Download the portable version, unzip, launch; or install Topogenia from the Microsoft Store. The map opens in your browser.</p>
+        <div class="dl-buttons">
+          <a class="btn btn-primary btn-glow btn-big" id="download-link" href="https://github.com/PeterBarcauti/topogenia-site/releases/download/v3.2.0/Topogenia-3.2.0-portable.zip">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19.5h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span data-i18n="dl.button">Download Topogenia 3.2</span>
+          </a>
+          <a class="btn btn-ghost btn-big" id="store-link" href="https://apps.microsoft.com/detail/9NZ56VV4N6QR" data-i18n="dl.store">Install from the Microsoft Store</a>
+        </div>
         <ul class="dl-facts">
           <li data-i18n="dl.f1">Free, including for companies</li>
-          <li data-i18n="dl.f2">Windows 64-bit, portable version</li>
-          <li data-i18n="dl.f3">Nothing to install, no account</li>
-          <li><a href="https://github.com/PeterBarcauti/topogenia-site/releases/download/v3.0.2/Topogenia-3.0.2-portable.zip.sha256" data-i18n="dl.f4">SHA-256 checksum published next to the file</a></li>
+          <li data-i18n="dl.f2">Windows 64-bit, portable version or Microsoft Store</li>
+          <li data-i18n="dl.f3">No account; the portable version needs no installation</li>
+          <li><a href="https://github.com/PeterBarcauti/topogenia-site/releases/download/v3.2.0/Topogenia-3.2.0-portable.zip.sha256" data-i18n="dl.f4">SHA-256 checksum published next to the file</a></li>
         </ul>
       </div>
     </section>

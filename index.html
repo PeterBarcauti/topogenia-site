@@ -33,9 +33,10 @@
     "image": "https://topogenia.com/og-image.png",
     "applicationCategory": "BusinessApplication",
     "operatingSystem": "Windows (64 bits)",
-    "softwareVersion": "3.0.2",
-    "downloadUrl": "https://github.com/PeterBarcauti/topogenia-site/releases/download/v3.0.2/Topogenia-3.0.2-portable.zip",
-    "releaseNotes": "https://github.com/PeterBarcauti/topogenia-site/releases/tag/v3.0.2",
+    "softwareVersion": "3.2.0",
+    "downloadUrl": "https://github.com/PeterBarcauti/topogenia-site/releases/download/v3.2.0/Topogenia-3.2.0-portable.zip",
+    "releaseNotes": "https://github.com/PeterBarcauti/topogenia-site/releases/tag/v3.2.0",
+    "installUrl": "https://apps.microsoft.com/detail/9NZ56VV4N6QR",
     "author": { "@type": "Person", "name": "Peter Barcauti" },
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" }
   }
@@ -76,7 +77,7 @@
       <canvas class="aurora" data-palette="light" aria-hidden="true"></canvas>
       <div class="dots" aria-hidden="true"></div>
       <div class="hero-copy">
-        <p class="eyebrow"><span class="ai-dot" aria-hidden="true"></span><span data-i18n="hero.eyebrow">Topogenia 3.0 · l'assistant IA est intégré</span></p>
+        <p class="eyebrow"><span class="ai-dot" aria-hidden="true"></span><span data-i18n="hero.eyebrow">Topogenia 3.2 · l'assistant IA est intégré</span></p>
         <h1 class="hero-title">
           <span class="t-light" data-i18n="hero.title1">Du récit</span>
           <span class="t-strong"><span data-i18n="hero.title2">aux</span> <em class="grad" data-i18n="hero.title3">diagrammes.</em></span>
@@ -89,7 +90,7 @@
           </a>
           <a class="btn btn-ghost" href="#gestes" data-i18n="cta.how">Voir comment ça marche</a>
         </div>
-        <p class="hero-note" data-i18n="hero.note">Windows · hors ligne · aucune installation · gratuit, y compris en entreprise</p>
+        <p class="hero-note" data-i18n="hero.note">Windows · hors ligne · portable ou Microsoft Store · gratuit, y compris en entreprise</p>
       </div>
 
       <!-- The live demonstration: a story typed to the assistant becomes a swimlane map -->
@@ -255,9 +256,31 @@
         <article class="card reveal">
           <div class="card-text">
             <h3 data-i18n="ws.export.t">Exports prêts à diffuser</h3>
-            <p data-i18n="ws.export.p">PDF A3, image PNG, classeur Excel, format .pmap lisible par une IA.</p>
+            <p data-i18n="ws.export.p">PDF A3, PNG, SVG, Excel, Markdown (Mermaid), .pmap lisible par une IA, et l'impression en grand pour le mur.</p>
           </div>
-          <div class="exports" aria-hidden="true"><span>PDF A3</span><span>PNG</span><span>XLSX</span><span>.pmap</span></div>
+          <div class="exports" aria-hidden="true"><span>PDF A3</span><span>PNG</span><span>SVG</span><span>XLSX</span><span>MD</span><span>.pmap</span></div>
+        </article>
+
+        <article class="card card-wide reveal">
+          <div class="card-text">
+            <h3 data-i18n="ws.ana.t">Analyser à la manière d'un Makigami</h3>
+            <p data-i18n="ws.ana.p">Le calque Analyse montre où un dossier perd son temps : relais, travail sans valeur, ruptures de support. Des photos des indicateurs et un état cible chiffrent le gain.</p>
+          </div>
+          <div class="analysis" aria-hidden="true">
+            <span class="an-marks"><span class="an-mark an-relay"><i></i><b data-i18n="ws.ana.1">Relais</b></span><span class="an-mark an-waste"><i></i><b data-i18n="ws.ana.2">Travail sans valeur</b></span><span class="an-mark an-break"><i></i><b data-i18n="ws.ana.3">Rupture de support</b></span></span>
+            <span class="an-bars"><span data-i18n="ws.ana.now">Aujourd'hui</span><span class="an-bar"><i style="--v:1"></i></span><b>48 h</b><span data-i18n="ws.ana.target">État cible</span><span class="an-bar target"><i style="--v:.54"></i></span><b>26 h</b></span>
+          </div>
+        </article>
+
+        <article class="card card-wide reveal">
+          <div class="card-text">
+            <h3 data-i18n="ws.pres.t">Présenter en réunion</h3>
+            <p data-i18n="ws.pres.p">Le bouton Présenter raconte la carte en plein écran, étape par étape : sous-titres, voix facultative, compteurs de travail et de délai, bilan. Rien à préparer.</p>
+          </div>
+          <div class="present" aria-hidden="true">
+            <span class="pr-track"><i></i><i class="on"></i><i></i><span class="pr-light"></span></span>
+            <span class="pr-sub" data-i18n="ws.pres.sub">Le manager valide la note de frais.</span>
+          </div>
         </article>
       </div>
     </section>
@@ -286,13 +309,13 @@
           </article>
           <article class="hook reveal">
             <h3 data-i18n="mg.4.t">Vos données restent chez vous</h3>
-            <p data-i18n="mg.4.p">Sur votre poste, dans un seul fichier. L'IA n'est appelée qu'à votre demande, par votre propre compte : Anthropic ou AWS Bedrock.</p>
+            <p data-i18n="mg.4.p">Sur votre poste, dans un seul fichier. L'IA n'est appelée qu'à votre demande : par un modèle installé sur votre poste (Ollama, LM Studio), ou par votre propre compte chez un fournisseur (Anthropic, OpenAI, Google, Mistral AI et d'autres).</p>
           </article>
         </div>
         <div class="stats">
           <div class="stat reveal"><span class="num" data-count="18">18</span><span data-i18n="mg.s1">langues</span></div>
           <div class="stat reveal"><span class="num" data-count="1">1</span><span data-i18n="mg.s2">fichier de données, sur votre poste</span></div>
-          <div class="stat reveal"><span class="num" data-count="0">0</span><span data-i18n="mg.s3">installation sur le poste</span></div>
+          <div class="stat reveal"><span class="num" data-count="0">0</span><span data-i18n="mg.s3">compte à créer</span></div>
           <div class="stat reveal"><span class="num" data-count="16">16</span><span data-i18n="mg.s4">points de contrôle de complétude</span></div>
         </div>
       </div>
@@ -330,16 +353,19 @@
       <div class="dl-card reveal">
         <span class="dl-glow" aria-hidden="true"></span>
         <h2 data-i18n="dl.title">Votre prochain processus tient en un paragraphe.</h2>
-        <p class="lead" data-i18n="dl.lead">Téléchargez Topogenia, décompressez, lancez. La carte s'ouvre dans votre navigateur.</p>
-        <a class="btn btn-primary btn-glow btn-big" id="download-link" href="https://github.com/PeterBarcauti/topogenia-site/releases/download/v3.0.2/Topogenia-3.0.2-portable.zip">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19.5h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span data-i18n="dl.button">Télécharger Topogenia&nbsp;3.0</span>
-        </a>
+        <p class="lead" data-i18n="dl.lead">Téléchargez la version portable, décompressez, lancez ; ou installez Topogenia depuis le Microsoft Store. La carte s'ouvre dans votre navigateur.</p>
+        <div class="dl-buttons">
+          <a class="btn btn-primary btn-glow btn-big" id="download-link" href="https://github.com/PeterBarcauti/topogenia-site/releases/download/v3.2.0/Topogenia-3.2.0-portable.zip">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19.5h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span data-i18n="dl.button">Télécharger Topogenia&nbsp;3.2</span>
+          </a>
+          <a class="btn btn-ghost btn-big" id="store-link" href="https://apps.microsoft.com/detail/9NZ56VV4N6QR" data-i18n="dl.store">Installer depuis le Microsoft Store</a>
+        </div>
         <ul class="dl-facts">
           <li data-i18n="dl.f1">Gratuit, y compris en entreprise</li>
-          <li data-i18n="dl.f2">Windows 64 bits, version portable</li>
-          <li data-i18n="dl.f3">Aucune installation, aucun compte</li>
-          <li><a href="https://github.com/PeterBarcauti/topogenia-site/releases/download/v3.0.2/Topogenia-3.0.2-portable.zip.sha256" data-i18n="dl.f4">Empreinte SHA-256 publiée à côté du fichier</a></li>
+          <li data-i18n="dl.f2">Windows 64 bits, version portable ou Microsoft Store</li>
+          <li data-i18n="dl.f3">Aucun compte ; la version portable s'utilise sans installation</li>
+          <li><a href="https://github.com/PeterBarcauti/topogenia-site/releases/download/v3.2.0/Topogenia-3.2.0-portable.zip.sha256" data-i18n="dl.f4">Empreinte SHA-256 publiée à côté du fichier</a></li>
         </ul>
       </div>
     </section>

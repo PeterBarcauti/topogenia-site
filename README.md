@@ -22,7 +22,8 @@ Servir le dossier par un serveur statique (en `file://`, le navigateur bloque le
 - `logiciel-diagramme-couloirs-gratuit-hors-ligne/index.html` et `en/free-swimlane-diagram-software-offline/index.html` :
   la page qui répond à une recherche, dans chaque langue ; écrites à la main, reliées par des liens `hreflang`.
 - `robots.txt`, `sitemap.xml` : pour les moteurs de recherche.
-- `mentions-legales.html` : mentions légales et confidentialité, en français et en anglais.
+- `mentions-legales.html` : mentions légales et confidentialité du site, en français et en anglais.
+- `confidentialite.html` : politique de confidentialité de l'application, en français et en anglais.
 - `assets/site.css`, `assets/site.js`, `assets/legal.js` : styles et comportements.
 - `assets/fonts/` : police Inter, sous licence SIL Open Font License 1.1.
 - `og-image.png` : image de partage (1200 x 630).
