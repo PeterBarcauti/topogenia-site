@@ -1,0 +1,459 @@
+{
+  "format": "topogenia",
+  "version": "1.5",
+  "project": {
+    "name": "Managing an engineering change",
+    "code": "ENGCHG",
+    "language": "en",
+    "description": "Gallery template: managing an engineering change. Trigger: Product or process evolution need identified. Outcome: Technical change deployed and closed; or request rejected or abandoned, and notified. To adapt to your organisation: actors, documents, media, thresholds and lead times."
+  },
+  "map": {
+    "summary": {
+      "text": "The requester states the need, the design office and the board assess it, then the change is qualified, deployed in series and closed, or rejected."
+    },
+    "lanes": [
+      {
+        "id": "change-requester",
+        "name": "Change requester",
+        "type": "person"
+      },
+      {
+        "id": "design-office",
+        "name": "Design office",
+        "type": "department"
+      },
+      {
+        "id": "change-board",
+        "name": "Change board",
+        "type": "department"
+      },
+      {
+        "id": "industrialisation-operations",
+        "name": "Industrialisation and operations",
+        "type": "department"
+      }
+    ],
+    "steps": [
+      {
+        "id": "engineering-change-need-identified",
+        "lane": "change-requester",
+        "label": "Engineering change need identified",
+        "type": "start",
+        "column": 0
+      },
+      {
+        "id": "draft-engineering-change-request",
+        "lane": "change-requester",
+        "label": "Draft the engineering change request",
+        "column": 1,
+        "sheet": {
+          "purpose": "The requester sets out the reason for the change, the references concerned and the expected result in a technical change request.",
+          "outputs": [
+            {
+              "id": "doc-engineering-change-request",
+              "name": "Engineering change request",
+              "medium": "email"
+            }
+          ]
+        }
+      },
+      {
+        "id": "carry-out-feasibility-study-impact",
+        "lane": "design-office",
+        "label": "Carry out the feasibility study and impact estimate",
+        "column": 2,
+        "sheet": {
+          "purpose": "The design office assesses technical feasibility, identifies the parts, drawings and bills of materials affected and produces a preliminary engineering estimate.",
+          "inputs": [
+            {
+              "name": "Current design file",
+              "medium": "file"
+            }
+          ],
+          "uses": [
+            {
+              "document": "doc-engineering-change-request"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-preliminary-feasibility-study",
+              "name": "Preliminary feasibility study",
+              "medium": "file"
+            }
+          ]
+        }
+      },
+      {
+        "id": "assess-preliminary-quality-cost-stock",
+        "lane": "change-board",
+        "label": "Assess the preliminary quality, cost and stock impacts",
+        "column": 3,
+        "sheet": {
+          "purpose": "The multidisciplinary board makes a preliminary estimate of the impacts on tooling, suppliers, stocks, costs and lead times before detailed redesign work is started.",
+          "uses": [
+            {
+              "document": "doc-engineering-change-request"
+            },
+            {
+              "document": "doc-preliminary-feasibility-study"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-preliminary-multidisciplinary-opinion",
+              "name": "Preliminary multidisciplinary opinion",
+              "medium": "email"
+            }
+          ]
+        }
+      },
+      {
+        "id": "change-request-approved",
+        "lane": "change-board",
+        "label": "Is the change request approved?",
+        "type": "decision",
+        "column": 4,
+        "sheet": {
+          "free_text": "Produced as applicable: Reasoned rejection notice (if no).",
+          "uses": [
+            {
+              "document": "doc-preliminary-multidisciplinary-opinion"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-reasoned-rejection-notice",
+              "name": "Reasoned rejection notice",
+              "medium": "email"
+            }
+          ]
+        }
+      },
+      {
+        "id": "acknowledge-rejection-close-request",
+        "lane": "change-requester",
+        "label": "Acknowledge the rejection and close the request",
+        "column": 9,
+        "sheet": {
+          "purpose": "The requester notes the reasons for rejection notified by the change board, before or after qualification, and closes the request.",
+          "free_text": "As applicable: Cancelled change order (if abandoned after approval).",
+          "uses": [
+            {
+              "document": "doc-reasoned-rejection-notice"
+            },
+            {
+              "document": "doc-reasoned-rejection-notice-alt"
+            },
+            {
+              "document": "doc-cancelled-change-order"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-request-closed-as-rejected",
+              "name": "Request closed as rejected",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "issue-revise-change-order-definition",
+        "lane": "design-office",
+        "label": "Issue or revise the change order and the definition",
+        "column": 5,
+        "sheet": {
+          "purpose": "After agreement in principle, the design office creates the official change order, increments the revision index and redesigns the drawings and bills of materials; after an unsuccessful qualification, it revises the order and the definition.",
+          "free_text": "As applicable: Qualification report (if revised).",
+          "inputs": [
+            {
+              "name": "Current design file",
+              "medium": "file"
+            }
+          ],
+          "uses": [
+            {
+              "document": "doc-preliminary-multidisciplinary-opinion"
+            },
+            {
+              "document": "doc-qualification-report"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-change-order",
+              "name": "Change order",
+              "medium": "file"
+            },
+            {
+              "id": "doc-revised-drawings-bills-materials",
+              "name": "Revised drawings and bills of materials",
+              "medium": "file"
+            }
+          ]
+        }
+      },
+      {
+        "id": "adapt-means-involve-suppliers-qualify",
+        "lane": "industrialisation-operations",
+        "label": "Adapt the means, involve suppliers and qualify",
+        "column": 6,
+        "sheet": {
+          "purpose": "The methods and operations teams adapt routings and tooling, involve the suppliers concerned from the prototype or pre-series phase, run the qualification tests and seek the customer's agreement where contractually required.",
+          "uses": [
+            {
+              "document": "doc-change-order"
+            },
+            {
+              "document": "doc-revised-drawings-bills-materials"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-updated-routings",
+              "name": "Updated routings",
+              "medium": "file"
+            },
+            {
+              "id": "doc-qualification-report",
+              "name": "Qualification report",
+              "medium": "file"
+            }
+          ]
+        }
+      },
+      {
+        "id": "qualification-final-impact-customer-agreement",
+        "lane": "change-board",
+        "label": "Are the qualification, final impact and customer agreement secured?",
+        "type": "decision",
+        "column": 7,
+        "sheet": {
+          "free_text": "As applicable: Customer agreement (if required).",
+          "inputs": [
+            {
+              "name": "Customer agreement",
+              "medium": "email"
+            }
+          ],
+          "uses": [
+            {
+              "document": "doc-qualification-report"
+            },
+            {
+              "document": "doc-change-order"
+            }
+          ]
+        }
+      },
+      {
+        "id": "can-definition-corrected",
+        "lane": "change-board",
+        "label": "Can the definition be corrected?",
+        "type": "decision",
+        "column": 8,
+        "sheet": {
+          "free_text": "Produced as applicable: Reasoned rejection notice (if no) ; Cancelled change order (if no).",
+          "uses": [
+            {
+              "document": "doc-qualification-report"
+            },
+            {
+              "document": "doc-revised-drawings-bills-materials"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-reasoned-rejection-notice-alt",
+              "name": "Reasoned rejection notice",
+              "medium": "email"
+            },
+            {
+              "id": "doc-cancelled-change-order",
+              "name": "Cancelled change order",
+              "medium": "file"
+            }
+          ]
+        }
+      },
+      {
+        "id": "validate-series-changeover-handling-stocks",
+        "lane": "change-board",
+        "label": "Validate the series changeover and the handling of stocks",
+        "column": 8,
+        "row": 1,
+        "sheet": {
+          "purpose": "The board checks the final costs and impacts, sets the changeover date and decides what happens to stocks of the old revision.",
+          "uses": [
+            {
+              "document": "doc-qualification-report"
+            },
+            {
+              "document": "doc-change-order"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-implementation-decision",
+              "name": "Implementation decision",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "switch-technical-data-deploy-series",
+        "lane": "industrialisation-operations",
+        "label": "Switch the technical data and deploy to series production",
+        "column": 9,
+        "sheet": {
+          "purpose": "The operations teams activate the new bills of materials and routings, confirm the effective date to suppliers and roll the change out on the lines.",
+          "uses": [
+            {
+              "document": "doc-implementation-decision"
+            },
+            {
+              "document": "doc-revised-drawings-bills-materials"
+            },
+            {
+              "document": "doc-updated-routings"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-updated-technical-data",
+              "name": "Updated technical data",
+              "medium": "software"
+            },
+            {
+              "id": "doc-change-applied",
+              "name": "Change applied",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "check-actual-application-close-order",
+        "lane": "design-office",
+        "label": "Check the actual application and close the order",
+        "column": 10,
+        "sheet": {
+          "purpose": "The design office confirms that the new definition has actually been applied, checks that the documentation is archived and sends the closure notice to the requester.",
+          "uses": [
+            {
+              "document": "doc-change-applied"
+            },
+            {
+              "document": "doc-implementation-decision"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-change-closure-notice",
+              "name": "Change closure notice",
+              "medium": "email"
+            }
+          ]
+        }
+      },
+      {
+        "id": "technical-change-force-notified-requester",
+        "lane": "change-requester",
+        "label": "Technical change in force and notified to the requester",
+        "type": "end",
+        "column": 11
+      },
+      {
+        "id": "change-request-rejected-notified-requester",
+        "lane": "change-requester",
+        "label": "Change request rejected and notified to the requester",
+        "type": "end",
+        "column": 10
+      }
+    ],
+    "flows": [
+      {
+        "source": "engineering-change-need-identified",
+        "target": "draft-engineering-change-request"
+      },
+      {
+        "source": "draft-engineering-change-request",
+        "target": "carry-out-feasibility-study-impact"
+      },
+      {
+        "source": "carry-out-feasibility-study-impact",
+        "target": "assess-preliminary-quality-cost-stock"
+      },
+      {
+        "source": "assess-preliminary-quality-cost-stock",
+        "target": "change-request-approved"
+      },
+      {
+        "source": "change-request-approved",
+        "target": "issue-revise-change-order-definition",
+        "label": "yes"
+      },
+      {
+        "source": "change-request-approved",
+        "target": "acknowledge-rejection-close-request",
+        "label": "no"
+      },
+      {
+        "source": "acknowledge-rejection-close-request",
+        "target": "change-request-rejected-notified-requester"
+      },
+      {
+        "source": "issue-revise-change-order-definition",
+        "target": "adapt-means-involve-suppliers-qualify"
+      },
+      {
+        "source": "adapt-means-involve-suppliers-qualify",
+        "target": "qualification-final-impact-customer-agreement"
+      },
+      {
+        "source": "qualification-final-impact-customer-agreement",
+        "target": "validate-series-changeover-handling-stocks",
+        "label": "yes"
+      },
+      {
+        "source": "qualification-final-impact-customer-agreement",
+        "target": "can-definition-corrected",
+        "label": "no"
+      },
+      {
+        "source": "can-definition-corrected",
+        "target": "issue-revise-change-order-definition",
+        "label": "yes"
+      },
+      {
+        "source": "can-definition-corrected",
+        "target": "acknowledge-rejection-close-request",
+        "label": "no"
+      },
+      {
+        "source": "validate-series-changeover-handling-stocks",
+        "target": "switch-technical-data-deploy-series"
+      },
+      {
+        "source": "switch-technical-data-deploy-series",
+        "target": "check-actual-application-close-order"
+      },
+      {
+        "source": "check-actual-application-close-order",
+        "target": "technical-change-force-notified-requester"
+      }
+    ]
+  },
+  "uncertainties": [
+    "Generic model: replace the actors, the documents and their media with those of your organisation.",
+    "Duration and lead time of each step: to be measured in your organisation, the model gives none.",
+    "Formal customer approval: in certain sectors, when a change affects form, fit or function, a dedicated initial sample approval step is carried out with the customer before the qualification decision.",
+    "Emergency change: faced with a safety risk or an imminent production stoppage, an accelerated circuit allows quick approval followed by a supervised documentary regularisation.",
+    "Minor change without revision index change: purely documentary adjustments may follow a lightened route without a full board meeting.",
+    "Configuration management: when the product is made at several sites, the change order is propagated and tracked individually at each plant.",
+    "Abandonment after approval: when the definition can no longer be corrected under acceptable conditions (cost, lead time, qualification), the board cancels the change order; the drawings, bills of materials and routings revised under that order, never switched to series production, are withdrawn and the current definition remains applicable.",
+    "Medium of each document (paper, email, spreadsheet, file, software): set by default in this model, to be adapted to your organisation."
+  ]
+}

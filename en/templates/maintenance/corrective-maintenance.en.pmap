@@ -1,0 +1,418 @@
+{
+  "format": "topogenia",
+  "version": "1.5",
+  "project": {
+    "name": "Corrective maintenance, from the work request to closure",
+    "code": "CORMNT",
+    "language": "en",
+    "description": "Gallery template: corrective maintenance, from the work request to closure. Trigger: Fault or anomaly observed on a piece of equipment. Outcome: Equipment back in service and work order closed; request closed with no intervention; or work order waiting for a part. To adapt to your organisation: actors, documents, media, thresholds and lead times."
+  },
+  "map": {
+    "summary": {
+      "text": "The operator reports the fault, the planner schedules the order, the technician diagnoses and repairs, then the operator validates the tests before closure."
+    },
+    "lanes": [
+      {
+        "id": "operator-production",
+        "name": "Operator / Production",
+        "type": "person"
+      },
+      {
+        "id": "maintenance-planner",
+        "name": "Maintenance planner",
+        "type": "person"
+      },
+      {
+        "id": "maintenance-technician",
+        "name": "Maintenance technician",
+        "type": "person"
+      },
+      {
+        "id": "spare-parts-store",
+        "name": "Spare parts store",
+        "type": "department"
+      }
+    ],
+    "steps": [
+      {
+        "id": "breakdown-anomaly-detected-equipment",
+        "lane": "operator-production",
+        "label": "Breakdown or anomaly detected on equipment",
+        "type": "start",
+        "column": 0
+      },
+      {
+        "id": "create-work-request",
+        "lane": "operator-production",
+        "label": "Create the work request",
+        "column": 1,
+        "sheet": {
+          "purpose": "The operator describes the symptoms observed, identifies the equipment concerned, states the impact on safety or production and sends the work request.",
+          "outputs": [
+            {
+              "id": "doc-work-request",
+              "name": "Work request",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "qualify-request-assess-urgency",
+        "lane": "maintenance-planner",
+        "label": "Qualify the request and assess its urgency",
+        "column": 2,
+        "sheet": {
+          "purpose": "The maintenance planner checks that the request is relevant and not a duplicate, and sets the priority according to how critical the equipment is; if no intervention is retained, the planner informs the requester.",
+          "inputs": [
+            {
+              "name": "Equipment history",
+              "medium": "spreadsheet"
+            }
+          ],
+          "uses": [
+            {
+              "document": "doc-work-request"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-qualified-request",
+              "name": "Qualified request",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "request-require-work-order",
+        "lane": "maintenance-planner",
+        "label": "Does the request require a work order?",
+        "type": "decision",
+        "column": 3,
+        "sheet": {
+          "uses": [
+            {
+              "document": "doc-qualified-request"
+            }
+          ]
+        }
+      },
+      {
+        "id": "request-closed-without-intervention",
+        "lane": "maintenance-planner",
+        "label": "Request closed without intervention",
+        "type": "end",
+        "column": 4
+      },
+      {
+        "id": "create-schedule-work-order",
+        "lane": "maintenance-planner",
+        "label": "Create and schedule the work order",
+        "column": 4,
+        "row": 1,
+        "sheet": {
+          "purpose": "The planner converts the request into a work order, assigns the required skills, specifies the safety instructions and plans the intervention without pre-reserving unconfirmed parts.",
+          "inputs": [
+            {
+              "name": "Technical documentation",
+              "medium": "file"
+            }
+          ],
+          "uses": [
+            {
+              "document": "doc-qualified-request"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-work-order",
+              "name": "Work order",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "lock-out-equipment-diagnose-fault",
+        "lane": "maintenance-technician",
+        "label": "Lock out the equipment and diagnose the fault",
+        "column": 5,
+        "sheet": {
+          "purpose": "The technician makes the diagnosis, part of which can be done with the power on (reading fault codes, watching the cycle), locks out the equipment before any physical work and identifies the real cause of the fault and the parts required.",
+          "free_text": "As applicable: Work order (initial or after an unsuccessful test).",
+          "uses": [
+            {
+              "document": "doc-work-order"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-locked-out-equipment",
+              "name": "Locked-out equipment",
+              "medium": "other"
+            },
+            {
+              "id": "doc-fault-diagnosis",
+              "name": "Fault diagnosis",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "spare-parts-needed",
+        "lane": "maintenance-technician",
+        "label": "Are spare parts needed?",
+        "type": "decision",
+        "column": 6,
+        "sheet": {
+          "free_text": "Produced as applicable: Parts request (if yes).",
+          "uses": [
+            {
+              "document": "doc-fault-diagnosis"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-parts-request",
+              "name": "Parts request",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "part-available-store",
+        "lane": "spare-parts-store",
+        "label": "Is the part available in the store?",
+        "type": "decision",
+        "column": 7,
+        "sheet": {
+          "free_text": "Produced as applicable: Spare parts (if yes) ; Parts issue note (if yes).",
+          "uses": [
+            {
+              "document": "doc-parts-request"
+            },
+            {
+              "document": "doc-work-order"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-spare-parts",
+              "name": "Spare parts",
+              "medium": "other"
+            },
+            {
+              "id": "doc-parts-issue-note",
+              "name": "Parts issue note",
+              "medium": "paper"
+            }
+          ]
+        }
+      },
+      {
+        "id": "repair-release-equipment",
+        "lane": "maintenance-technician",
+        "label": "Repair and release the equipment",
+        "column": 8,
+        "sheet": {
+          "purpose": "The technician repairs or replaces on the locked-out equipment, performs the static checks, writes the work report (cause, work done, intervention and downtime, parts consumed), then releases the equipment from lock-out for testing.",
+          "free_text": "As applicable: Spare parts (if needed).",
+          "uses": [
+            {
+              "document": "doc-locked-out-equipment"
+            },
+            {
+              "document": "doc-fault-diagnosis"
+            },
+            {
+              "document": "doc-spare-parts"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-repaired-equipment-released-lock-out",
+              "name": "Repaired equipment released from lock-out",
+              "medium": "other"
+            },
+            {
+              "id": "doc-work-report",
+              "name": "Work report",
+              "medium": "file"
+            }
+          ]
+        }
+      },
+      {
+        "id": "check-equipment-works-properly",
+        "lane": "operator-production",
+        "label": "Check that the equipment works properly",
+        "column": 9,
+        "sheet": {
+          "purpose": "The operator carries out functional tests under real conditions and confirms whether the equipment can resume production safely and with the required quality.",
+          "uses": [
+            {
+              "document": "doc-repaired-equipment-released-lock-out"
+            },
+            {
+              "document": "doc-work-order"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-test-report",
+              "name": "Test report",
+              "medium": "paper"
+            }
+          ]
+        }
+      },
+      {
+        "id": "nominal-operation-restored",
+        "lane": "operator-production",
+        "label": "Is nominal operation restored?",
+        "type": "decision",
+        "column": 10,
+        "sheet": {
+          "uses": [
+            {
+              "document": "doc-test-report"
+            }
+          ]
+        }
+      },
+      {
+        "id": "close-work-order-update-history",
+        "lane": "maintenance-planner",
+        "label": "Close the work order and update the history",
+        "column": 11,
+        "sheet": {
+          "purpose": "The planner checks that the report entered by the technician and the technical and financial data are complete, closes the work order and enriches the reliability history of the equipment.",
+          "free_text": "As applicable: Parts issue note (if applicable).",
+          "uses": [
+            {
+              "document": "doc-work-report"
+            },
+            {
+              "document": "doc-parts-issue-note"
+            },
+            {
+              "document": "doc-test-report"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-closed-work-order",
+              "name": "Closed work order",
+              "medium": "software"
+            },
+            {
+              "id": "doc-updated-history",
+              "name": "Updated history",
+              "medium": "spreadsheet"
+            }
+          ]
+        }
+      },
+      {
+        "id": "equipment-back-service-work-closed",
+        "lane": "maintenance-planner",
+        "label": "Equipment back in service and work closed",
+        "type": "end",
+        "column": 12
+      },
+      {
+        "id": "work-order-waiting-part",
+        "lane": "maintenance-planner",
+        "label": "Work order waiting for a part",
+        "type": "end",
+        "column": 8
+      }
+    ],
+    "flows": [
+      {
+        "source": "breakdown-anomaly-detected-equipment",
+        "target": "create-work-request"
+      },
+      {
+        "source": "create-work-request",
+        "target": "qualify-request-assess-urgency"
+      },
+      {
+        "source": "qualify-request-assess-urgency",
+        "target": "request-require-work-order"
+      },
+      {
+        "source": "request-require-work-order",
+        "target": "create-schedule-work-order",
+        "label": "yes"
+      },
+      {
+        "source": "request-require-work-order",
+        "target": "request-closed-without-intervention",
+        "label": "no"
+      },
+      {
+        "source": "create-schedule-work-order",
+        "target": "lock-out-equipment-diagnose-fault"
+      },
+      {
+        "source": "lock-out-equipment-diagnose-fault",
+        "target": "spare-parts-needed"
+      },
+      {
+        "source": "spare-parts-needed",
+        "target": "part-available-store",
+        "label": "yes"
+      },
+      {
+        "source": "spare-parts-needed",
+        "target": "repair-release-equipment",
+        "label": "no"
+      },
+      {
+        "source": "part-available-store",
+        "target": "repair-release-equipment",
+        "label": "yes"
+      },
+      {
+        "source": "part-available-store",
+        "target": "work-order-waiting-part",
+        "label": "no"
+      },
+      {
+        "source": "repair-release-equipment",
+        "target": "check-equipment-works-properly"
+      },
+      {
+        "source": "check-equipment-works-properly",
+        "target": "nominal-operation-restored"
+      },
+      {
+        "source": "nominal-operation-restored",
+        "target": "close-work-order-update-history",
+        "label": "yes"
+      },
+      {
+        "source": "nominal-operation-restored",
+        "target": "lock-out-equipment-diagnose-fault",
+        "label": "no"
+      },
+      {
+        "source": "close-work-order-update-history",
+        "target": "equipment-back-service-work-closed"
+      }
+    ]
+  },
+  "uncertainties": [
+    "Generic model: replace the actors, the documents and their media with those of your organisation.",
+    "Duration and lead time of each step: to be measured in your organisation, the model gives none.",
+    "Emergency intervention: in case of a critical line stoppage or an immediate safety risk, the technician intervenes on a direct call and the work order is created afterwards to record the times and parts.",
+    "Part out of stock or subcontracting: if the part is not in the store or an external provider is needed, a purchase request is raised, the work order stays on hold pending supply and the intervention resumes when the part is received.",
+    "Prior approval: for costly interventions or those requiring a long production stoppage, approval by the maintenance manager or by senior industrial management may be required before scheduling.",
+    "Link with preventive maintenance: the analysis of repeated failures recorded at closure leads to adjusting the preventive maintenance plan or to starting an improvement action.",
+    "Medium of each document (paper, email, spreadsheet, file, software): set by default in this model, to be adapted to your organisation."
+  ]
+}

@@ -1,0 +1,418 @@
+{
+  "format": "topogenia",
+  "version": "1.5",
+  "project": {
+    "name": "Traitement d'un incident informatique",
+    "code": "INCIT",
+    "language": "fr",
+    "description": "Modèle de la galerie : traitement d'un incident informatique. Déclencheur : Interruption non planifiée ou dégradation d'un service informatique signalée. Résultat : Service informatique rétabli et ticket clôturé ; ou incident maintenu ouvert et rattaché à un problème. À adapter à votre organisation : acteurs, documents, supports, seuils et délais."
+  },
+  "map": {
+    "summary": {
+      "text": "L'utilisateur signale, le centre de services qualifie et diagnostique, l'équipe d'expertise intervient si besoin, puis le service est vérifié et le ticket clôturé."
+    },
+    "lanes": [
+      {
+        "id": "user",
+        "name": "Utilisateur",
+        "type": "person"
+      },
+      {
+        "id": "service-desk",
+        "name": "Centre de services informatiques",
+        "type": "department"
+      },
+      {
+        "id": "technical-expert-team",
+        "name": "Équipe d'expertise technique",
+        "type": "department"
+      }
+    ],
+    "steps": [
+      {
+        "id": "service-malfunction-observed",
+        "lane": "user",
+        "label": "Dysfonctionnement d'un service informatique constaté",
+        "type": "start",
+        "column": 0
+      },
+      {
+        "id": "report-incident-service-desk",
+        "lane": "user",
+        "label": "Signaler l'incident au centre de services",
+        "column": 1,
+        "sheet": {
+          "purpose": "L'utilisateur décrit le dysfonctionnement rencontré et son impact sur son activité via le portail de support, le téléphone ou la messagerie dédiée.",
+          "outputs": [
+            {
+              "id": "doc-incident-report",
+              "name": "Signalement d'incident",
+              "medium": "email"
+            }
+          ]
+        }
+      },
+      {
+        "id": "record-categorise-prioritise-ticket",
+        "lane": "service-desk",
+        "label": "Enregistrer, catégoriser et prioriser le ticket",
+        "column": 2,
+        "sheet": {
+          "purpose": "Le centre de services crée le ticket, renseigne une catégorie initiale et fixe la priorité en croisant impact métier et urgence afin d'orienter la prise en charge.",
+          "uses": [
+            {
+              "document": "doc-incident-report"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-qualified-incident-ticket",
+              "name": "Ticket d'incident qualifié",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "diagnose-adjust-qualification-if-needed",
+        "lane": "service-desk",
+        "label": "Diagnostiquer et ajuster la qualification si besoin",
+        "column": 3,
+        "sheet": {
+          "purpose": "Le centre de services consulte la base de connaissances, mène les premiers tests de diagnostic et affine la catégorie ou la priorité si les constats techniques le justifient.",
+          "inputs": [
+            {
+              "name": "Base de connaissances",
+              "medium": "software"
+            }
+          ],
+          "uses": [
+            {
+              "document": "doc-qualified-incident-ticket"
+            },
+            {
+              "document": "doc-reopened-ticket"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-initial-diagnosis-result",
+              "name": "Résultat du diagnostic initial",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "can-incident-resolved-service-desk",
+        "lane": "service-desk",
+        "label": "L'incident peut-il être résolu par le centre de services ?",
+        "type": "decision",
+        "column": 4,
+        "sheet": {
+          "uses": [
+            {
+              "document": "doc-initial-diagnosis-result"
+            }
+          ]
+        }
+      },
+      {
+        "id": "escalate-ticket-expert-team",
+        "lane": "service-desk",
+        "label": "Escalader le ticket vers l'équipe d'expertise",
+        "column": 5,
+        "sheet": {
+          "purpose": "Lorsque la résolution dépasse ses compétences ou habilitations, le centre de services enrichit le ticket de ses constats et le transfère à l'équipe d'expertise compétente.",
+          "uses": [
+            {
+              "document": "doc-qualified-incident-ticket"
+            },
+            {
+              "document": "doc-initial-diagnosis-result"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-escalated-ticket",
+              "name": "Ticket escaladé",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "investigate-apply-solution-workaround",
+        "lane": "technical-expert-team",
+        "label": "Investiguer et appliquer une solution ou un contournement",
+        "column": 9,
+        "sheet": {
+          "purpose": "L'équipe d'expertise recherche un correctif ou un contournement et, en cas de succès, l'applique et notifie la résolution ; sinon, elle informe l'utilisateur que l'incident reste ouvert, rattaché à un problème, jusqu'au rétablissement.",
+          "inputs": [
+            {
+              "name": "Base de connaissances",
+              "medium": "software"
+            }
+          ],
+          "uses": [
+            {
+              "document": "doc-escalated-ticket"
+            },
+            {
+              "document": "doc-reopened-ticket"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-technical-investigation-report",
+              "name": "Bilan d'investigation technique",
+              "medium": "spreadsheet"
+            }
+          ]
+        }
+      },
+      {
+        "id": "solution-workaround-found",
+        "lane": "technical-expert-team",
+        "label": "Une solution ou un contournement est-il trouvé ?",
+        "type": "decision",
+        "column": 10,
+        "sheet": {
+          "free_text": "Produit selon le cas : Notification de résolution (si Oui).",
+          "uses": [
+            {
+              "document": "doc-technical-investigation-report"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-resolution-notice",
+              "name": "Notification de résolution",
+              "medium": "email"
+            }
+          ]
+        }
+      },
+      {
+        "id": "apply-resolution-notify-user",
+        "lane": "service-desk",
+        "label": "Appliquer la résolution et notifier l'utilisateur",
+        "column": 5,
+        "row": 1,
+        "sheet": {
+          "purpose": "Lorsque la solution est à sa portée, le centre de services rétablit le service et transmet la notification de résolution à l'utilisateur pour vérification.",
+          "uses": [
+            {
+              "document": "doc-qualified-incident-ticket"
+            },
+            {
+              "document": "doc-initial-diagnosis-result"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-resolution-notice-alt",
+              "name": "Notification de résolution",
+              "medium": "email"
+            }
+          ]
+        }
+      },
+      {
+        "id": "check-service-actually-restored",
+        "lane": "user",
+        "label": "Vérifier le rétablissement effectif du service",
+        "column": 6,
+        "sheet": {
+          "purpose": "À réception de la notification de résolution, l'utilisateur teste le service concerné afin de confirmer le rétablissement normal de son activité.",
+          "uses": [
+            {
+              "document": "doc-resolution-notice"
+            },
+            {
+              "document": "doc-resolution-notice-alt"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-user-validation-feedback",
+              "name": "Retour de validation utilisateur",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "service-working-normally",
+        "lane": "user",
+        "label": "Le service fonctionne-t-il normalement ?",
+        "type": "decision",
+        "column": 7,
+        "sheet": {
+          "uses": [
+            {
+              "document": "doc-user-validation-feedback"
+            }
+          ]
+        }
+      },
+      {
+        "id": "had-incident-already-escalated-experts",
+        "lane": "service-desk",
+        "label": "L'incident avait-il déjà été escaladé aux experts ?",
+        "type": "decision",
+        "column": 8,
+        "sheet": {
+          "uses": [
+            {
+              "document": "doc-user-validation-feedback"
+            },
+            {
+              "document": "doc-qualified-incident-ticket"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-reopened-ticket",
+              "name": "Ticket rouvert",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "document-solution-close-ticket",
+        "lane": "service-desk",
+        "label": "Documenter la solution et clôturer le ticket",
+        "column": 8,
+        "row": 1,
+        "sheet": {
+          "purpose": "Le centre de services vérifie la catégorisation finale, enrichit la base de connaissances avec la solution appliquée et clôt formellement le ticket.",
+          "uses": [
+            {
+              "document": "doc-user-validation-feedback"
+            },
+            {
+              "document": "doc-resolution-notice"
+            },
+            {
+              "document": "doc-resolution-notice-alt"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-closed-ticket",
+              "name": "Ticket clôturé",
+              "medium": "software"
+            },
+            {
+              "id": "doc-updated-knowledge-base",
+              "name": "Base de connaissances actualisée",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "incident-resolved-ticket-closed",
+        "lane": "service-desk",
+        "label": "Incident résolu et ticket clôturé",
+        "type": "end",
+        "column": 9
+      },
+      {
+        "id": "incident-kept-open-linked-problem",
+        "lane": "technical-expert-team",
+        "label": "Incident maintenu ouvert et rattaché à un problème",
+        "type": "end",
+        "column": 11
+      }
+    ],
+    "flows": [
+      {
+        "source": "service-malfunction-observed",
+        "target": "report-incident-service-desk"
+      },
+      {
+        "source": "report-incident-service-desk",
+        "target": "record-categorise-prioritise-ticket"
+      },
+      {
+        "source": "record-categorise-prioritise-ticket",
+        "target": "diagnose-adjust-qualification-if-needed"
+      },
+      {
+        "source": "diagnose-adjust-qualification-if-needed",
+        "target": "can-incident-resolved-service-desk"
+      },
+      {
+        "source": "can-incident-resolved-service-desk",
+        "target": "apply-resolution-notify-user",
+        "label": "oui"
+      },
+      {
+        "source": "can-incident-resolved-service-desk",
+        "target": "escalate-ticket-expert-team",
+        "label": "non"
+      },
+      {
+        "source": "escalate-ticket-expert-team",
+        "target": "investigate-apply-solution-workaround"
+      },
+      {
+        "source": "investigate-apply-solution-workaround",
+        "target": "solution-workaround-found"
+      },
+      {
+        "source": "solution-workaround-found",
+        "target": "check-service-actually-restored",
+        "label": "oui"
+      },
+      {
+        "source": "solution-workaround-found",
+        "target": "incident-kept-open-linked-problem",
+        "label": "non"
+      },
+      {
+        "source": "apply-resolution-notify-user",
+        "target": "check-service-actually-restored"
+      },
+      {
+        "source": "check-service-actually-restored",
+        "target": "service-working-normally"
+      },
+      {
+        "source": "service-working-normally",
+        "target": "document-solution-close-ticket",
+        "label": "oui"
+      },
+      {
+        "source": "service-working-normally",
+        "target": "had-incident-already-escalated-experts",
+        "label": "non"
+      },
+      {
+        "source": "had-incident-already-escalated-experts",
+        "target": "investigate-apply-solution-workaround",
+        "label": "oui"
+      },
+      {
+        "source": "had-incident-already-escalated-experts",
+        "target": "diagnose-adjust-qualification-if-needed",
+        "label": "non"
+      },
+      {
+        "source": "document-solution-close-ticket",
+        "target": "incident-resolved-ticket-closed"
+      }
+    ]
+  },
+  "uncertainties": [
+    "Modèle générique : remplacer les acteurs, les documents et leurs supports par ceux de votre organisation.",
+    "Durée et délai de chaque étape : à mesurer chez vous, le modèle n'en donne aucun.",
+    "Détection automatique : de nombreux incidents d'infrastructure ou d'application sont détectés automatiquement par les outils de supervision, ouvrant directement un ticket.",
+    "Gestion des incidents majeurs : un incident critique paralysant l'activité déclenche une procédure de crise dédiée avec coordonnateur et communication régulière vers les métiers.",
+    "Demande de service : si la qualification révèle une demande standard (accès, matériel, renseignement), le ticket est requalifié vers le processus d'exécution des demandes de service.",
+    "Support de chaque document (papier, courriel, tableur, fichier, logiciel) : posé par défaut dans ce modèle, à adapter à votre organisation."
+  ]
+}

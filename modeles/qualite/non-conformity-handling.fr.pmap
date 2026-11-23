@@ -1,0 +1,417 @@
+{
+  "format": "topogenia",
+  "version": "1.5",
+  "project": {
+    "name": "Traitement d'une non-conformité",
+    "code": "NONCF",
+    "language": "fr",
+    "description": "Modèle de la galerie : traitement d'une non-conformité. Déclencheur : Écart par rapport à une exigence produit ou procédé détecté. Résultat : Non-conformité résolue et clôturée ; ou escaladée à la direction qualité. À adapter à votre organisation : acteurs, documents, supports, seuils et délais."
+  },
+  "map": {
+    "summary": {
+      "text": "Le détecteur déclare et isole, l'animateur qualifie et confine, le comité décide du produit, puis les causes sont traitées jusqu'à la clôture ou l'escalade."
+    },
+    "lanes": [
+      {
+        "id": "detector",
+        "name": "Détecteur",
+        "type": "person"
+      },
+      {
+        "id": "quality-facilitator",
+        "name": "Animateur qualité",
+        "type": "person"
+      },
+      {
+        "id": "action-owner",
+        "name": "Pilote d'action",
+        "type": "person"
+      },
+      {
+        "id": "quality-committee-decision",
+        "name": "Comité qualité / Décideur",
+        "type": "department"
+      }
+    ],
+    "steps": [
+      {
+        "id": "non-conformity-detected",
+        "lane": "detector",
+        "label": "Non-conformité détectée",
+        "type": "start",
+        "column": 0
+      },
+      {
+        "id": "isolate-suspect-lot-report-non",
+        "lane": "detector",
+        "label": "Isoler le lot suspect et déclarer la non-conformité",
+        "column": 1,
+        "sheet": {
+          "purpose": "Le détecteur (opérateur, magasinier ou contrôleur) identifie physiquement le lot suspect, l'écarte du flux normal pour éviter toute utilisation accidentelle et enregistre la fiche de non-conformité.",
+          "outputs": [
+            {
+              "id": "doc-non-conformity-sheet",
+              "name": "Fiche de non-conformité",
+              "medium": "software"
+            },
+            {
+              "id": "doc-batch-quarantine",
+              "name": "Lot en quarantaine",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "qualify-deviation-deploy-verify-containment",
+        "lane": "quality-facilitator",
+        "label": "Qualifier l'écart, déployer et vérifier le confinement",
+        "column": 2,
+        "sheet": {
+          "purpose": "L'animateur qualité vérifie les faits, évalue la gravité et l'impact estimé, déploie le tri et le confinement sur les stocks et en-cours internes, puis consigne le résultat vérifié du confinement.",
+          "uses": [
+            {
+              "document": "doc-non-conformity-sheet"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-qualified-record",
+              "name": "Fiche qualifiée",
+              "medium": "software"
+            },
+            {
+              "id": "doc-containment-report",
+              "name": "Compte rendu de confinement",
+              "medium": "file"
+            }
+          ]
+        }
+      },
+      {
+        "id": "decide-what-happens-non-conforming",
+        "lane": "quality-committee-decision",
+        "label": "Décider du devenir du produit non conforme",
+        "column": 3,
+        "sheet": {
+          "purpose": "Sur la base de la fiche qualifiée et du confinement vérifié, le comité qualité décide rapidement du sort du produit (rebut, retouche ou tri avec recontrôle, retour fournisseur ou dérogation) afin de ne pas bloquer l'exploitation.",
+          "uses": [
+            {
+              "document": "doc-qualified-record"
+            },
+            {
+              "document": "doc-containment-report"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-product-treatment-decision",
+              "name": "Décision de traitement produit",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "carry-out-remedial-treatment-lot",
+        "lane": "action-owner",
+        "label": "Exécuter le traitement curatif sur le lot",
+        "column": 4,
+        "sheet": {
+          "purpose": "Le pilote d'action exécute la décision retenue sur le lot concerné, fait vérifier la conformité des pièces retouchées et enregistre les coûts de non-qualité associés.",
+          "uses": [
+            {
+              "document": "doc-product-treatment-decision"
+            },
+            {
+              "document": "doc-batch-quarantine"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-remedial-treatment-report",
+              "name": "Compte rendu de traitement curatif",
+              "medium": "file"
+            }
+          ]
+        }
+      },
+      {
+        "id": "non-conformity-critical-recurring",
+        "lane": "quality-facilitator",
+        "label": "La non-conformité est-elle critique ou récurrente ?",
+        "type": "decision",
+        "column": 5,
+        "sheet": {
+          "uses": [
+            {
+              "document": "doc-qualified-record"
+            },
+            {
+              "document": "doc-remedial-treatment-report"
+            }
+          ]
+        }
+      },
+      {
+        "id": "investigate-root-causes-propose-actions",
+        "lane": "action-owner",
+        "label": "Rechercher les causes profondes et proposer des actions",
+        "column": 6,
+        "sheet": {
+          "purpose": "Le pilote d'action réunit les compétences concernées pour identifier les causes racines d'apparition et de non-détection du défaut, puis propose un plan d'actions correctives avec responsables et échéances.",
+          "free_text": "Selon le cas : Bilan d'efficacité (en cas de reprise).",
+          "uses": [
+            {
+              "document": "doc-qualified-record"
+            },
+            {
+              "document": "doc-effectiveness-review"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-cause-analysis",
+              "name": "Analyse des causes",
+              "medium": "software"
+            },
+            {
+              "id": "doc-corrective-action-plan",
+              "name": "Plan d'actions correctives",
+              "medium": "spreadsheet"
+            }
+          ]
+        }
+      },
+      {
+        "id": "validate-corrective-action-plan",
+        "lane": "quality-facilitator",
+        "label": "Valider le plan d'actions correctives",
+        "column": 7,
+        "sheet": {
+          "purpose": "L'animateur qualité s'assure de la pertinence des actions proposées par rapport aux causes identifiées et approuve le plan avant déploiement.",
+          "uses": [
+            {
+              "document": "doc-cause-analysis"
+            },
+            {
+              "document": "doc-corrective-action-plan"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-approved-action-plan",
+              "name": "Plan d'actions approuvé",
+              "medium": "spreadsheet"
+            }
+          ]
+        }
+      },
+      {
+        "id": "implement-corrective-actions",
+        "lane": "action-owner",
+        "label": "Mettre en œuvre les actions correctives",
+        "column": 8,
+        "sheet": {
+          "purpose": "Le pilote d'action déploie les modifications techniques, organisationnelles ou documentaires prévues et collecte les éléments de preuve.",
+          "uses": [
+            {
+              "document": "doc-approved-action-plan"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-evidence-completion",
+              "name": "Preuves de réalisation",
+              "medium": "file"
+            }
+          ]
+        }
+      },
+      {
+        "id": "verify-effectiveness-corrective-actions",
+        "lane": "quality-facilitator",
+        "label": "Vérifier l'efficacité des actions correctives",
+        "column": 9,
+        "sheet": {
+          "purpose": "Après mise en application sur une période d'observation, l'animateur qualité vérifie que le défaut ne se reproduit pas et que les actions produisent l'effet attendu.",
+          "uses": [
+            {
+              "document": "doc-evidence-completion"
+            },
+            {
+              "document": "doc-approved-action-plan"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-effectiveness-review",
+              "name": "Bilan d'efficacité",
+              "medium": "spreadsheet"
+            }
+          ]
+        }
+      },
+      {
+        "id": "corrective-actions-effective",
+        "lane": "quality-facilitator",
+        "label": "Les actions correctives sont-elles efficaces ?",
+        "type": "decision",
+        "column": 10,
+        "sheet": {
+          "uses": [
+            {
+              "document": "doc-effectiveness-review"
+            }
+          ]
+        }
+      },
+      {
+        "id": "update-standards-close-non-conformity",
+        "lane": "quality-facilitator",
+        "label": "Actualiser les standards et clôturer la non-conformité",
+        "column": 11,
+        "sheet": {
+          "purpose": "L'animateur qualité actualise les standards et analyses de risques (lorsque des actions correctives ont été menées), archive les justificatifs et prononce la clôture formelle de la non-conformité.",
+          "free_text": "Selon le cas : Bilan d'efficacité (si applicable).",
+          "uses": [
+            {
+              "document": "doc-remedial-treatment-report"
+            },
+            {
+              "document": "doc-effectiveness-review"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-updated-standards",
+              "name": "Standards actualisés",
+              "medium": "software"
+            },
+            {
+              "id": "doc-closed-non-conformity-sheet",
+              "name": "Fiche de non-conformité clôturée",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "new-corrective-analysis-started",
+        "lane": "quality-committee-decision",
+        "label": "Une nouvelle analyse corrective est-elle engagée ?",
+        "type": "decision",
+        "column": 11,
+        "sheet": {
+          "uses": [
+            {
+              "document": "doc-effectiveness-review"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-escalation-resumption-decision",
+              "name": "Décision d'escalade ou de reprise",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "non-conformity-resolved-closed",
+        "lane": "quality-facilitator",
+        "label": "Non-conformité résolue et clôturée",
+        "type": "end",
+        "column": 12
+      },
+      {
+        "id": "non-conformity-escalated-management-arbitration",
+        "lane": "quality-committee-decision",
+        "label": "Non-conformité escaladée pour arbitrage direction",
+        "type": "end",
+        "column": 12
+      }
+    ],
+    "flows": [
+      {
+        "source": "non-conformity-detected",
+        "target": "isolate-suspect-lot-report-non"
+      },
+      {
+        "source": "isolate-suspect-lot-report-non",
+        "target": "qualify-deviation-deploy-verify-containment"
+      },
+      {
+        "source": "qualify-deviation-deploy-verify-containment",
+        "target": "decide-what-happens-non-conforming"
+      },
+      {
+        "source": "decide-what-happens-non-conforming",
+        "target": "carry-out-remedial-treatment-lot"
+      },
+      {
+        "source": "carry-out-remedial-treatment-lot",
+        "target": "non-conformity-critical-recurring"
+      },
+      {
+        "source": "non-conformity-critical-recurring",
+        "target": "investigate-root-causes-propose-actions",
+        "label": "oui"
+      },
+      {
+        "source": "non-conformity-critical-recurring",
+        "target": "update-standards-close-non-conformity",
+        "label": "non"
+      },
+      {
+        "source": "investigate-root-causes-propose-actions",
+        "target": "validate-corrective-action-plan"
+      },
+      {
+        "source": "validate-corrective-action-plan",
+        "target": "implement-corrective-actions"
+      },
+      {
+        "source": "implement-corrective-actions",
+        "target": "verify-effectiveness-corrective-actions"
+      },
+      {
+        "source": "verify-effectiveness-corrective-actions",
+        "target": "corrective-actions-effective"
+      },
+      {
+        "source": "corrective-actions-effective",
+        "target": "update-standards-close-non-conformity",
+        "label": "oui"
+      },
+      {
+        "source": "corrective-actions-effective",
+        "target": "new-corrective-analysis-started",
+        "label": "non"
+      },
+      {
+        "source": "update-standards-close-non-conformity",
+        "target": "non-conformity-resolved-closed"
+      },
+      {
+        "source": "new-corrective-analysis-started",
+        "target": "investigate-root-causes-propose-actions",
+        "label": "oui"
+      },
+      {
+        "source": "new-corrective-analysis-started",
+        "target": "non-conformity-escalated-management-arbitration",
+        "label": "non"
+      }
+    ]
+  },
+  "uncertainties": [
+    "Modèle générique : remplacer les acteurs, les documents et leurs supports par ceux de votre organisation.",
+    "Durée et délai de chaque étape : à mesurer chez vous, le modèle n'en donne aucun.",
+    "Lots déjà expédiés au client : si le confinement révèle que des produits suspects ont déjà été livrés, une alerte client et un confinement externe sont déclenchés en parallèle via le processus de réclamation client.",
+    "Non-conformité fournisseur : lorsque l'origine est imputable à un fournisseur, l'analyse des causes et le plan d'actions correctives sont demandés au fournisseur et vérifiés par la qualité fournisseurs.",
+    "Dérogation client : si le comité qualité envisage d'accepter un produit présentant un écart aux spécifications contractuelles, l'accord écrit préalable du client est obligatoire avant libération.",
+    "Non-conformité de service ou de processus : lorsqu'il n'y a pas de produit physique à isoler, l'isolement consiste à corriger immédiatement le dossier ou à suspendre l'activité en défaut.",
+    "Support de chaque document (papier, courriel, tableur, fichier, logiciel) : posé par défaut dans ce modèle, à adapter à votre organisation."
+  ]
+}

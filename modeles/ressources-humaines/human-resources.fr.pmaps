@@ -1,0 +1,408 @@
+{
+  "format": "topogenia-collection",
+  "version": "1.0",
+  "name": "Ressources humaines",
+  "description": "Le recrutement le plus courant, du besoin à l'embauche, à adapter à votre organisation.",
+  "processes": [
+    {
+      "format": "topogenia",
+      "version": "1.5",
+      "project": {
+        "name": "Recrutement, du besoin à l'embauche",
+        "code": "RECRU",
+        "language": "fr",
+        "description": "Modèle de la galerie : recrutement, du besoin à l'embauche. Déclencheur : Besoin en recrutement identifié par un manager. Résultat : Embauche confirmée et contrat signé ; ou demande refusée ou recrutement suspendu. À adapter à votre organisation : acteurs, documents, supports, seuils et délais."
+      },
+      "map": {
+        "summary": {
+          "text": "Le manager formalise le besoin, la direction l'autorise, le recruteur diffuse, le manager évalue, puis l'offre et le contrat sont signés ou le recrutement est suspendu."
+        },
+        "lanes": [
+          {
+            "id": "hiring-manager",
+            "name": "Manager recruteur",
+            "type": "person"
+          },
+          {
+            "id": "management-budget-control",
+            "name": "Direction / Contrôle budgétaire",
+            "type": "department"
+          },
+          {
+            "id": "hr-recruiter",
+            "name": "Chargé de recrutement RH",
+            "type": "person"
+          },
+          {
+            "id": "candidate",
+            "name": "Candidat",
+            "type": "department"
+          }
+        ],
+        "steps": [
+          {
+            "id": "recruitment-need-identified",
+            "lane": "hiring-manager",
+            "label": "Besoin en recrutement identifié",
+            "type": "start",
+            "column": 0
+          },
+          {
+            "id": "formalise-request-job-description-budget",
+            "lane": "hiring-manager",
+            "label": "Formaliser la demande, la fiche de poste et le budget",
+            "column": 1,
+            "sheet": {
+              "purpose": "Le manager définit le besoin, les missions, les compétences attendues, le type de contrat et la fourchette de rémunération prévue dans la demande de recrutement.",
+              "outputs": [
+                {
+                  "id": "doc-recruitment-request",
+                  "name": "Demande de recrutement",
+                  "medium": "email"
+                },
+                {
+                  "id": "doc-job-description",
+                  "name": "Fiche de poste",
+                  "medium": "software"
+                },
+                {
+                  "id": "doc-budget-range",
+                  "name": "Fourchette budgétaire",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "review-need-budget-range",
+            "lane": "management-budget-control",
+            "label": "Examiner le besoin et la fourchette budgétaire",
+            "column": 2,
+            "sheet": {
+              "purpose": "La direction ou le contrôle budgétaire vérifie la cohérence de la demande avec le plan d'effectifs et la politique de rémunération, et valide l'enveloppe budgétaire avant publication.",
+              "inputs": [
+                {
+                  "name": "Budget d'effectifs",
+                  "medium": "spreadsheet"
+                }
+              ],
+              "uses": [
+                {
+                  "document": "doc-recruitment-request"
+                },
+                {
+                  "document": "doc-budget-range"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-opening-decision-approved-budget-envelope",
+                  "name": "Décision d'ouverture et enveloppe validée",
+                  "medium": "email"
+                }
+              ]
+            }
+          },
+          {
+            "id": "opening-position-approved",
+            "lane": "management-budget-control",
+            "label": "L'ouverture du poste est-elle approuvée ?",
+            "type": "decision",
+            "column": 3,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-opening-decision-approved-budget-envelope"
+                }
+              ]
+            }
+          },
+          {
+            "id": "recruitment-request-refused",
+            "lane": "management-budget-control",
+            "label": "Demande de recrutement refusée",
+            "type": "end",
+            "column": 4
+          },
+          {
+            "id": "publish-vacancy-shortlist-applications",
+            "lane": "hr-recruiter",
+            "label": "Diffuser l'offre et présélectionner les candidatures",
+            "column": 4,
+            "sheet": {
+              "purpose": "Le chargé de recrutement diffuse l'offre en interne et en externe, collecte les candidatures, réalise la présélection et transmet la liste restreinte au manager.",
+              "uses": [
+                {
+                  "document": "doc-job-description"
+                },
+                {
+                  "document": "doc-opening-decision-approved-budget-envelope"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-shortlist-candidates",
+                  "name": "Liste de candidats présélectionnés",
+                  "medium": "spreadsheet"
+                }
+              ]
+            }
+          },
+          {
+            "id": "conduct-interviews-assess-candidates",
+            "lane": "hiring-manager",
+            "label": "Conduire les entretiens et évaluer les candidats",
+            "column": 5,
+            "sheet": {
+              "purpose": "Le manager (accompagné des ressources humaines ou d'un pair technique) reçoit les candidats en entretien, recueille leurs prétentions et renseigne les grilles d'évaluation afin de classer les profils retenus (y compris les candidats de réserve).",
+              "uses": [
+                {
+                  "document": "doc-shortlist-candidates"
+                },
+                {
+                  "document": "doc-job-description"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-interview-assessment-grids",
+                  "name": "Grilles d'évaluation des entretiens",
+                  "medium": "paper"
+                }
+              ]
+            }
+          },
+          {
+            "id": "candidate-selected-profiles-assessed",
+            "lane": "hiring-manager",
+            "label": "Un candidat est-il retenu parmi les profils évalués ?",
+            "type": "decision",
+            "column": 6,
+            "sheet": {
+              "free_text": "Produit selon le cas : Candidat retenu et conditions proposées (si Oui).",
+              "uses": [
+                {
+                  "document": "doc-interview-assessment-grids"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-selected-candidate-proposed-terms",
+                  "name": "Candidat retenu et conditions proposées",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "validate-final-terms-offer",
+            "lane": "management-budget-control",
+            "label": "Valider les conditions finales de la proposition",
+            "column": 7,
+            "sheet": {
+              "purpose": "Avant tout envoi au candidat, la direction valide les conditions proposées par le manager (rémunération exacte, statut, date de prise de poste) au regard de l'enveloppe approuvée.",
+              "uses": [
+                {
+                  "document": "doc-selected-candidate-proposed-terms"
+                },
+                {
+                  "document": "doc-opening-decision-approved-budget-envelope"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-internal-agreement-offer",
+                  "name": "Accord interne de proposition",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "send-job-offer-candidate",
+            "lane": "hr-recruiter",
+            "label": "Transmettre la proposition d'embauche au candidat",
+            "column": 8,
+            "sheet": {
+              "purpose": "Le chargé de recrutement formalise la proposition d'embauche validée en interne et l'adresse au candidat retenu.",
+              "uses": [
+                {
+                  "document": "doc-internal-agreement-offer"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-job-offer",
+                  "name": "Proposition d'embauche",
+                  "medium": "email"
+                }
+              ]
+            }
+          },
+          {
+            "id": "candidate-accept-job-offer",
+            "lane": "candidate",
+            "label": "Le candidat accepte-t-il la proposition d'embauche ?",
+            "type": "decision",
+            "column": 9,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-job-offer"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-candidates-reply",
+                  "name": "Réponse du candidat",
+                  "medium": "email"
+                }
+              ]
+            }
+          },
+          {
+            "id": "draw-up-contract-obtain-employers",
+            "lane": "hr-recruiter",
+            "label": "Établir le contrat, recueillir signature employeur et envoyer",
+            "column": 10,
+            "sheet": {
+              "purpose": "Le chargé de recrutement rédige le contrat de travail définitif, fait apposer la signature de l'employeur habilité et transmet le contrat au candidat pour contresignature.",
+              "uses": [
+                {
+                  "document": "doc-candidates-reply"
+                },
+                {
+                  "document": "doc-internal-agreement-offer"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-contract-signed-employer",
+                  "name": "Contrat signé par l'employeur",
+                  "medium": "paper"
+                }
+              ]
+            }
+          },
+          {
+            "id": "countersign-contract-provide-supporting-documents",
+            "lane": "candidate",
+            "label": "Contresigner le contrat et fournir les justificatifs",
+            "column": 11,
+            "sheet": {
+              "purpose": "Le candidat retourne le contrat contresigné accompagné des justificatifs requis, confirmant l'embauche et déclenchant le parcours d'intégration.",
+              "uses": [
+                {
+                  "document": "doc-contract-signed-employer"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-contract-signed-both-parties",
+                  "name": "Contrat signé des deux parties",
+                  "medium": "paper"
+                },
+                {
+                  "id": "doc-administrative-documents",
+                  "name": "Pièces administratives",
+                  "medium": "paper"
+                }
+              ]
+            }
+          },
+          {
+            "id": "hire-confirmed-onboarding-triggered",
+            "lane": "hr-recruiter",
+            "label": "Embauche confirmée et intégration déclenchée",
+            "type": "end",
+            "column": 12
+          },
+          {
+            "id": "recruitment-suspended-relaunched-outside-cycle",
+            "lane": "hr-recruiter",
+            "label": "Recrutement suspendu ou relancé hors cycle",
+            "type": "end",
+            "column": 7
+          }
+        ],
+        "flows": [
+          {
+            "source": "recruitment-need-identified",
+            "target": "formalise-request-job-description-budget"
+          },
+          {
+            "source": "formalise-request-job-description-budget",
+            "target": "review-need-budget-range"
+          },
+          {
+            "source": "review-need-budget-range",
+            "target": "opening-position-approved"
+          },
+          {
+            "source": "opening-position-approved",
+            "target": "publish-vacancy-shortlist-applications",
+            "label": "oui"
+          },
+          {
+            "source": "opening-position-approved",
+            "target": "recruitment-request-refused",
+            "label": "non"
+          },
+          {
+            "source": "publish-vacancy-shortlist-applications",
+            "target": "conduct-interviews-assess-candidates"
+          },
+          {
+            "source": "conduct-interviews-assess-candidates",
+            "target": "candidate-selected-profiles-assessed"
+          },
+          {
+            "source": "candidate-selected-profiles-assessed",
+            "target": "validate-final-terms-offer",
+            "label": "oui"
+          },
+          {
+            "source": "candidate-selected-profiles-assessed",
+            "target": "recruitment-suspended-relaunched-outside-cycle",
+            "label": "non"
+          },
+          {
+            "source": "validate-final-terms-offer",
+            "target": "send-job-offer-candidate"
+          },
+          {
+            "source": "send-job-offer-candidate",
+            "target": "candidate-accept-job-offer"
+          },
+          {
+            "source": "candidate-accept-job-offer",
+            "target": "draw-up-contract-obtain-employers",
+            "label": "oui"
+          },
+          {
+            "source": "candidate-accept-job-offer",
+            "target": "candidate-selected-profiles-assessed",
+            "label": "non"
+          },
+          {
+            "source": "draw-up-contract-obtain-employers",
+            "target": "countersign-contract-provide-supporting-documents"
+          },
+          {
+            "source": "countersign-contract-provide-supporting-documents",
+            "target": "hire-confirmed-onboarding-triggered"
+          }
+        ]
+      },
+      "uncertainties": [
+        "Modèle générique : remplacer les acteurs, les documents et leurs supports par ceux de votre organisation.",
+        "Durée et délai de chaque étape : à mesurer chez vous, le modèle n'en donne aucun.",
+        "Mobilité interne prioritaire : de nombreuses entreprises diffusent d'abord le poste en interne avant d'ouvrir la recherche à l'externe.",
+        "Relance de recherche : lorsqu'aucun candidat évalué n'est retenu ou que les candidats de réserve ont décliné, le manager et les ressources humaines décident soit de suspendre le besoin, soit d'ouvrir une nouvelle campagne de diffusion.",
+        "Évaluations complémentaires : selon le poste, des tests techniques, mises en situation ou vérifications de références s'intercalent avant la validation de l'offre.",
+        "Processus d'intégration aval : la confirmation d'embauche déclenche le sous-processus d'accueil (poste de travail, accès informatiques, visite médicale et parcours d'intégration).",
+        "Support de chaque document (papier, courriel, tableur, fichier, logiciel) : posé par défaut dans ce modèle, à adapter à votre organisation."
+      ]
+    }
+  ]
+}

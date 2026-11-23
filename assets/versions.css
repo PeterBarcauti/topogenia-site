@@ -1,0 +1,15 @@
+/* versions.css */
+/* The versions page: the verdict read from the address, its downloads and their SHA-256 hash, the history of the versions */
+
+.versions-verdict { margin-top: 32px; }
+.versions-verdict:empty { display: none; }
+.versions-verdict-text { font-size: 19px; font-weight: 600; color: var(--text); line-height: 1.5; }
+.versions-yours { margin-top: 6px; color: var(--text-muted); }
+.versions-downloads { list-style: none; margin: 20px 0 0; padding: 0; display: grid; gap: 16px; }
+.versions-store { margin-top: 18px; }
+.versions-sha { margin-top: 8px; font-size: 14px; color: var(--text-muted); }
+.versions-sha code, .versions-files code { overflow-wrap: anywhere; font-size: 13px; }
+.versions-list { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 28px; }
+.versions-list h3 { margin-top: 0; }
+.versions-files { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 10px; color: var(--text-muted); line-height: 1.55; }
+.versions-files a { color: var(--accent-strong); text-underline-offset: 3px; }

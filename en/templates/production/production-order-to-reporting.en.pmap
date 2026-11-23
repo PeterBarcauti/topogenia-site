@@ -1,0 +1,448 @@
+{
+  "format": "topogenia",
+  "version": "1.5",
+  "project": {
+    "name": "From the production order to production reporting",
+    "code": "PRODOR",
+    "language": "en",
+    "description": "Gallery template: from the production order to production reporting. Trigger: Firm manufacturing requirement received from planning. Outcome: Manufacturing order executed, declared and closed; or order suspended for lack of components. To adapt to your organisation: actors, documents, media, thresholds and lead times."
+  },
+  "map": {
+    "summary": {
+      "text": "The scheduler releases the order, the storekeeper issues the components, the operator produces, the inspector checks, then production is declared and put into stock."
+    },
+    "lanes": [
+      {
+        "id": "production-scheduler",
+        "name": "Production scheduler",
+        "type": "person"
+      },
+      {
+        "id": "workshop-storekeeper",
+        "name": "Workshop storekeeper",
+        "type": "person"
+      },
+      {
+        "id": "production-operator",
+        "name": "Production operator",
+        "type": "person"
+      },
+      {
+        "id": "quality-inspector",
+        "name": "Quality inspector",
+        "type": "person"
+      }
+    ],
+    "steps": [
+      {
+        "id": "planned-order-received-execution",
+        "lane": "production-scheduler",
+        "label": "Planned order received for execution",
+        "type": "start",
+        "column": 0
+      },
+      {
+        "id": "schedule-check-component-resource-availability",
+        "lane": "production-scheduler",
+        "label": "Schedule and check component and resource availability",
+        "column": 1,
+        "sheet": {
+          "purpose": "The scheduler places the manufacturing order in the detailed sequence of work centres and checks the availability of all the materials, components, tooling and operators required.",
+          "inputs": [
+            {
+              "name": "Firm manufacturing order",
+              "medium": "software"
+            },
+            {
+              "name": "Bill of materials",
+              "medium": "file"
+            },
+            {
+              "name": "Routing",
+              "medium": "file"
+            },
+            {
+              "name": "Stocks",
+              "medium": "software"
+            }
+          ],
+          "uses": [
+            {
+              "document": "doc-rescheduled-manufacturing-order"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-scheduled-order",
+              "name": "Scheduled order",
+              "medium": "software"
+            },
+            {
+              "id": "doc-availability-assessment",
+              "name": "Availability assessment",
+              "medium": "spreadsheet"
+            }
+          ]
+        }
+      },
+      {
+        "id": "components-resources-available",
+        "lane": "production-scheduler",
+        "label": "Are the components and resources available?",
+        "type": "decision",
+        "column": 2,
+        "sheet": {
+          "uses": [
+            {
+              "document": "doc-availability-assessment"
+            }
+          ]
+        }
+      },
+      {
+        "id": "can-order-rescheduled-near-term",
+        "lane": "production-scheduler",
+        "label": "Can the order be rescheduled in the near term?",
+        "type": "decision",
+        "column": 3,
+        "sheet": {
+          "uses": [
+            {
+              "document": "doc-availability-assessment"
+            }
+          ]
+        }
+      },
+      {
+        "id": "reschedule-production-order",
+        "lane": "production-scheduler",
+        "label": "Reschedule the production order",
+        "column": 4,
+        "sheet": {
+          "purpose": "In case of temporary unavailability, the scheduler postpones the order or reassigns it to an alternative resource, then carries out a new check.",
+          "uses": [
+            {
+              "document": "doc-availability-assessment"
+            },
+            {
+              "document": "doc-scheduled-order"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-rescheduled-manufacturing-order",
+              "name": "Rescheduled manufacturing order",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "release-production-order",
+        "lane": "production-scheduler",
+        "label": "Release the production order",
+        "column": 3,
+        "row": 1,
+        "sheet": {
+          "purpose": "The scheduler sets the order to released status and makes the manufacturing file available to the workshop and the picking list available to the store.",
+          "uses": [
+            {
+              "document": "doc-scheduled-order"
+            },
+            {
+              "document": "doc-availability-assessment"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-manufacturing-file",
+              "name": "Manufacturing file",
+              "medium": "file"
+            },
+            {
+              "id": "doc-picking-list-line",
+              "name": "Picking list for the line",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "issue-components-record-material-issue",
+        "lane": "workshop-storekeeper",
+        "label": "Issue the components and record the material issue",
+        "column": 4,
+        "sheet": {
+          "purpose": "The storekeeper picks the components according to the kitting list, takes them to the workstation and records the single material issue movement charged to the manufacturing order.",
+          "uses": [
+            {
+              "document": "doc-picking-list-line"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-components-made-available",
+              "name": "Components made available",
+              "medium": "other"
+            },
+            {
+              "id": "doc-material-issue-note",
+              "name": "Material issue note",
+              "medium": "paper"
+            }
+          ]
+        }
+      },
+      {
+        "id": "carry-out-production-self-checks",
+        "lane": "production-operator",
+        "label": "Carry out production and self-checks",
+        "column": 5,
+        "sheet": {
+          "purpose": "The operator sets up the equipment, carries out the operations according to the routing, performs in-process self-checks and records the quantities made, scrap and times.",
+          "uses": [
+            {
+              "document": "doc-manufacturing-file"
+            },
+            {
+              "document": "doc-components-made-available"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-lot-produced",
+              "name": "Lot produced",
+              "medium": "other"
+            },
+            {
+              "id": "doc-production-record",
+              "name": "Production record",
+              "medium": "spreadsheet"
+            }
+          ]
+        }
+      },
+      {
+        "id": "check-lot-produced-conforming",
+        "lane": "quality-inspector",
+        "label": "Check that the lot produced is conforming",
+        "column": 6,
+        "sheet": {
+          "purpose": "The quality inspector carries out the final or sampling checks set out in the inspection routing and records the conforming and non-conforming quantities in the inspection report.",
+          "inputs": [
+            {
+              "name": "Inspection routing",
+              "medium": "file"
+            }
+          ],
+          "uses": [
+            {
+              "document": "doc-lot-produced"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-production-inspection-report",
+              "name": "Production inspection report",
+              "medium": "file"
+            }
+          ]
+        }
+      },
+      {
+        "id": "whole-lot-produced-conforming",
+        "lane": "quality-inspector",
+        "label": "Is the whole lot produced conforming?",
+        "type": "decision",
+        "column": 7,
+        "sheet": {
+          "uses": [
+            {
+              "document": "doc-production-inspection-report"
+            }
+          ]
+        }
+      },
+      {
+        "id": "isolate-non-conforming-parts-quarantine",
+        "lane": "quality-inspector",
+        "label": "Isolate the non-conforming parts in quarantine",
+        "column": 8,
+        "sheet": {
+          "purpose": "When defective parts are found, the quality inspector physically isolates the non-conforming products in quarantine, triggers the dedicated quality process and completes the inspection report.",
+          "uses": [
+            {
+              "document": "doc-production-inspection-report"
+            },
+            {
+              "document": "doc-lot-produced"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-products-quarantine",
+              "name": "Products in quarantine",
+              "medium": "other"
+            },
+            {
+              "id": "doc-completed-inspection-report",
+              "name": "Completed inspection report",
+              "medium": "file"
+            }
+          ]
+        }
+      },
+      {
+        "id": "declare-quantities-produced-scrap-times",
+        "lane": "production-operator",
+        "label": "Declare the quantities produced, scrap and times",
+        "column": 9,
+        "sheet": {
+          "purpose": "The operator enters the production declaration (good quantities, scrap, time spent and any return of unused materials, without re-entering the material issues already recorded).",
+          "free_text": "As applicable: Completed inspection report (if non-conforming).",
+          "uses": [
+            {
+              "document": "doc-production-record"
+            },
+            {
+              "document": "doc-production-inspection-report"
+            },
+            {
+              "document": "doc-completed-inspection-report"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-production-report",
+              "name": "Production report",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "transfer-conforming-products-stock-confirm",
+        "lane": "workshop-storekeeper",
+        "label": "Transfer the conforming products to stock and confirm the receipt",
+        "column": 10,
+        "sheet": {
+          "purpose": "The storekeeper moves only the conforming finished products to available stock, the isolated parts staying in quarantine, then confirms the stock receipt that allows the order to be closed.",
+          "uses": [
+            {
+              "document": "doc-production-report"
+            },
+            {
+              "document": "doc-lot-produced"
+            },
+            {
+              "document": "doc-material-issue-note"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-recorded-stock-movement",
+              "name": "Recorded stock movement",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "production-reported-production-order-closed",
+        "lane": "production-scheduler",
+        "label": "Production reported and production order closed",
+        "type": "end",
+        "column": 11
+      },
+      {
+        "id": "order-suspended-pending-supply-capacity",
+        "lane": "production-scheduler",
+        "label": "Order suspended pending supply or capacity",
+        "type": "end",
+        "column": 4,
+        "row": 1
+      }
+    ],
+    "flows": [
+      {
+        "source": "planned-order-received-execution",
+        "target": "schedule-check-component-resource-availability"
+      },
+      {
+        "source": "schedule-check-component-resource-availability",
+        "target": "components-resources-available"
+      },
+      {
+        "source": "components-resources-available",
+        "target": "release-production-order",
+        "label": "yes"
+      },
+      {
+        "source": "components-resources-available",
+        "target": "can-order-rescheduled-near-term",
+        "label": "no"
+      },
+      {
+        "source": "can-order-rescheduled-near-term",
+        "target": "reschedule-production-order",
+        "label": "yes"
+      },
+      {
+        "source": "can-order-rescheduled-near-term",
+        "target": "order-suspended-pending-supply-capacity",
+        "label": "no"
+      },
+      {
+        "source": "reschedule-production-order",
+        "target": "schedule-check-component-resource-availability"
+      },
+      {
+        "source": "release-production-order",
+        "target": "issue-components-record-material-issue"
+      },
+      {
+        "source": "issue-components-record-material-issue",
+        "target": "carry-out-production-self-checks"
+      },
+      {
+        "source": "carry-out-production-self-checks",
+        "target": "check-lot-produced-conforming"
+      },
+      {
+        "source": "check-lot-produced-conforming",
+        "target": "whole-lot-produced-conforming"
+      },
+      {
+        "source": "whole-lot-produced-conforming",
+        "target": "declare-quantities-produced-scrap-times",
+        "label": "yes"
+      },
+      {
+        "source": "whole-lot-produced-conforming",
+        "target": "isolate-non-conforming-parts-quarantine",
+        "label": "no"
+      },
+      {
+        "source": "isolate-non-conforming-parts-quarantine",
+        "target": "declare-quantities-produced-scrap-times"
+      },
+      {
+        "source": "declare-quantities-produced-scrap-times",
+        "target": "transfer-conforming-products-stock-confirm"
+      },
+      {
+        "source": "transfer-conforming-products-stock-confirm",
+        "target": "production-reported-production-order-closed"
+      }
+    ]
+  },
+  "uncertainties": [
+    "Generic model: replace the actors, the documents and their media with those of your organisation.",
+    "Duration and lead time of each step: to be measured in your organisation, the model gives none.",
+    "Automatic backflushing: in repetitive production, the theoretical consumption of components is often deducted automatically at production declaration rather than on a prior material issue slip.",
+    "Intermediate quality checks: depending on how critical the process is, formal quality milestones (production start-up approval, statistical control) may be inserted during manufacturing.",
+    "Manufacturing execution system: in heavily instrumented plants, time, quantity and batch traceability tracking is fed back automatically by the shop-floor system.",
+    "Accounting closure: closing the order is followed by a periodic processing by the finance department to value work in progress and analyse manufacturing variances.",
+    "Medium of each document (paper, email, spreadsheet, file, software): set by default in this model, to be adapted to your organisation."
+  ]
+}

@@ -1,0 +1,19 @@
+# Topogenia
+
+> Topogenia cartographie les processus de travail en carte à couloirs (un couloir par acteur) et montre où un dossier perd son temps, à la manière d'un Makigami : relais, travail sans valeur, ruptures de support. Application Windows gratuite, y compris en entreprise, sans compte ; les données restent sur l'ordinateur ; un assistant IA facultatif, en copier-coller avec l'IA de son choix, avec un modèle installé sur l'ordinateur (Ollama, LM Studio) ou avec son propre compte chez un fournisseur (Anthropic, OpenAI, Google, Mistral AI, AWS Bedrock et d'autres). Auteur : Peter Barcauti.
+
+- [Site, en français](https://topogenia.com/): présentation et téléchargement
+- [Site, in English](https://topogenia.com/en/): presentation and download
+- [Code source](https://github.com/PeterBarcauti/topogenia): Apache-2.0, à l'exception du cœur
+
+## Modèles et versions, en français
+
+- [Galerie de modèles](https://topogenia.com/modeles/): Des modèles de processus par domaine, à télécharger en fichier .pmap ou en collection .pmaps, avec l'empreinte SHA-256 de chaque fichier
+- [Versions](https://topogenia.com/versions/): Les versions publiées, leurs téléchargements et leurs empreintes SHA-256 ; la page dit si la version donnée dans l'adresse (#v=…) est la dernière
+- [Flux Atom des versions](https://topogenia.com/versions/feed.xml): Une entrée par version publiée, pour un lecteur de flux
+
+## Templates and versions, in English
+
+- [Template gallery](https://topogenia.com/en/templates/): Process templates by domain, to download as a .pmap file or as a .pmaps collection, with the SHA-256 checksum of each file
+- [Versions](https://topogenia.com/en/versions/): Published versions, their downloads and SHA-256 checksums; the page says whether the version given in the address (#v=…) is the latest
+- [Versions Atom feed](https://topogenia.com/en/versions/feed.xml): One entry per published version, for a feed reader

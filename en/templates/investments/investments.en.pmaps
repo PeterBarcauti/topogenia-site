@@ -1,0 +1,406 @@
+{
+  "format": "topogenia-collection",
+  "version": "1.0",
+  "name": "Capital investments",
+  "description": "The most common approval of an investment request, up to its commissioning, to adapt to your organisation.",
+  "processes": [
+    {
+      "format": "topogenia",
+      "version": "1.5",
+      "project": {
+        "name": "Validating and commissioning an investment request",
+        "code": "CAPEX",
+        "language": "en",
+        "description": "Gallery template: validating and commissioning an investment request. Trigger: Investment need identified by an operational or support department. Outcome: Investment commissioned and capitalised; or request refused or postponed. To adapt to your organisation: actors, documents, media, thresholds and lead times."
+      },
+      "map": {
+        "summary": {
+          "text": "The project owner builds the file, the finance department assesses it, the committee decides, then the project is tracked, checked and the asset activated at commissioning."
+        },
+        "lanes": [
+          {
+            "id": "project-owner",
+            "name": "Project owner",
+            "type": "person"
+          },
+          {
+            "id": "finance-department",
+            "name": "Finance department",
+            "type": "department"
+          },
+          {
+            "id": "investment-committee",
+            "name": "Investment committee",
+            "type": "department"
+          },
+          {
+            "id": "fixed-asset-accounting",
+            "name": "Fixed asset accounting",
+            "type": "department"
+          }
+        ],
+        "steps": [
+          {
+            "id": "investment-need-identified",
+            "lane": "project-owner",
+            "label": "Investment need identified",
+            "type": "start",
+            "column": 0
+          },
+          {
+            "id": "build-investment-request-file",
+            "lane": "project-owner",
+            "label": "Build the investment request file",
+            "column": 1,
+            "sheet": {
+              "purpose": "The project owner formalises the objective, the technical characteristics, the indicative quotes, the rollout schedule and the expected gains or savings.",
+              "outputs": [
+                {
+                  "id": "doc-costed-investment-request",
+                  "name": "Costed investment request",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "check-completeness-assess-profitability",
+            "lane": "finance-department",
+            "label": "Check completeness and assess profitability",
+            "column": 2,
+            "sheet": {
+              "purpose": "The finance department checks that the file is complete, that it is included in the budget plan and that the expenditure can be capitalised, then calculates the profitability indicators and gives a reasoned financial opinion.",
+              "inputs": [
+                {
+                  "name": "Investment budget",
+                  "medium": "spreadsheet"
+                }
+              ],
+              "uses": [
+                {
+                  "document": "doc-costed-investment-request"
+                },
+                {
+                  "document": "doc-revised-investment-request"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-financial-opinion-return-analysis",
+                  "name": "Financial opinion and return analysis",
+                  "medium": "email"
+                }
+              ]
+            }
+          },
+          {
+            "id": "file-complete-presentation-committee",
+            "lane": "finance-department",
+            "label": "Is the file complete for presentation to the committee?",
+            "type": "decision",
+            "column": 3,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-financial-opinion-return-analysis"
+                }
+              ]
+            }
+          },
+          {
+            "id": "complete-investment-request-file",
+            "lane": "project-owner",
+            "label": "Complete the investment request file",
+            "column": 4,
+            "sheet": {
+              "purpose": "When supporting documents or information are missing, the project owner completes the file before the finance department reviews it again.",
+              "uses": [
+                {
+                  "document": "doc-financial-opinion-return-analysis"
+                },
+                {
+                  "document": "doc-costed-investment-request"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-revised-investment-request",
+                  "name": "Revised investment request",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "review-case-profitability-decide",
+            "lane": "investment-committee",
+            "label": "Review the case, the profitability and decide",
+            "column": 4,
+            "sheet": {
+              "purpose": "The investment committee reviews every complete file (including where the financial opinion carries reservations), assesses strategic alignment and overall profitability, then decides.",
+              "uses": [
+                {
+                  "document": "doc-costed-investment-request"
+                },
+                {
+                  "document": "doc-revised-investment-request"
+                },
+                {
+                  "document": "doc-financial-opinion-return-analysis"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-investment-committee-decision",
+                  "name": "Investment committee decision",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "investment-request-approved",
+            "lane": "investment-committee",
+            "label": "Is the investment request approved?",
+            "type": "decision",
+            "column": 5,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-investment-committee-decision"
+                }
+              ]
+            }
+          },
+          {
+            "id": "investment-request-refused-postponed",
+            "lane": "investment-committee",
+            "label": "Investment request refused or postponed",
+            "type": "end",
+            "column": 6
+          },
+          {
+            "id": "open-project-code-budget-envelope",
+            "lane": "finance-department",
+            "label": "Open the project code and the budget envelope",
+            "column": 6,
+            "sheet": {
+              "purpose": "The finance department creates the dedicated budget reference so that orders can be committed and spending tracked continuously.",
+              "uses": [
+                {
+                  "document": "doc-investment-committee-decision"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-project-code-authorised-envelope",
+                  "name": "Project code and authorised envelope",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "manage-project-track-budget-commission",
+            "lane": "project-owner",
+            "label": "Manage the project, track the budget and commission",
+            "column": 7,
+            "sheet": {
+              "purpose": "The project owner manages the implementation, tracks budget commitments with the finance department, then formally accepts the work technically and sets the effective commissioning date.",
+              "uses": [
+                {
+                  "document": "doc-project-code-authorised-envelope"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-dated-acceptance-commissioning-report",
+                  "name": "Dated acceptance and commissioning report",
+                  "medium": "paper"
+                }
+              ]
+            }
+          },
+          {
+            "id": "check-actual-cost-against-envelope",
+            "lane": "finance-department",
+            "label": "Check the actual cost against the envelope",
+            "column": 8,
+            "sheet": {
+              "purpose": "At project completion, the finance department matches all invoices and internal costs charged against the authorised envelope and identifies any overrun.",
+              "inputs": [
+                {
+                  "name": "Statement of expenditure",
+                  "medium": "spreadsheet"
+                }
+              ],
+              "uses": [
+                {
+                  "document": "doc-dated-acceptance-commissioning-report"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-closing-financial-review",
+                  "name": "Closing financial review",
+                  "medium": "spreadsheet"
+                }
+              ]
+            }
+          },
+          {
+            "id": "actual-cost-stay-within-authorised",
+            "lane": "finance-department",
+            "label": "Does the actual cost stay within the authorised envelope?",
+            "type": "decision",
+            "column": 9,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-closing-financial-review"
+                }
+              ]
+            }
+          },
+          {
+            "id": "decide-regularisation-budget-overrun",
+            "lane": "investment-committee",
+            "label": "Decide on the regularisation of the budget overrun",
+            "column": 10,
+            "sheet": {
+              "purpose": "If an overrun is found, the investment committee reviews the justifications, then grants the extension or refuses it, the overrun then being charged to the project owner's budget; the asset, already in service, is activated in both cases.",
+              "uses": [
+                {
+                  "document": "doc-closing-financial-review"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-budget-adjustment-decision",
+                  "name": "Budget adjustment decision",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "activate-fixed-asset-commissioning-date",
+            "lane": "fixed-asset-accounting",
+            "label": "Activate the fixed asset at the commissioning date",
+            "column": 11,
+            "sheet": {
+              "purpose": "Fixed asset accounting transfers the accumulated costs to the final asset record and starts the depreciation plan from the date shown on the commissioning report.",
+              "free_text": "As applicable: Budget adjustment decision (if overrun).",
+              "uses": [
+                {
+                  "document": "doc-dated-acceptance-commissioning-report"
+                },
+                {
+                  "document": "doc-closing-financial-review"
+                },
+                {
+                  "document": "doc-budget-adjustment-decision"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-activated-fixed-asset-record",
+                  "name": "Activated fixed asset record",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "investment-commissioned-capitalised",
+            "lane": "fixed-asset-accounting",
+            "label": "Investment commissioned and capitalised",
+            "type": "end",
+            "column": 12
+          }
+        ],
+        "flows": [
+          {
+            "source": "investment-need-identified",
+            "target": "build-investment-request-file"
+          },
+          {
+            "source": "build-investment-request-file",
+            "target": "check-completeness-assess-profitability"
+          },
+          {
+            "source": "check-completeness-assess-profitability",
+            "target": "file-complete-presentation-committee"
+          },
+          {
+            "source": "file-complete-presentation-committee",
+            "target": "review-case-profitability-decide",
+            "label": "yes"
+          },
+          {
+            "source": "file-complete-presentation-committee",
+            "target": "complete-investment-request-file",
+            "label": "no"
+          },
+          {
+            "source": "complete-investment-request-file",
+            "target": "check-completeness-assess-profitability"
+          },
+          {
+            "source": "review-case-profitability-decide",
+            "target": "investment-request-approved"
+          },
+          {
+            "source": "investment-request-approved",
+            "target": "open-project-code-budget-envelope",
+            "label": "yes"
+          },
+          {
+            "source": "investment-request-approved",
+            "target": "investment-request-refused-postponed",
+            "label": "no"
+          },
+          {
+            "source": "open-project-code-budget-envelope",
+            "target": "manage-project-track-budget-commission"
+          },
+          {
+            "source": "manage-project-track-budget-commission",
+            "target": "check-actual-cost-against-envelope"
+          },
+          {
+            "source": "check-actual-cost-against-envelope",
+            "target": "actual-cost-stay-within-authorised"
+          },
+          {
+            "source": "actual-cost-stay-within-authorised",
+            "target": "activate-fixed-asset-commissioning-date",
+            "label": "yes"
+          },
+          {
+            "source": "actual-cost-stay-within-authorised",
+            "target": "decide-regularisation-budget-overrun",
+            "label": "no"
+          },
+          {
+            "source": "decide-regularisation-budget-overrun",
+            "target": "activate-fixed-asset-commissioning-date"
+          },
+          {
+            "source": "activate-fixed-asset-commissioning-date",
+            "target": "investment-commissioned-capitalised"
+          }
+        ]
+      },
+      "uncertainties": [
+        "Generic model: replace the actors, the documents and their media with those of your organisation.",
+        "Duration and lead time of each step: to be measured in your organisation, the model gives none.",
+        "Early extension during implementation: if an overrun is anticipated before the end of the work, an extension request is submitted to the investment committee before any new commitment.",
+        "Tiered approval route: the level of decision varies with the stakes and the nature of the investment (renewal, capacity, regulatory, safety).",
+        "Link with purchasing: the actual acquisition of the equipment or services relies on the \"From purchase request to order\" process, with reference to the project code opened.",
+        "Post-investment review: for major projects, the finance department carries out an after-the-fact review comparing the benefits actually obtained with the forecasts.",
+        "Medium of each document (paper, email, spreadsheet, file, software): set by default in this model, to be adapted to your organisation."
+      ]
+    }
+  ]
+}

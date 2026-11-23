@@ -1,0 +1,425 @@
+{
+  "format": "topogenia-collection",
+  "version": "1.0",
+  "name": "Quality",
+  "description": "The most common handling of a non-conformity, to adapt to your organisation.",
+  "processes": [
+    {
+      "format": "topogenia",
+      "version": "1.5",
+      "project": {
+        "name": "Non-conformity handling",
+        "code": "NCR",
+        "language": "en",
+        "description": "Gallery template: non-conformity handling. Trigger: Deviation from a product or process requirement detected. Outcome: Non-conformity resolved and closed; or escalated to quality management. To adapt to your organisation: actors, documents, media, thresholds and lead times."
+      },
+      "map": {
+        "summary": {
+          "text": "The detector reports and isolates, the facilitator qualifies and contains, the committee decides on the product, then causes are dealt with until closure or escalation."
+        },
+        "lanes": [
+          {
+            "id": "detector",
+            "name": "Detector",
+            "type": "person"
+          },
+          {
+            "id": "quality-facilitator",
+            "name": "Quality facilitator",
+            "type": "person"
+          },
+          {
+            "id": "action-owner",
+            "name": "Action owner",
+            "type": "person"
+          },
+          {
+            "id": "quality-committee-decision",
+            "name": "Quality committee / Decision maker",
+            "type": "department"
+          }
+        ],
+        "steps": [
+          {
+            "id": "non-conformity-detected",
+            "lane": "detector",
+            "label": "Non-conformity detected",
+            "type": "start",
+            "column": 0
+          },
+          {
+            "id": "isolate-suspect-lot-report-non",
+            "lane": "detector",
+            "label": "Isolate the suspect lot and report the non-conformity",
+            "column": 1,
+            "sheet": {
+              "purpose": "The detector (operator, storekeeper or inspector) physically identifies the suspect lot, removes it from the normal flow to prevent any accidental use and records the non-conformity sheet.",
+              "outputs": [
+                {
+                  "id": "doc-non-conformity-sheet",
+                  "name": "Non-conformity sheet",
+                  "medium": "software"
+                },
+                {
+                  "id": "doc-batch-quarantine",
+                  "name": "Batch in quarantine",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "qualify-deviation-deploy-verify-containment",
+            "lane": "quality-facilitator",
+            "label": "Qualify the deviation, deploy and verify containment",
+            "column": 2,
+            "sheet": {
+              "purpose": "The quality facilitator checks the facts, assesses the severity and estimated impact, deploys sorting and containment on internal stocks and work in progress, then records the verified result of containment.",
+              "uses": [
+                {
+                  "document": "doc-non-conformity-sheet"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-qualified-record",
+                  "name": "Qualified record",
+                  "medium": "software"
+                },
+                {
+                  "id": "doc-containment-report",
+                  "name": "Containment report",
+                  "medium": "file"
+                }
+              ]
+            }
+          },
+          {
+            "id": "decide-what-happens-non-conforming",
+            "lane": "quality-committee-decision",
+            "label": "Decide what happens to the non-conforming product",
+            "column": 3,
+            "sheet": {
+              "purpose": "On the basis of the qualified record and the verified containment, the quality committee quickly decides what happens to the product (scrap, rework or sorting with re-inspection, return to supplier or concession) so as not to block operations.",
+              "uses": [
+                {
+                  "document": "doc-qualified-record"
+                },
+                {
+                  "document": "doc-containment-report"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-product-treatment-decision",
+                  "name": "Product treatment decision",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "carry-out-remedial-treatment-lot",
+            "lane": "action-owner",
+            "label": "Carry out the remedial treatment of the lot",
+            "column": 4,
+            "sheet": {
+              "purpose": "The action owner carries out the decision taken on the lot concerned, has the conformity of the reworked parts checked and records the associated costs of poor quality.",
+              "uses": [
+                {
+                  "document": "doc-product-treatment-decision"
+                },
+                {
+                  "document": "doc-batch-quarantine"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-remedial-treatment-report",
+                  "name": "Remedial treatment report",
+                  "medium": "file"
+                }
+              ]
+            }
+          },
+          {
+            "id": "non-conformity-critical-recurring",
+            "lane": "quality-facilitator",
+            "label": "Is the non-conformity critical or recurring?",
+            "type": "decision",
+            "column": 5,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-qualified-record"
+                },
+                {
+                  "document": "doc-remedial-treatment-report"
+                }
+              ]
+            }
+          },
+          {
+            "id": "investigate-root-causes-propose-actions",
+            "lane": "action-owner",
+            "label": "Investigate root causes and propose actions",
+            "column": 6,
+            "sheet": {
+              "purpose": "The action owner brings together the relevant skills to identify the root causes of the defect's occurrence and non-detection, then proposes a corrective action plan with owners and due dates.",
+              "free_text": "As applicable: Effectiveness review (on resumption).",
+              "uses": [
+                {
+                  "document": "doc-qualified-record"
+                },
+                {
+                  "document": "doc-effectiveness-review"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-cause-analysis",
+                  "name": "Cause analysis",
+                  "medium": "software"
+                },
+                {
+                  "id": "doc-corrective-action-plan",
+                  "name": "Corrective action plan",
+                  "medium": "spreadsheet"
+                }
+              ]
+            }
+          },
+          {
+            "id": "validate-corrective-action-plan",
+            "lane": "quality-facilitator",
+            "label": "Validate the corrective action plan",
+            "column": 7,
+            "sheet": {
+              "purpose": "The quality facilitator makes sure the proposed actions are relevant to the causes identified and approves the plan before deployment.",
+              "uses": [
+                {
+                  "document": "doc-cause-analysis"
+                },
+                {
+                  "document": "doc-corrective-action-plan"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-approved-action-plan",
+                  "name": "Approved action plan",
+                  "medium": "spreadsheet"
+                }
+              ]
+            }
+          },
+          {
+            "id": "implement-corrective-actions",
+            "lane": "action-owner",
+            "label": "Implement the corrective actions",
+            "column": 8,
+            "sheet": {
+              "purpose": "The action owner deploys the planned technical, organisational or documentary changes and collects the evidence.",
+              "uses": [
+                {
+                  "document": "doc-approved-action-plan"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-evidence-completion",
+                  "name": "Evidence of completion",
+                  "medium": "file"
+                }
+              ]
+            }
+          },
+          {
+            "id": "verify-effectiveness-corrective-actions",
+            "lane": "quality-facilitator",
+            "label": "Verify the effectiveness of the corrective actions",
+            "column": 9,
+            "sheet": {
+              "purpose": "After application over an observation period, the quality facilitator checks that the defect does not recur and that the actions have the expected effect.",
+              "uses": [
+                {
+                  "document": "doc-evidence-completion"
+                },
+                {
+                  "document": "doc-approved-action-plan"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-effectiveness-review",
+                  "name": "Effectiveness review",
+                  "medium": "spreadsheet"
+                }
+              ]
+            }
+          },
+          {
+            "id": "corrective-actions-effective",
+            "lane": "quality-facilitator",
+            "label": "Are the corrective actions effective?",
+            "type": "decision",
+            "column": 10,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-effectiveness-review"
+                }
+              ]
+            }
+          },
+          {
+            "id": "update-standards-close-non-conformity",
+            "lane": "quality-facilitator",
+            "label": "Update the standards and close the non-conformity",
+            "column": 11,
+            "sheet": {
+              "purpose": "The quality facilitator updates the standards and risk analyses (where corrective actions were taken), archives the supporting evidence and formally closes the non-conformity.",
+              "free_text": "As applicable: Effectiveness review (if applicable).",
+              "uses": [
+                {
+                  "document": "doc-remedial-treatment-report"
+                },
+                {
+                  "document": "doc-effectiveness-review"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-updated-standards",
+                  "name": "Updated standards",
+                  "medium": "software"
+                },
+                {
+                  "id": "doc-closed-non-conformity-sheet",
+                  "name": "Closed non-conformity sheet",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "new-corrective-analysis-started",
+            "lane": "quality-committee-decision",
+            "label": "Is a new corrective analysis started?",
+            "type": "decision",
+            "column": 11,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-effectiveness-review"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-escalation-resumption-decision",
+                  "name": "Escalation or resumption decision",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "non-conformity-resolved-closed",
+            "lane": "quality-facilitator",
+            "label": "Non-conformity resolved and closed",
+            "type": "end",
+            "column": 12
+          },
+          {
+            "id": "non-conformity-escalated-management-arbitration",
+            "lane": "quality-committee-decision",
+            "label": "Non-conformity escalated for management arbitration",
+            "type": "end",
+            "column": 12
+          }
+        ],
+        "flows": [
+          {
+            "source": "non-conformity-detected",
+            "target": "isolate-suspect-lot-report-non"
+          },
+          {
+            "source": "isolate-suspect-lot-report-non",
+            "target": "qualify-deviation-deploy-verify-containment"
+          },
+          {
+            "source": "qualify-deviation-deploy-verify-containment",
+            "target": "decide-what-happens-non-conforming"
+          },
+          {
+            "source": "decide-what-happens-non-conforming",
+            "target": "carry-out-remedial-treatment-lot"
+          },
+          {
+            "source": "carry-out-remedial-treatment-lot",
+            "target": "non-conformity-critical-recurring"
+          },
+          {
+            "source": "non-conformity-critical-recurring",
+            "target": "investigate-root-causes-propose-actions",
+            "label": "yes"
+          },
+          {
+            "source": "non-conformity-critical-recurring",
+            "target": "update-standards-close-non-conformity",
+            "label": "no"
+          },
+          {
+            "source": "investigate-root-causes-propose-actions",
+            "target": "validate-corrective-action-plan"
+          },
+          {
+            "source": "validate-corrective-action-plan",
+            "target": "implement-corrective-actions"
+          },
+          {
+            "source": "implement-corrective-actions",
+            "target": "verify-effectiveness-corrective-actions"
+          },
+          {
+            "source": "verify-effectiveness-corrective-actions",
+            "target": "corrective-actions-effective"
+          },
+          {
+            "source": "corrective-actions-effective",
+            "target": "update-standards-close-non-conformity",
+            "label": "yes"
+          },
+          {
+            "source": "corrective-actions-effective",
+            "target": "new-corrective-analysis-started",
+            "label": "no"
+          },
+          {
+            "source": "update-standards-close-non-conformity",
+            "target": "non-conformity-resolved-closed"
+          },
+          {
+            "source": "new-corrective-analysis-started",
+            "target": "investigate-root-causes-propose-actions",
+            "label": "yes"
+          },
+          {
+            "source": "new-corrective-analysis-started",
+            "target": "non-conformity-escalated-management-arbitration",
+            "label": "no"
+          }
+        ]
+      },
+      "uncertainties": [
+        "Generic model: replace the actors, the documents and their media with those of your organisation.",
+        "Duration and lead time of each step: to be measured in your organisation, the model gives none.",
+        "Batches already shipped to the customer: if containment shows that suspect products have already been delivered, a customer alert and external containment are triggered in parallel through the customer complaint process.",
+        "Supplier non-conformity: when the origin is attributable to a supplier, the cause analysis and the corrective action plan are requested from the supplier and verified by supplier quality.",
+        "Customer concession: if the quality committee considers accepting a product with a deviation from contractual specifications, the customer's prior written agreement is mandatory before release.",
+        "Service or process non-conformity: when there is no physical product to isolate, isolation consists of immediately correcting the file or suspending the faulty activity.",
+        "Medium of each document (paper, email, spreadsheet, file, software): set by default in this model, to be adapted to your organisation."
+      ]
+    }
+  ]
+}

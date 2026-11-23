@@ -1,0 +1,17 @@
+{
+  "store": "https://apps.microsoft.com/detail/9NZ56VV4N6QR",
+  "versions": [
+    {
+      "version": "3.4.0",
+      "date": "2026-11-23",
+      "notes": {
+        "fr": "Recherche dans les projets, galerie de modèles et collections (.pmaps), plan d'actions à l'écran, projet en un seul document, accueil repensé et page des versions.",
+        "en": "Search across projects, template gallery and collections (.pmaps), action plan on screen, a project as a single document, a new home page and the versions page."
+      },
+      "portable": {
+        "url": "https://github.com/PeterBarcauti/topogenia-site/releases/download/v3.4.0/Topogenia-3.4.0-portable.zip",
+        "sha256": "7236eb085dcbce4f6b720123da9ca0757fc25403a2a7295b8d1b79b390d4387f"
+      }
+    }
+  ]
+}

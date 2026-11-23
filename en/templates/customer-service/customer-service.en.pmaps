@@ -1,0 +1,416 @@
+{
+  "format": "topogenia-collection",
+  "version": "1.0",
+  "name": "Customer service",
+  "description": "The most common handling of a customer complaint, from receipt to closure, to adapt to your organisation.",
+  "processes": [
+    {
+      "format": "topogenia",
+      "version": "1.5",
+      "project": {
+        "name": "Handling a customer complaint",
+        "code": "COMPL",
+        "language": "en",
+        "description": "Gallery template: handling a customer complaint. Trigger: Complaint sent by a customer. Outcome: Complaint resolved and accepted; closed as inadmissible; or escalated to mediation. To adapt to your organisation: actors, documents, media, thresholds and lead times."
+      },
+      "map": {
+        "summary": {
+          "text": "Customer service qualifies the complaint, quality contains and analyses it, then the reply goes to the customer until closure, rejection or escalation."
+        },
+        "lanes": [
+          {
+            "id": "customer",
+            "name": "Customer",
+            "type": "department"
+          },
+          {
+            "id": "customer-service",
+            "name": "Customer service",
+            "type": "department"
+          },
+          {
+            "id": "quality-technical-service",
+            "name": "Quality / Technical service",
+            "type": "department"
+          },
+          {
+            "id": "order-administration-finance",
+            "name": "Order administration / Finance",
+            "type": "department"
+          }
+        ],
+        "steps": [
+          {
+            "id": "complaint-sent-customer",
+            "lane": "customer",
+            "label": "Complaint sent by the customer",
+            "type": "start",
+            "column": 0
+          },
+          {
+            "id": "record-acknowledge-qualify-complaint",
+            "lane": "customer-service",
+            "label": "Record, acknowledge and qualify the complaint",
+            "column": 1,
+            "sheet": {
+              "purpose": "Customer service opens a traceable file, sends the acknowledgement to the customer and checks order, delivery, warranty, scope and time limits to establish admissibility and urgency.",
+              "inputs": [
+                {
+                  "name": "Customer complaint",
+                  "medium": "email"
+                },
+                {
+                  "name": "Order and delivery file",
+                  "medium": "file"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-qualified-complaint-file",
+                  "name": "Qualified complaint file",
+                  "medium": "file"
+                },
+                {
+                  "id": "doc-acknowledgement-receipt",
+                  "name": "Acknowledgement of receipt",
+                  "medium": "email"
+                }
+              ]
+            }
+          },
+          {
+            "id": "complaint-admissible",
+            "lane": "customer-service",
+            "label": "Is the complaint admissible?",
+            "type": "decision",
+            "column": 2,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-qualified-complaint-file"
+                }
+              ]
+            }
+          },
+          {
+            "id": "notify-customer-rejection-reasons",
+            "lane": "customer-service",
+            "label": "Notify the customer of the rejection with reasons",
+            "column": 3,
+            "sheet": {
+              "purpose": "When the complaint is not admissible (outside the warranty, the scope or the time limits), customer service sends a documented reply explaining the refusal and mentioning any means of appeal.",
+              "uses": [
+                {
+                  "document": "doc-qualified-complaint-file"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-reasoned-rejection-response",
+                  "name": "Reasoned rejection response",
+                  "medium": "email"
+                }
+              ]
+            }
+          },
+          {
+            "id": "deploy-immediate-safeguarding-measures",
+            "lane": "quality-technical-service",
+            "label": "Deploy immediate safeguarding measures",
+            "column": 3,
+            "sheet": {
+              "purpose": "When the defect may affect other products, the quality or technical department immediately puts protective measures in place (stock sorting, shipment blocks, emergency repair) to protect the customer.",
+              "uses": [
+                {
+                  "document": "doc-qualified-complaint-file"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-executed-safeguarding-plan",
+                  "name": "Executed safeguarding plan",
+                  "medium": "spreadsheet"
+                }
+              ]
+            }
+          },
+          {
+            "id": "product-return-immediate-replacement-required",
+            "lane": "customer-service",
+            "label": "Is a product return or immediate replacement required?",
+            "type": "decision",
+            "column": 4,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-qualified-complaint-file"
+                },
+                {
+                  "document": "doc-executed-safeguarding-plan"
+                }
+              ]
+            }
+          },
+          {
+            "id": "arrange-product-return-replacement",
+            "lane": "order-administration-finance",
+            "label": "Arrange the product return or the replacement",
+            "column": 5,
+            "sheet": {
+              "purpose": "Without waiting for the end of the in-depth analysis, order administration issues the return authorisation, has the returned part received and hands it over for examination, or arranges the shipment of a replacement.",
+              "free_text": "Produced as applicable: Returned part (if returned) ; Replacement (if replaced).",
+              "uses": [
+                {
+                  "document": "doc-qualified-complaint-file"
+                },
+                {
+                  "document": "doc-executed-safeguarding-plan"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-returned-part",
+                  "name": "Returned part",
+                  "medium": "other"
+                },
+                {
+                  "id": "doc-replacement",
+                  "name": "Replacement",
+                  "medium": "other"
+                }
+              ]
+            }
+          },
+          {
+            "id": "analyse-causes-define-corrective-actions",
+            "lane": "quality-technical-service",
+            "label": "Analyse the causes and define the corrective actions",
+            "column": 6,
+            "sheet": {
+              "purpose": "The technical or quality team looks for the root causes (including on the returned part where applicable), establishes whether the product is at fault and formalises lasting corrective actions.",
+              "free_text": "As applicable: Returned part (if applicable).",
+              "uses": [
+                {
+                  "document": "doc-qualified-complaint-file"
+                },
+                {
+                  "document": "doc-executed-safeguarding-plan"
+                },
+                {
+                  "document": "doc-returned-part"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-analysis-report-action-plan",
+                  "name": "Analysis report and action plan",
+                  "medium": "file"
+                }
+              ]
+            }
+          },
+          {
+            "id": "send-official-response-customer",
+            "lane": "customer-service",
+            "label": "Send the official response to the customer",
+            "column": 7,
+            "sheet": {
+              "purpose": "Customer service concludes on whether the complaint is well founded: if so, the response carries the action plan and, where due, the proposed credit note; if not (conforming product, misuse), it explains the findings and proper use; then it is sent to the customer.",
+              "free_text": "As applicable: Replacement (if applicable).",
+              "uses": [
+                {
+                  "document": "doc-qualified-complaint-file"
+                },
+                {
+                  "document": "doc-analysis-report-action-plan"
+                },
+                {
+                  "document": "doc-replacement"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-official-response-customer",
+                  "name": "Official response to the customer",
+                  "medium": "email"
+                }
+              ]
+            }
+          },
+          {
+            "id": "customer-accept-proposed-resolution",
+            "lane": "customer",
+            "label": "Does the customer accept the proposed resolution?",
+            "type": "decision",
+            "column": 8,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-official-response-customer"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-customer-satisfaction-feedback",
+                  "name": "Customer satisfaction feedback",
+                  "medium": "email"
+                }
+              ]
+            }
+          },
+          {
+            "id": "issue-agreed-credit-note-where",
+            "lane": "order-administration-finance",
+            "label": "Issue the agreed credit note, where due",
+            "column": 9,
+            "sheet": {
+              "purpose": "When the accepted resolution includes a credit note, order administration or finance draws it up and sends it to the customer; otherwise nothing is issued.",
+              "free_text": "Produced as applicable: Credit note (if granted).",
+              "uses": [
+                {
+                  "document": "doc-official-response-customer"
+                },
+                {
+                  "document": "doc-customer-satisfaction-feedback"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-credit-note",
+                  "name": "Credit note",
+                  "medium": "email"
+                }
+              ]
+            }
+          },
+          {
+            "id": "close-complaint-file",
+            "lane": "customer-service",
+            "label": "Close the complaint file",
+            "column": 10,
+            "sheet": {
+              "purpose": "After the customer's agreement, customer service closes the file, checks the internal follow-up of long-term actions and feeds the satisfaction indicators.",
+              "free_text": "As applicable: Credit note (if granted).",
+              "uses": [
+                {
+                  "document": "doc-customer-satisfaction-feedback"
+                },
+                {
+                  "document": "doc-analysis-report-action-plan"
+                },
+                {
+                  "document": "doc-credit-note"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-closed-complaint-file",
+                  "name": "Closed complaint file",
+                  "medium": "file"
+                }
+              ]
+            }
+          },
+          {
+            "id": "complaint-resolved-accepted-customer",
+            "lane": "customer-service",
+            "label": "Complaint resolved and accepted by the customer",
+            "type": "end",
+            "column": 11
+          },
+          {
+            "id": "file-escalated-commercial-quality-management",
+            "lane": "customer-service",
+            "label": "File escalated to commercial or quality management",
+            "type": "end",
+            "column": 9
+          },
+          {
+            "id": "complaint-closed-as-inadmissible",
+            "lane": "customer-service",
+            "label": "Complaint closed as inadmissible",
+            "type": "end",
+            "column": 4,
+            "row": 1
+          }
+        ],
+        "flows": [
+          {
+            "source": "complaint-sent-customer",
+            "target": "record-acknowledge-qualify-complaint"
+          },
+          {
+            "source": "record-acknowledge-qualify-complaint",
+            "target": "complaint-admissible"
+          },
+          {
+            "source": "complaint-admissible",
+            "target": "deploy-immediate-safeguarding-measures",
+            "label": "yes"
+          },
+          {
+            "source": "complaint-admissible",
+            "target": "notify-customer-rejection-reasons",
+            "label": "no"
+          },
+          {
+            "source": "notify-customer-rejection-reasons",
+            "target": "complaint-closed-as-inadmissible"
+          },
+          {
+            "source": "deploy-immediate-safeguarding-measures",
+            "target": "product-return-immediate-replacement-required"
+          },
+          {
+            "source": "product-return-immediate-replacement-required",
+            "target": "arrange-product-return-replacement",
+            "label": "yes"
+          },
+          {
+            "source": "product-return-immediate-replacement-required",
+            "target": "analyse-causes-define-corrective-actions",
+            "label": "no"
+          },
+          {
+            "source": "arrange-product-return-replacement",
+            "target": "analyse-causes-define-corrective-actions"
+          },
+          {
+            "source": "analyse-causes-define-corrective-actions",
+            "target": "send-official-response-customer"
+          },
+          {
+            "source": "send-official-response-customer",
+            "target": "customer-accept-proposed-resolution"
+          },
+          {
+            "source": "customer-accept-proposed-resolution",
+            "target": "issue-agreed-credit-note-where",
+            "label": "yes"
+          },
+          {
+            "source": "customer-accept-proposed-resolution",
+            "target": "file-escalated-commercial-quality-management",
+            "label": "no"
+          },
+          {
+            "source": "issue-agreed-credit-note-where",
+            "target": "close-complaint-file"
+          },
+          {
+            "source": "close-complaint-file",
+            "target": "complaint-resolved-accepted-customer"
+          }
+        ]
+      },
+      "uncertainties": [
+        "Generic model: replace the actors, the documents and their media with those of your organisation.",
+        "Duration and lead time of each step: to be measured in your organisation, the model gives none.",
+        "Appeal after rejection: if the customer disputes an inadmissibility rejection, the request may be subject to an appeal review by commercial management or to an exceptional goodwill gesture.",
+        "Technical or commercial re-examination after escalation: depending on the nature of the disagreement, management arbitrates a further technical analysis or a revised commercial proposal.",
+        "Customer portals: in certain sectors, the acknowledgement, the containment and the analysis report are often entered directly in the ordering party's quality portal.",
+        "Medium of each document (paper, email, spreadsheet, file, software): set by default in this model, to be adapted to your organisation."
+      ]
+    }
+  ]
+}

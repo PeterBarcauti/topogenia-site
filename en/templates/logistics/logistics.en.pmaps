@@ -1,0 +1,469 @@
+{
+  "format": "topogenia-collection",
+  "version": "1.0",
+  "name": "Logistics",
+  "description": "The most common logistics process, from picking an order to shipping it, to adapt to your organisation.",
+  "processes": [
+    {
+      "format": "topogenia",
+      "version": "1.5",
+      "project": {
+        "name": "Order picking and shipping",
+        "code": "SHIP",
+        "language": "en",
+        "description": "Gallery template: order picking and shipping. Trigger: Delivery order released for warehouse picking. Outcome: Order shipped and stock issue recorded; or order awaiting replenishment. To adapt to your organisation: actors, documents, media, thresholds and lead times."
+      },
+      "map": {
+        "summary": {
+          "text": "The planner releases picking, the picker picks and packs, the controller checks and loads, then the departure is confirmed and stock is deducted."
+        },
+        "lanes": [
+          {
+            "id": "logistics-planner",
+            "name": "Logistics planner",
+            "type": "person"
+          },
+          {
+            "id": "order-picker",
+            "name": "Order picker",
+            "type": "person"
+          },
+          {
+            "id": "shipping-checker",
+            "name": "Shipping checker",
+            "type": "person"
+          },
+          {
+            "id": "carrier",
+            "name": "Carrier",
+            "type": "department"
+          }
+        ],
+        "steps": [
+          {
+            "id": "delivery-order-released-warehouse",
+            "lane": "logistics-planner",
+            "label": "Delivery order released for the warehouse",
+            "type": "start",
+            "column": 0
+          },
+          {
+            "id": "plan-picking-wave-book-transport",
+            "lane": "logistics-planner",
+            "label": "Plan the picking wave and book the transport",
+            "column": 1,
+            "sheet": {
+              "purpose": "The logistics planner groups the delivery orders by route or priority, releases the picking orders and sends the collection request to the carrier.",
+              "inputs": [
+                {
+                  "name": "Delivery order",
+                  "medium": "software"
+                },
+                {
+                  "name": "Stock status",
+                  "medium": "spreadsheet"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-picking-order",
+                  "name": "Picking order",
+                  "medium": "software"
+                },
+                {
+                  "id": "doc-collection-request",
+                  "name": "Collection request",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "confirm-collection-slot",
+            "lane": "carrier",
+            "label": "Confirm the collection slot",
+            "column": 2,
+            "sheet": {
+              "purpose": "The carrier confirms the availability of the vehicle and the dock slot for collection.",
+              "uses": [
+                {
+                  "document": "doc-collection-request"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-confirmed-loading-slot",
+                  "name": "Confirmed loading slot",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "pick-items-stock-locations",
+            "lane": "order-picker",
+            "label": "Pick the items from the stock locations",
+            "column": 3,
+            "sheet": {
+              "purpose": "The picker takes the references and quantities requested from the locations indicated, respecting batch or serial number management.",
+              "uses": [
+                {
+                  "document": "doc-picking-order"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-picked-items",
+                  "name": "Picked items",
+                  "medium": "other"
+                },
+                {
+                  "id": "doc-completed-picking-list",
+                  "name": "Completed picking list",
+                  "medium": "spreadsheet"
+                }
+              ]
+            }
+          },
+          {
+            "id": "all-items-order-available-stock",
+            "lane": "order-picker",
+            "label": "Are all the items on the order available in stock?",
+            "type": "decision",
+            "column": 4,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-completed-picking-list"
+                },
+                {
+                  "document": "doc-picking-order"
+                }
+              ]
+            }
+          },
+          {
+            "id": "pack-weigh-label-parcels",
+            "lane": "order-picker",
+            "label": "Pack, weigh and label the parcels",
+            "column": 5,
+            "sheet": {
+              "purpose": "The picker packs the items in suitable packaging, measures the actual weights and volumes, prints the packing list and applies the standard logistics labels.",
+              "uses": [
+                {
+                  "document": "doc-picked-items"
+                },
+                {
+                  "document": "doc-completed-picking-list"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-labelled-parcels",
+                  "name": "Labelled parcels",
+                  "medium": "other"
+                },
+                {
+                  "id": "doc-packing-list",
+                  "name": "Packing list",
+                  "medium": "paper"
+                }
+              ]
+            }
+          },
+          {
+            "id": "check-preparation-draw-up-loading",
+            "lane": "shipping-checker",
+            "label": "Check the preparation and draw up the loading plan",
+            "column": 6,
+            "sheet": {
+              "purpose": "The shipping controller checks that the physical parcels, the packing list and the delivery order agree, then draws up the loading plan from the actual number and dimensions of the parcels.",
+              "uses": [
+                {
+                  "document": "doc-labelled-parcels"
+                },
+                {
+                  "document": "doc-corrected-parcels"
+                },
+                {
+                  "document": "doc-packing-list"
+                },
+                {
+                  "document": "doc-updated-packing-list"
+                },
+                {
+                  "document": "doc-confirmed-loading-slot"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-check-sheet",
+                  "name": "Check sheet",
+                  "medium": "software"
+                },
+                {
+                  "id": "doc-loading-plan",
+                  "name": "Loading plan",
+                  "medium": "spreadsheet"
+                }
+              ]
+            }
+          },
+          {
+            "id": "preparation-match-delivery-order",
+            "lane": "shipping-checker",
+            "label": "Does the preparation match the delivery order?",
+            "type": "decision",
+            "column": 7,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-check-sheet"
+                }
+              ]
+            }
+          },
+          {
+            "id": "correct-picking-labelling-discrepancies",
+            "lane": "order-picker",
+            "label": "Correct the picking or labelling discrepancies",
+            "column": 8,
+            "sheet": {
+              "purpose": "In case of an error in reference, quantity or labelling, the picker corrects the preparation and updates the packing list before a new check.",
+              "uses": [
+                {
+                  "document": "doc-check-sheet"
+                },
+                {
+                  "document": "doc-picking-order"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-corrected-parcels",
+                  "name": "Corrected parcels",
+                  "medium": "other"
+                },
+                {
+                  "id": "doc-updated-packing-list",
+                  "name": "Updated packing list",
+                  "medium": "paper"
+                }
+              ]
+            }
+          },
+          {
+            "id": "load-parcels-into-vehicle-according",
+            "lane": "shipping-checker",
+            "label": "Load the parcels into the vehicle according to the plan",
+            "column": 8,
+            "sheet": {
+              "purpose": "The shipping controller supervises the loading of the parcels into the carrier's vehicle according to the loading plan and records the exact count of units loaded.",
+              "uses": [
+                {
+                  "document": "doc-labelled-parcels"
+                },
+                {
+                  "document": "doc-corrected-parcels"
+                },
+                {
+                  "document": "doc-loading-plan"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-counted-completed-load",
+                  "name": "Counted completed load",
+                  "medium": "other"
+                }
+              ]
+            }
+          },
+          {
+            "id": "issue-shipping-documents-loaded-quantities",
+            "lane": "shipping-checker",
+            "label": "Issue the shipping documents from the loaded quantities",
+            "column": 9,
+            "sheet": {
+              "purpose": "On the basis of the quantities actually loaded, the shipping controller generates the delivery note and the consignment note.",
+              "inputs": [
+                {
+                  "name": "Delivery order",
+                  "medium": "software"
+                }
+              ],
+              "uses": [
+                {
+                  "document": "doc-counted-completed-load"
+                },
+                {
+                  "document": "doc-packing-list"
+                },
+                {
+                  "document": "doc-updated-packing-list"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-delivery-note",
+                  "name": "Delivery note",
+                  "medium": "paper"
+                },
+                {
+                  "id": "doc-consignment-note",
+                  "name": "Consignment note",
+                  "medium": "paper"
+                }
+              ]
+            }
+          },
+          {
+            "id": "check-load-sign-consignment-note",
+            "lane": "carrier",
+            "label": "Check the load and sign the consignment note",
+            "column": 10,
+            "sheet": {
+              "purpose": "The carrier checks that the units loaded match the documents handed over, then signs the consignment note to formalise taking charge of the goods.",
+              "uses": [
+                {
+                  "document": "doc-delivery-note"
+                },
+                {
+                  "document": "doc-consignment-note"
+                },
+                {
+                  "document": "doc-counted-completed-load"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-signed-consignment-note",
+                  "name": "Signed consignment note",
+                  "medium": "paper"
+                }
+              ]
+            }
+          },
+          {
+            "id": "confirm-shipment-record-stock-issue",
+            "lane": "shipping-checker",
+            "label": "Confirm the shipment and record the stock issue",
+            "column": 11,
+            "sheet": {
+              "purpose": "The shipping controller confirms the departure in the system, which deducts the stock, triggers the shipping notice to the customer and authorises invoicing.",
+              "uses": [
+                {
+                  "document": "doc-signed-consignment-note"
+                },
+                {
+                  "document": "doc-delivery-note"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-shipping-notice",
+                  "name": "Shipping notice",
+                  "medium": "email"
+                },
+                {
+                  "id": "doc-stock-issue-movement",
+                  "name": "Stock issue movement",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "order-shipped-stock-deducted",
+            "lane": "shipping-checker",
+            "label": "Order shipped and stock deducted",
+            "type": "end",
+            "column": 12
+          },
+          {
+            "id": "order-awaiting-replenishment-backorder",
+            "lane": "logistics-planner",
+            "label": "Order awaiting replenishment or backorder",
+            "type": "end",
+            "column": 5
+          }
+        ],
+        "flows": [
+          {
+            "source": "delivery-order-released-warehouse",
+            "target": "plan-picking-wave-book-transport"
+          },
+          {
+            "source": "plan-picking-wave-book-transport",
+            "target": "confirm-collection-slot"
+          },
+          {
+            "source": "confirm-collection-slot",
+            "target": "pick-items-stock-locations"
+          },
+          {
+            "source": "pick-items-stock-locations",
+            "target": "all-items-order-available-stock"
+          },
+          {
+            "source": "all-items-order-available-stock",
+            "target": "pack-weigh-label-parcels",
+            "label": "yes"
+          },
+          {
+            "source": "all-items-order-available-stock",
+            "target": "order-awaiting-replenishment-backorder",
+            "label": "no"
+          },
+          {
+            "source": "pack-weigh-label-parcels",
+            "target": "check-preparation-draw-up-loading"
+          },
+          {
+            "source": "check-preparation-draw-up-loading",
+            "target": "preparation-match-delivery-order"
+          },
+          {
+            "source": "preparation-match-delivery-order",
+            "target": "load-parcels-into-vehicle-according",
+            "label": "yes"
+          },
+          {
+            "source": "preparation-match-delivery-order",
+            "target": "correct-picking-labelling-discrepancies",
+            "label": "no"
+          },
+          {
+            "source": "correct-picking-labelling-discrepancies",
+            "target": "check-preparation-draw-up-loading"
+          },
+          {
+            "source": "load-parcels-into-vehicle-according",
+            "target": "issue-shipping-documents-loaded-quantities"
+          },
+          {
+            "source": "issue-shipping-documents-loaded-quantities",
+            "target": "check-load-sign-consignment-note"
+          },
+          {
+            "source": "check-load-sign-consignment-note",
+            "target": "confirm-shipment-record-stock-issue"
+          },
+          {
+            "source": "confirm-shipment-record-stock-issue",
+            "target": "order-shipped-stock-deducted"
+          }
+        ]
+      },
+      "uncertainties": [
+        "Generic model: replace the actors, the documents and their media with those of your organisation.",
+        "Duration and lead time of each step: to be measured in your organisation, the model gives none.",
+        "Partial shipment: if an item is missing at picking, the company may, with the customer's agreement, ship the quantities available and create a backorder for the balance.",
+        "International shipments: for deliveries outside the customs territory, preparing the pro forma invoice, the certificate of origin and the customs declaration takes place before loading.",
+        "Electronic data interchange: in certain sectors, the shipping notice is sent automatically by electronic means when the departure is validated.",
+        "Automated or outsourced warehouse: the picking, packing and loading steps may be entrusted to a logistics provider or driven by a dedicated warehouse management system.",
+        "Medium of each document (paper, email, spreadsheet, file, software): set by default in this model, to be adapted to your organisation."
+      ]
+    }
+  ]
+}

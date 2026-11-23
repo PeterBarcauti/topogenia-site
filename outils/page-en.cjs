@@ -74,6 +74,9 @@ html = html.replace(/(<span class="chip-code" id="demo-code">)[^<]*(<\/span>)/, 
 once('<a href="./" data-lang="fr" aria-current="page">FR</a>', '<a href="../" data-lang="fr" hreflang="fr" lang="fr">FR</a>');
 once('<a href="en/" data-lang="en" hreflang="en" lang="en">EN</a>', '<a href="./" data-lang="en" aria-current="page">EN</a>');
 
+// The gallery and the versions, in English: next to this page, under en/ (the gallery has another name there)
+html = html.split('href="modeles/"').join('href="templates/"');
+
 // The page that answers a search, in English: next to this page, under en/
 once('href="logiciel-diagramme-couloirs-gratuit-hors-ligne/"', 'href="free-swimlane-diagram-software-offline/"');
 

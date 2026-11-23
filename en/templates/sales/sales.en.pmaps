@@ -1,0 +1,478 @@
+{
+  "format": "topogenia-collection",
+  "version": "1.0",
+  "name": "Customer orders",
+  "description": "The most common process, from a customer order to its delivery, to adapt to your organisation.",
+  "processes": [
+    {
+      "format": "topogenia",
+      "version": "1.5",
+      "project": {
+        "name": "From a customer order to its delivery",
+        "code": "ORDER",
+        "language": "en",
+        "description": "Gallery template: from a customer order to its delivery. Trigger: Order sent by a customer. Outcome: Order delivered and ready to be invoiced; or order cancelled or suspended. To adapt to your organisation: actors, documents, media, thresholds and lead times."
+      },
+      "map": {
+        "summary": {
+          "text": "Order administration checks the order and the credit, logistics delivers, then the customer signs and the file is ready for invoicing."
+        },
+        "lanes": [
+          {
+            "id": "customer",
+            "name": "Customer",
+            "type": "department"
+          },
+          {
+            "id": "order-administration",
+            "name": "Order administration",
+            "type": "department"
+          },
+          {
+            "id": "credit-control",
+            "name": "Credit control",
+            "type": "department"
+          },
+          {
+            "id": "logistics",
+            "name": "Logistics",
+            "type": "department"
+          }
+        ],
+        "steps": [
+          {
+            "id": "order-sent-customer",
+            "lane": "customer",
+            "label": "Order sent by the customer",
+            "type": "start",
+            "column": 0
+          },
+          {
+            "id": "check-order-verify-availability",
+            "lane": "order-administration",
+            "label": "Check the order and verify availability",
+            "column": 1,
+            "sheet": {
+              "purpose": "Order administration checks the customer, the references, quantities, prices and terms, then stock availability or manufacturing capacity before any commitment; in case of a gap, it offers the customer a correction or a new lead time.",
+              "inputs": [
+                {
+                  "name": "Customer order",
+                  "medium": "email"
+                },
+                {
+                  "name": "Commercial terms",
+                  "medium": "file"
+                },
+                {
+                  "name": "Stock and schedule status",
+                  "medium": "spreadsheet"
+                }
+              ],
+              "uses": [
+                {
+                  "document": "doc-corrected-customer-order"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-admissibility-availability-assessment",
+                  "name": "Admissibility and availability assessment",
+                  "medium": "spreadsheet"
+                }
+              ]
+            }
+          },
+          {
+            "id": "order-compliant-availability-assured",
+            "lane": "order-administration",
+            "label": "Is the order compliant and availability assured?",
+            "type": "decision",
+            "column": 2,
+            "sheet": {
+              "free_text": "Produced as applicable: Correction or new lead time proposal (if no).",
+              "uses": [
+                {
+                  "document": "doc-admissibility-availability-assessment"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-correction-new-lead-time-proposal",
+                  "name": "Correction or new lead time proposal",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "customer-accept-correction-new-lead",
+            "lane": "customer",
+            "label": "Does the customer accept a correction or a new lead time?",
+            "type": "decision",
+            "column": 3,
+            "sheet": {
+              "free_text": "Produced as applicable: Corrected customer order (if yes).",
+              "uses": [
+                {
+                  "document": "doc-correction-new-lead-time-proposal"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-corrected-customer-order",
+                  "name": "Corrected customer order",
+                  "medium": "email"
+                }
+              ]
+            }
+          },
+          {
+            "id": "check-customers-solvency-outstanding-balance",
+            "lane": "credit-control",
+            "label": "Check the customer's solvency and outstanding balance",
+            "column": 3,
+            "sheet": {
+              "purpose": "Credit control examines the current outstanding balance, the overdue unpaid invoices and the credit limit granted to the customer to assess the risk of default.",
+              "inputs": [
+                {
+                  "name": "Customer order",
+                  "medium": "email"
+                },
+                {
+                  "name": "Customer account position",
+                  "medium": "spreadsheet"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-credit-opinion",
+                  "name": "Credit opinion",
+                  "medium": "email"
+                }
+              ]
+            }
+          },
+          {
+            "id": "outstanding-balance-allow-order-fulfilled",
+            "lane": "credit-control",
+            "label": "Does the outstanding balance allow the order to be fulfilled?",
+            "type": "decision",
+            "column": 4,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-credit-opinion"
+                }
+              ]
+            }
+          },
+          {
+            "id": "offer-customer-advance-payment-request",
+            "lane": "order-administration",
+            "label": "Offer the customer an advance payment or request a waiver",
+            "column": 5,
+            "sheet": {
+              "purpose": "When credit is blocked, order administration notifies the customer of the block and proposes the conditions for lifting it (payment of arrears, advance payment or request for a waiver); the block is lifted only once payment is received or a waiver granted.",
+              "inputs": [
+                {
+                  "name": "Customer order",
+                  "medium": "email"
+                }
+              ],
+              "uses": [
+                {
+                  "document": "doc-credit-opinion"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-credit-release-proposal",
+                  "name": "Credit release proposal",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "credit-block-lifted",
+            "lane": "credit-control",
+            "label": "Is the credit block lifted?",
+            "type": "decision",
+            "column": 6,
+            "sheet": {
+              "free_text": "As applicable: Payment received (where applicable) ; Waiver granted (where applicable). Produced as applicable: Credit authorisation (if yes).",
+              "inputs": [
+                {
+                  "name": "Payment received",
+                  "medium": "software"
+                },
+                {
+                  "name": "Waiver granted",
+                  "medium": "software"
+                }
+              ],
+              "uses": [
+                {
+                  "document": "doc-credit-release-proposal"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-credit-authorisation",
+                  "name": "Credit authorisation",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "confirm-order-release-delivery-order",
+            "lane": "order-administration",
+            "label": "Confirm the order and release the delivery order",
+            "column": 7,
+            "sheet": {
+              "purpose": "Once availability and credit are validated, order administration firmly records the order, sends the acknowledgement to the customer and passes the delivery order to logistics.",
+              "inputs": [
+                {
+                  "name": "Customer order",
+                  "medium": "email"
+                }
+              ],
+              "uses": [
+                {
+                  "document": "doc-admissibility-availability-assessment"
+                },
+                {
+                  "document": "doc-credit-opinion"
+                },
+                {
+                  "document": "doc-credit-authorisation"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-order-acknowledgement",
+                  "name": "Order acknowledgement",
+                  "medium": "email"
+                },
+                {
+                  "id": "doc-delivery-order",
+                  "name": "Delivery order",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "prepare-ship-order",
+            "lane": "logistics",
+            "label": "Prepare and ship the order",
+            "column": 8,
+            "sheet": {
+              "purpose": "The logistics department carries out picking, packaging, the issue of the transport documents and the handover of the goods to the carrier.",
+              "uses": [
+                {
+                  "document": "doc-delivery-order"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-delivery-note",
+                  "name": "Delivery note",
+                  "medium": "paper"
+                },
+                {
+                  "id": "doc-shipping-notice",
+                  "name": "Shipping notice",
+                  "medium": "email"
+                },
+                {
+                  "id": "doc-shipped-goods",
+                  "name": "Shipped goods",
+                  "medium": "other"
+                }
+              ]
+            }
+          },
+          {
+            "id": "receive-goods-sign-delivery-note",
+            "lane": "customer",
+            "label": "Receive the goods and sign the delivery note",
+            "column": 9,
+            "sheet": {
+              "purpose": "The customer checks the physical receipt at destination and signs the transport document or the delivery note.",
+              "uses": [
+                {
+                  "document": "doc-delivery-note"
+                },
+                {
+                  "document": "doc-shipped-goods"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-signed-proof-delivery",
+                  "name": "Signed proof of delivery",
+                  "medium": "paper"
+                }
+              ]
+            }
+          },
+          {
+            "id": "send-signed-proof-delivery",
+            "lane": "logistics",
+            "label": "Send the signed proof of delivery",
+            "column": 10,
+            "sheet": {
+              "purpose": "The logistics department archives the signed proof of delivery and sends the delivery confirmation to order administration.",
+              "uses": [
+                {
+                  "document": "doc-signed-proof-delivery"
+                },
+                {
+                  "document": "doc-delivery-note"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-delivery-confirmation",
+                  "name": "Delivery confirmation",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "close-delivery-trigger-invoicing",
+            "lane": "order-administration",
+            "label": "Close the delivery and trigger invoicing",
+            "column": 11,
+            "sheet": {
+              "purpose": "Order administration checks that the delivery was properly carried out, closes the order follow-up and releases the file for invoicing.",
+              "inputs": [
+                {
+                  "name": "Customer order",
+                  "medium": "email"
+                }
+              ],
+              "uses": [
+                {
+                  "document": "doc-delivery-confirmation"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-file-ready-invoicing",
+                  "name": "File ready for invoicing",
+                  "medium": "file"
+                }
+              ]
+            }
+          },
+          {
+            "id": "order-delivered-ready-invoicing",
+            "lane": "order-administration",
+            "label": "Order delivered and ready for invoicing",
+            "type": "end",
+            "column": 12
+          },
+          {
+            "id": "order-cancelled-suspended",
+            "lane": "order-administration",
+            "label": "Order cancelled or suspended",
+            "type": "end",
+            "column": 7,
+            "row": 1
+          }
+        ],
+        "flows": [
+          {
+            "source": "order-sent-customer",
+            "target": "check-order-verify-availability"
+          },
+          {
+            "source": "check-order-verify-availability",
+            "target": "order-compliant-availability-assured"
+          },
+          {
+            "source": "order-compliant-availability-assured",
+            "target": "check-customers-solvency-outstanding-balance",
+            "label": "yes"
+          },
+          {
+            "source": "order-compliant-availability-assured",
+            "target": "customer-accept-correction-new-lead",
+            "label": "no"
+          },
+          {
+            "source": "customer-accept-correction-new-lead",
+            "target": "check-order-verify-availability",
+            "label": "yes"
+          },
+          {
+            "source": "customer-accept-correction-new-lead",
+            "target": "order-cancelled-suspended",
+            "label": "no"
+          },
+          {
+            "source": "check-customers-solvency-outstanding-balance",
+            "target": "outstanding-balance-allow-order-fulfilled"
+          },
+          {
+            "source": "outstanding-balance-allow-order-fulfilled",
+            "target": "confirm-order-release-delivery-order",
+            "label": "yes"
+          },
+          {
+            "source": "outstanding-balance-allow-order-fulfilled",
+            "target": "offer-customer-advance-payment-request",
+            "label": "no"
+          },
+          {
+            "source": "offer-customer-advance-payment-request",
+            "target": "credit-block-lifted"
+          },
+          {
+            "source": "credit-block-lifted",
+            "target": "confirm-order-release-delivery-order",
+            "label": "yes"
+          },
+          {
+            "source": "credit-block-lifted",
+            "target": "order-cancelled-suspended",
+            "label": "no"
+          },
+          {
+            "source": "confirm-order-release-delivery-order",
+            "target": "prepare-ship-order"
+          },
+          {
+            "source": "prepare-ship-order",
+            "target": "receive-goods-sign-delivery-note"
+          },
+          {
+            "source": "receive-goods-sign-delivery-note",
+            "target": "send-signed-proof-delivery"
+          },
+          {
+            "source": "send-signed-proof-delivery",
+            "target": "close-delivery-trigger-invoicing"
+          },
+          {
+            "source": "close-delivery-trigger-invoicing",
+            "target": "order-delivered-ready-invoicing"
+          }
+        ]
+      },
+      "uncertainties": [
+        "Generic model: replace the actors, the documents and their media with those of your organisation.",
+        "Duration and lead time of each step: to be measured in your organisation, the model gives none.",
+        "Make to order: if the items are not held in stock, confirming the order triggers a requirement sent to planning and production before logistics release.",
+        "Electronic orders: in certain sectors and in high-volume business-to-business exchanges, orders and delivery schedules are loaded automatically by electronic data interchange.",
+        "Invoicing on shipment: depending on the organisation, customer invoicing is triggered as soon as the goods leave the warehouse rather than on receipt of the signed proof of delivery.",
+        "Logistics detail: the detailed warehouse operations summarised in the order preparation and shipping step are covered by the dedicated template \"Order picking and shipping\".",
+        "Medium of each document (paper, email, spreadsheet, file, software): set by default in this model, to be adapted to your organisation."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+9cdd8891068879af11c24d0ee67de3ef5a2472d6ccf035e34f481e37439b8b80  contract-review-and-approval.fr.pmap
+dc40aa0c8a51fd420c7718013e254b3b85819c25d6bef8d3977d78c5d21a32ca  legal.fr.pmaps

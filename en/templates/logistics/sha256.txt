@@ -1,0 +1,2 @@
+707ce2f3ecb6464df2747ce5dfe280a6fba6f3ab609e5cd522ea9c955b6ef587  logistics.en.pmaps
+7d8a719c0030617bb0472e161c9a571f3fb2918f9dc31ad21a99c6418260e425  order-picking-and-shipping.en.pmap

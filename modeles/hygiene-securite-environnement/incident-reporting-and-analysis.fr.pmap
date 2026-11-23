@@ -1,0 +1,421 @@
+{
+  "format": "topogenia",
+  "version": "1.5",
+  "project": {
+    "name": "Déclaration et analyse d'un accident ou d'un presque-accident",
+    "code": "ACCID",
+    "language": "fr",
+    "description": "Modèle de la galerie : déclaration et analyse d'un accident ou d'un presque-accident. Déclencheur : Accident du travail, incident environnemental ou presque-accident survenu. Résultat : Événement analysé, efficacité vérifiée et dossier HSE clôturé. À adapter à votre organisation : acteurs, documents, supports, seuils et délais."
+  },
+  "map": {
+    "summary": {
+      "text": "Le secteur sécurise et déclare l'événement, le préventeur recueille et analyse, puis le plan d'actions est validé, déployé et vérifié avant la clôture."
+    },
+    "lanes": [
+      {
+        "id": "witness-victim-first",
+        "name": "Témoin / Victime / Secouriste",
+        "type": "person"
+      },
+      {
+        "id": "area-manager",
+        "name": "Responsable de secteur",
+        "type": "person"
+      },
+      {
+        "id": "hse-officer",
+        "name": "Préventeur HSE",
+        "type": "person"
+      },
+      {
+        "id": "management-human-resources",
+        "name": "Direction / Ressources humaines",
+        "type": "department"
+      }
+    ],
+    "steps": [
+      {
+        "id": "accident-near-miss-occurred",
+        "lane": "witness-victim-first",
+        "label": "Accident ou presque-accident survenu",
+        "type": "start",
+        "column": 0
+      },
+      {
+        "id": "give-first-aid-make-area",
+        "lane": "witness-victim-first",
+        "label": "Porter secours et sécuriser immédiatement la zone",
+        "column": 1,
+        "sheet": {
+          "purpose": "Le témoin, la victime ou le secouriste déclenche l'alerte, prodigue les premiers secours, appelle les secours externes si nécessaire et neutralise tout danger immédiat.",
+          "outputs": [
+            {
+              "id": "doc-area-made-safe",
+              "name": "Zone sécurisée",
+              "medium": "other"
+            },
+            {
+              "id": "doc-alert-sent",
+              "name": "Alerte transmise",
+              "medium": "email"
+            }
+          ]
+        }
+      },
+      {
+        "id": "record-internal-report-event",
+        "lane": "area-manager",
+        "label": "Enregistrer la déclaration interne de l'événement",
+        "column": 2,
+        "sheet": {
+          "purpose": "Le responsable de secteur consigne les premiers faits objectifs (date, lieu, personnes impliquées, circonstances immédiates) dans la fiche d'événement interne.",
+          "uses": [
+            {
+              "document": "doc-alert-sent"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-hse-event-sheet",
+              "name": "Fiche d'événement HSE",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "event-require-legal-report-victim",
+        "lane": "hse-officer",
+        "label": "L'événement requiert-il déclaration légale ou suivi victime ?",
+        "type": "decision",
+        "column": 3,
+        "sheet": {
+          "uses": [
+            {
+              "document": "doc-hse-event-sheet"
+            }
+          ]
+        }
+      },
+      {
+        "id": "report-authorities-follow-up-victim",
+        "lane": "management-human-resources",
+        "label": "Déclarer aux autorités et assurer le suivi de la victime",
+        "column": 4,
+        "sheet": {
+          "purpose": "Lorsque l'événement entraîne un dommage corporel ou environnemental soumis à obligation légale, les ressources humaines ou la direction transmettent la déclaration réglementaire initiale dans les délais légaux et assurent le suivi de la victime (soins, accompagnement, reprise du travail).",
+          "uses": [
+            {
+              "document": "doc-hse-event-sheet"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-regulatory-declaration",
+              "name": "Déclaration réglementaire",
+              "medium": "software"
+            },
+            {
+              "id": "doc-victim-follow-up-opened",
+              "name": "Suivi victime ouvert",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "gather-facts-site",
+        "lane": "hse-officer",
+        "label": "Recueillir les faits sur le terrain",
+        "column": 5,
+        "sheet": {
+          "purpose": "Le préventeur HSE se rend rapidement sur place avec le responsable de secteur et les représentants du personnel pour observer la situation réelle, préserver les indices et recueillir les témoignages.",
+          "uses": [
+            {
+              "document": "doc-hse-event-sheet"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-factual-record-witness-statements",
+              "name": "Recueil factuel et témoignages",
+              "medium": "file"
+            }
+          ]
+        }
+      },
+      {
+        "id": "analyse-direct-root-causes",
+        "lane": "hse-officer",
+        "label": "Analyser les causes directes et profondes",
+        "column": 6,
+        "sheet": {
+          "purpose": "Le groupe d'analyse reconstitue l'enchaînement logique des faits pour identifier les causes immédiates et profondes (techniques, humaines et organisationnelles).",
+          "uses": [
+            {
+              "document": "doc-factual-record-witness-statements"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-cause-analysis-report",
+              "name": "Rapport d'analyse des causes",
+              "medium": "file"
+            }
+          ]
+        }
+      },
+      {
+        "id": "draw-up-prevention-action-plan",
+        "lane": "hse-officer",
+        "label": "Élaborer le plan d'actions de prévention",
+        "column": 7,
+        "sheet": {
+          "purpose": "Le préventeur HSE définit des actions correctives et préventives agissant à la source du risque, sans créer de nouveau danger.",
+          "free_text": "Selon le cas : Bilan de vérification d'efficacité (en cas de révision).",
+          "uses": [
+            {
+              "document": "doc-cause-analysis-report"
+            },
+            {
+              "document": "doc-effectiveness-verification-review"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-draft-hse-action-plan",
+              "name": "Projet de plan d'actions HSE",
+              "medium": "spreadsheet"
+            }
+          ]
+        }
+      },
+      {
+        "id": "validate-action-plan-allocate-resources",
+        "lane": "management-human-resources",
+        "label": "Valider le plan d'actions et allouer les moyens",
+        "column": 8,
+        "sheet": {
+          "purpose": "La direction valide la pertinence du plan d'actions, arbitre les priorités et alloue les ressources financières, techniques et humaines nécessaires.",
+          "uses": [
+            {
+              "document": "doc-draft-hse-action-plan"
+            },
+            {
+              "document": "doc-cause-analysis-report"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-validated-hse-action-plan",
+              "name": "Plan d'actions HSE validé",
+              "medium": "spreadsheet"
+            }
+          ]
+        }
+      },
+      {
+        "id": "deploy-actions-raise-team-awareness",
+        "lane": "area-manager",
+        "label": "Déployer les actions et sensibiliser les équipes",
+        "column": 9,
+        "sheet": {
+          "purpose": "Le responsable de secteur met en œuvre les mesures retenues et partage le retour d'expérience auprès des équipes exposées.",
+          "uses": [
+            {
+              "document": "doc-validated-hse-action-plan"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-evidence-deployment",
+              "name": "Preuves de déploiement",
+              "medium": "file"
+            },
+            {
+              "id": "doc-awareness-session-report",
+              "name": "Compte rendu de sensibilisation",
+              "medium": "file"
+            }
+          ]
+        }
+      },
+      {
+        "id": "verify-effectiveness-after-field-observation",
+        "lane": "hse-officer",
+        "label": "Vérifier l'efficacité après observation sur le terrain",
+        "column": 10,
+        "sheet": {
+          "purpose": "Après une période d'observation terrain suffisante, le préventeur HSE contrôle l'application réelle des mesures et vérifie la maîtrise effective du risque.",
+          "uses": [
+            {
+              "document": "doc-evidence-deployment"
+            },
+            {
+              "document": "doc-validated-hse-action-plan"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-effectiveness-verification-review",
+              "name": "Bilan de vérification d'efficacité",
+              "medium": "spreadsheet"
+            }
+          ]
+        }
+      },
+      {
+        "id": "risk-durably-under-control-field",
+        "lane": "hse-officer",
+        "label": "Le risque est-il durablement maîtrisé sur le terrain ?",
+        "type": "decision",
+        "column": 11,
+        "sheet": {
+          "uses": [
+            {
+              "document": "doc-effectiveness-verification-review"
+            }
+          ]
+        }
+      },
+      {
+        "id": "update-risk-assessment-instructions",
+        "lane": "hse-officer",
+        "label": "Actualiser l'évaluation des risques et les consignes",
+        "column": 12,
+        "sheet": {
+          "purpose": "Le préventeur HSE actualise le document d'évaluation des risques professionnels, le programme de prévention et les consignes de poste concernées.",
+          "uses": [
+            {
+              "document": "doc-effectiveness-verification-review"
+            },
+            {
+              "document": "doc-cause-analysis-report"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-updated-risk-assessment",
+              "name": "Évaluation des risques actualisée",
+              "medium": "file"
+            }
+          ]
+        }
+      },
+      {
+        "id": "have-report-completed-if-needed",
+        "lane": "hse-officer",
+        "label": "Faire compléter la déclaration si besoin et clôturer le dossier",
+        "column": 13,
+        "sheet": {
+          "purpose": "Le préventeur HSE vérifie si l'enquête impose un complément à la déclaration réglementaire initiale et le fait établir par les ressources humaines ou la direction, archive les justificatifs et clôt formellement le dossier.",
+          "free_text": "Selon le cas : Déclaration réglementaire (si applicable).",
+          "uses": [
+            {
+              "document": "doc-updated-risk-assessment"
+            },
+            {
+              "document": "doc-effectiveness-verification-review"
+            },
+            {
+              "document": "doc-regulatory-declaration"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-closed-hse-file",
+              "name": "Dossier HSE clôturé",
+              "medium": "file"
+            }
+          ]
+        }
+      },
+      {
+        "id": "event-handled-prevention-reinforced-file",
+        "lane": "hse-officer",
+        "label": "Événement traité, prévention renforcée et dossier clôturé",
+        "type": "end",
+        "column": 14
+      }
+    ],
+    "flows": [
+      {
+        "source": "accident-near-miss-occurred",
+        "target": "give-first-aid-make-area"
+      },
+      {
+        "source": "give-first-aid-make-area",
+        "target": "record-internal-report-event"
+      },
+      {
+        "source": "record-internal-report-event",
+        "target": "event-require-legal-report-victim"
+      },
+      {
+        "source": "event-require-legal-report-victim",
+        "target": "report-authorities-follow-up-victim",
+        "label": "oui"
+      },
+      {
+        "source": "event-require-legal-report-victim",
+        "target": "gather-facts-site",
+        "label": "non"
+      },
+      {
+        "source": "report-authorities-follow-up-victim",
+        "target": "gather-facts-site"
+      },
+      {
+        "source": "gather-facts-site",
+        "target": "analyse-direct-root-causes"
+      },
+      {
+        "source": "analyse-direct-root-causes",
+        "target": "draw-up-prevention-action-plan"
+      },
+      {
+        "source": "draw-up-prevention-action-plan",
+        "target": "validate-action-plan-allocate-resources"
+      },
+      {
+        "source": "validate-action-plan-allocate-resources",
+        "target": "deploy-actions-raise-team-awareness"
+      },
+      {
+        "source": "deploy-actions-raise-team-awareness",
+        "target": "verify-effectiveness-after-field-observation"
+      },
+      {
+        "source": "verify-effectiveness-after-field-observation",
+        "target": "risk-durably-under-control-field"
+      },
+      {
+        "source": "risk-durably-under-control-field",
+        "target": "update-risk-assessment-instructions",
+        "label": "oui"
+      },
+      {
+        "source": "risk-durably-under-control-field",
+        "target": "draw-up-prevention-action-plan",
+        "label": "non"
+      },
+      {
+        "source": "update-risk-assessment-instructions",
+        "target": "have-report-completed-if-needed"
+      },
+      {
+        "source": "have-report-completed-if-needed",
+        "target": "event-handled-prevention-reinforced-file"
+      }
+    ]
+  },
+  "uncertainties": [
+    "Modèle générique : remplacer les acteurs, les documents et leurs supports par ceux de votre organisation.",
+    "Durée et délai de chaque étape : à mesurer chez vous, le modèle n'en donne aucun.",
+    "Participation des représentants du personnel : dans la plupart des entreprises, les représentants élus en santé et sécurité au travail participent au recueil des faits, à l'analyse des causes et au suivi des actions.",
+    "Enquête simplifiée sur les presque-accidents : pour les situations dangereuses à faible gravité potentielle, l'analyse peut être réalisée de façon simplifiée directement par le responsable de secteur.",
+    "Partage multisites : dans les entreprises à plusieurs sites, les événements graves font l'objet d'une alerte sécurité diffusée à tous les établissements.",
+    "Méthode d'analyse : l'analyse des causes s'appuie fréquemment sur une méthode graphique rétrospective (telle que l'arbre des causes) distinguant les faits des interprétations.",
+    "Support de chaque document (papier, courriel, tableur, fichier, logiciel) : posé par défaut dans ce modèle, à adapter à votre organisation."
+  ]
+}

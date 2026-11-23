@@ -1,0 +1,425 @@
+{
+  "format": "topogenia",
+  "version": "1.5",
+  "project": {
+    "name": "Supplier invoice, from receipt to payment",
+    "code": "APINV",
+    "language": "en",
+    "description": "Gallery template: supplier invoice, from receipt to payment. Trigger: Supplier invoice received by the company. Outcome: Supplier invoice paid and settled; or invoice kept in dispute. To adapt to your organisation: actors, documents, media, thresholds and lead times."
+  },
+  "map": {
+    "summary": {
+      "text": "The clerk records and matches the invoice, an approver rules on differences, then the payment is approved, executed and reconciled."
+    },
+    "lanes": [
+      {
+        "id": "supplier",
+        "name": "Supplier",
+        "type": "department"
+      },
+      {
+        "id": "accounts-payable-clerk",
+        "name": "Accounts payable clerk",
+        "type": "person"
+      },
+      {
+        "id": "business-approver",
+        "name": "Business approver",
+        "type": "person"
+      },
+      {
+        "id": "treasurer",
+        "name": "Treasurer",
+        "type": "person"
+      },
+      {
+        "id": "finance-management-authorised",
+        "name": "Finance management / Authorised signatory",
+        "type": "person"
+      }
+    ],
+    "steps": [
+      {
+        "id": "supplier-invoice-received",
+        "lane": "supplier",
+        "label": "Supplier invoice received",
+        "type": "start",
+        "column": 0
+      },
+      {
+        "id": "record-invoice-check-formal-compliance",
+        "lane": "accounts-payable-clerk",
+        "label": "Record the invoice and check its formal compliance",
+        "column": 1,
+        "sheet": {
+          "purpose": "The accounts payable clerk enters the invoice, checks the mandatory legal mentions, checks that it is not a duplicate and identifies any order; a duplicate is set aside, an irregular invoice is sent back to the supplier to be reissued.",
+          "inputs": [
+            {
+              "name": "Supplier invoice",
+              "medium": "email"
+            }
+          ],
+          "uses": [
+            {
+              "document": "doc-corrective-invoice-credit-note"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-recorded-invoice",
+              "name": "Recorded invoice",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "invoice-backed-purchase-order",
+        "lane": "accounts-payable-clerk",
+        "label": "Is the invoice backed by a purchase order?",
+        "type": "decision",
+        "column": 2,
+        "sheet": {
+          "uses": [
+            {
+              "document": "doc-recorded-invoice"
+            }
+          ]
+        }
+      },
+      {
+        "id": "match-invoice-order-receipt",
+        "lane": "accounts-payable-clerk",
+        "label": "Match the invoice with the order and the receipt",
+        "column": 3,
+        "sheet": {
+          "purpose": "The accounts payable clerk compares the quantities, unit prices, amounts and taxes of the invoice with the recorded purchase order and goods receipt note.",
+          "inputs": [
+            {
+              "name": "Purchase order",
+              "medium": "software"
+            },
+            {
+              "name": "Goods receipt note",
+              "medium": "software"
+            }
+          ],
+          "uses": [
+            {
+              "document": "doc-recorded-invoice"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-matching-sheet",
+              "name": "Matching sheet",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "invoice-agree-order-receipt",
+        "lane": "accounts-payable-clerk",
+        "label": "Does the invoice agree with the order and the receipt?",
+        "type": "decision",
+        "column": 4,
+        "sheet": {
+          "uses": [
+            {
+              "document": "doc-matching-sheet"
+            }
+          ]
+        }
+      },
+      {
+        "id": "approve-non-order-invoice-arbitrate",
+        "lane": "business-approver",
+        "label": "Approve the non-order invoice or arbitrate the difference",
+        "column": 5,
+        "sheet": {
+          "purpose": "The business approver checks the relevance and allocation of an invoice with no order (approval to pay) or the justification of a matching difference; a receipt not yet entered is regularised internally, only a difference due to the supplier leading to a dispute.",
+          "free_text": "As applicable: Matching sheet (if there is an order).",
+          "uses": [
+            {
+              "document": "doc-recorded-invoice"
+            },
+            {
+              "document": "doc-matching-sheet"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-approval-arbitration-decision",
+              "name": "Approval or arbitration decision",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "invoice-difference-accepted",
+        "lane": "business-approver",
+        "label": "Is the invoice or the difference accepted?",
+        "type": "decision",
+        "column": 6,
+        "sheet": {
+          "uses": [
+            {
+              "document": "doc-approval-arbitration-decision"
+            }
+          ]
+        }
+      },
+      {
+        "id": "notify-supplier-dispute",
+        "lane": "accounts-payable-clerk",
+        "label": "Notify the supplier of the dispute",
+        "column": 7,
+        "sheet": {
+          "purpose": "In case of refusal, the accounts payable clerk keeps the invoice blocked and sends the supplier a reasoned dispute asking for a credit note or a corrective invoice.",
+          "uses": [
+            {
+              "document": "doc-approval-arbitration-decision"
+            },
+            {
+              "document": "doc-recorded-invoice"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-supplier-dispute-notice",
+              "name": "Supplier dispute notice",
+              "medium": "email"
+            }
+          ]
+        }
+      },
+      {
+        "id": "supplier-issue-credit-note-corrective",
+        "lane": "supplier",
+        "label": "Does the supplier issue a credit note or a corrective invoice?",
+        "type": "decision",
+        "column": 8,
+        "sheet": {
+          "free_text": "Produced as applicable: Corrective invoice or credit note (if yes).",
+          "uses": [
+            {
+              "document": "doc-supplier-dispute-notice"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-corrective-invoice-credit-note",
+              "name": "Corrective invoice or credit note",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "post-invoice-prepare-payment-batch",
+        "lane": "accounts-payable-clerk",
+        "label": "Post the invoice and prepare the payment batch",
+        "column": 7,
+        "row": 1,
+        "sheet": {
+          "purpose": "The accounts payable clerk posts the invoice definitively as approved for payment and includes it in the payment proposal at its due date, taking credit notes and advances into account, as well as any early payment discount and the late payment penalties to avoid.",
+          "uses": [
+            {
+              "document": "doc-recorded-invoice"
+            },
+            {
+              "document": "doc-matching-sheet"
+            },
+            {
+              "document": "doc-approval-arbitration-decision"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-payment-proposal",
+              "name": "Payment proposal",
+              "medium": "spreadsheet"
+            }
+          ]
+        }
+      },
+      {
+        "id": "check-approve-payment-proposal",
+        "lane": "finance-management-authorised",
+        "label": "Check and approve the payment proposal",
+        "column": 8,
+        "sheet": {
+          "purpose": "Finance management or the authorised signatory, within their delegated authority, checks the payment proposal, verifies the segregation of duties and authorises the disbursement; an abnormal line (changed bank details, suspected fraud) is removed from the batch and sent back to the clerk.",
+          "uses": [
+            {
+              "document": "doc-payment-proposal"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-approved-payment-order",
+              "name": "Approved payment order",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "execute-payment-bank",
+        "lane": "treasurer",
+        "label": "Execute the payment with the bank",
+        "column": 9,
+        "sheet": {
+          "purpose": "On the basis of the approved order, the treasurer checks the bank details and the available cash, then sends the transfer order to the bank.",
+          "uses": [
+            {
+              "document": "doc-approved-payment-order"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-executed-payment-order",
+              "name": "Executed payment order",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "post-reconcile-payment",
+        "lane": "accounts-payable-clerk",
+        "label": "Post and reconcile the payment",
+        "column": 10,
+        "row": 1,
+        "sheet": {
+          "purpose": "After the bank has executed it, the accounts payable clerk records the disbursement entry and matches the payment to the corresponding invoice.",
+          "inputs": [
+            {
+              "name": "Bank statement",
+              "medium": "file"
+            }
+          ],
+          "uses": [
+            {
+              "document": "doc-executed-payment-order"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-reconciled-supplier-account",
+              "name": "Reconciled supplier account",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "supplier-invoice-paid-settled",
+        "lane": "accounts-payable-clerk",
+        "label": "Supplier invoice paid and settled",
+        "type": "end",
+        "column": 11,
+        "row": 1
+      },
+      {
+        "id": "invoice-kept-dispute",
+        "lane": "accounts-payable-clerk",
+        "label": "Invoice kept in dispute",
+        "type": "end",
+        "column": 9
+      }
+    ],
+    "flows": [
+      {
+        "source": "supplier-invoice-received",
+        "target": "record-invoice-check-formal-compliance"
+      },
+      {
+        "source": "record-invoice-check-formal-compliance",
+        "target": "invoice-backed-purchase-order"
+      },
+      {
+        "source": "invoice-backed-purchase-order",
+        "target": "match-invoice-order-receipt",
+        "label": "yes"
+      },
+      {
+        "source": "invoice-backed-purchase-order",
+        "target": "approve-non-order-invoice-arbitrate",
+        "label": "no"
+      },
+      {
+        "source": "match-invoice-order-receipt",
+        "target": "invoice-agree-order-receipt"
+      },
+      {
+        "source": "invoice-agree-order-receipt",
+        "target": "post-invoice-prepare-payment-batch",
+        "label": "yes"
+      },
+      {
+        "source": "invoice-agree-order-receipt",
+        "target": "approve-non-order-invoice-arbitrate",
+        "label": "no"
+      },
+      {
+        "source": "approve-non-order-invoice-arbitrate",
+        "target": "invoice-difference-accepted"
+      },
+      {
+        "source": "invoice-difference-accepted",
+        "target": "post-invoice-prepare-payment-batch",
+        "label": "yes"
+      },
+      {
+        "source": "invoice-difference-accepted",
+        "target": "notify-supplier-dispute",
+        "label": "no"
+      },
+      {
+        "source": "notify-supplier-dispute",
+        "target": "supplier-issue-credit-note-corrective"
+      },
+      {
+        "source": "supplier-issue-credit-note-corrective",
+        "target": "record-invoice-check-formal-compliance",
+        "label": "yes"
+      },
+      {
+        "source": "supplier-issue-credit-note-corrective",
+        "target": "invoice-kept-dispute",
+        "label": "no"
+      },
+      {
+        "source": "post-invoice-prepare-payment-batch",
+        "target": "check-approve-payment-proposal"
+      },
+      {
+        "source": "check-approve-payment-proposal",
+        "target": "execute-payment-bank"
+      },
+      {
+        "source": "execute-payment-bank",
+        "target": "post-reconcile-payment"
+      },
+      {
+        "source": "post-reconcile-payment",
+        "target": "supplier-invoice-paid-settled"
+      }
+    ]
+  },
+  "uncertainties": [
+    "Generic model: replace the actors, the documents and their media with those of your organisation.",
+    "Duration and lead time of each step: to be measured in your organisation, the model gives none.",
+    "Automation by capture or electronic invoicing: initial entry and matching without discrepancy are frequently automated through tax dematerialisation and optical character recognition.",
+    "Difference tolerances: many companies set difference tolerances that allow minor differences to be approved automatically without the business approver stepping in.",
+    "Self-billing: in certain sectors, some ordering parties practise self-billing on the basis of validated receipts, which removes the entry of the supplier invoice.",
+    "Dual bank signature: depending on internal control rules, approval or execution of the payment may require the co-signature of several authorised people.",
+    "Dispute kept: what follows (reminder to the supplier, arbitration, accounting treatment of the disputed debt) is outside the scope of this model, to be handled under your rules; the invoice is not paid while the dispute lasts.",
+    "Unsolicited credit note: a credit note or corrective invoice received without a prior dispute enters through the same step as the invoice, \"Record the invoice and check its formal compliance\".",
+    "Payment advice and archiving: the payment advice to the supplier and the archiving of documents are not drawn; in France, accounting supporting documents are kept for ten years (Commercial Code).",
+    "Medium of each document (paper, email, spreadsheet, file, software): set by default in this model, to be adapted to your organisation."
+  ]
+}

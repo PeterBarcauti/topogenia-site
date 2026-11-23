@@ -1,0 +1,102 @@
+{
+  "fr": [
+    {
+      "title": "La galerie",
+      "paragraphs": [
+        "La galerie rassemble des modèles génériques, construits à partir des pratiques les plus courantes. Chaque modèle fournit une trame de départ cohérente, destinée à être confrontée au terrain et ajustée à votre fonctionnement. Un modèle ne décrit aucune organisation réelle. Les modèles ont été rédigés avec l'aide d'une intelligence artificielle, puis relus et confrontés à des référentiels publics.",
+        "Les modèles sont organisés par domaine. Pour chacun, vous pouvez récupérer un processus précis ou télécharger la collection complète dans un seul fichier."
+      ]
+    },
+    {
+      "title": "Télécharger un modèle ou une collection",
+      "paragraphs": [
+        "Un modèle est un fichier .pmap : du texte brut, lisible directement dans le Bloc-notes. Une collection est un fichier .pmaps de même nature, qui réunit l'ensemble des modèles d'un domaine.",
+        "Ouvrez la page d'un domaine et téléchargez le modèle ou la collection souhaitée. Topogenia ne va rien chercher sur internet : c'est votre navigateur qui télécharge le fichier.",
+        "Chaque modèle (.pmap) et chaque collection (.pmaps) est publié avec son empreinte SHA-256, affichée sur la page et regroupée dans un fichier sha256.txt, afin que vous puissiez vérifier que le fichier reçu est intact. Les images ne portent pas d'empreinte."
+      ]
+    },
+    {
+      "title": "Vérifier l'empreinte",
+      "paragraphs": [
+        "L'empreinte est une suite de caractères calculée à partir du contenu du fichier : la moindre modification la change. Ce contrôle est facultatif et ne prend que quelques secondes.",
+        "Sous Windows, ouvrez PowerShell dans le dossier du fichier téléchargé et lancez : Get-FileHash -Algorithm SHA256 nom-du-fichier",
+        "Comparez le résultat à l'empreinte affichée sur la page du domaine ou dans sha256.txt, sans tenir compte des majuscules et des minuscules. Si les deux suites diffèrent, n'ouvrez pas le fichier et téléchargez-le de nouveau.",
+        "Limite de ce contrôle : l'empreinte montre que le fichier n'a pas été altéré depuis sa publication ; elle ne dit pas qui l'a écrit. Publiée sur le même site que le fichier, elle ne protège pas non plus d'un site lui-même modifié : elle détecte un fichier abîmé en route, pas un site compromis."
+      ]
+    },
+    {
+      "title": "Ouvrir dans Topogenia",
+      "paragraphs": [
+        "Dans Topogenia, ouvrez Fichier, puis Ouvrir un fichier, et sélectionnez le fichier téléchargé. Un modèle seul (.pmap) est pris en charge dès la version 3.3 ; une collection (.pmaps) demande la version 3.4. En mode Serveur, cette opération est réservée à l'administrateur.",
+        "Pour un modèle seul, Topogenia crée un projet. Pour une collection, une fenêtre liste d'abord les processus qu'elle contient, tous cochés par défaut : décochez ceux qui ne vous sont pas utiles, ajustez si besoin le code proposé, puis validez pour créer un projet par processus retenu.",
+        "Aucune donnée n'est écrite avant votre validation. Annuler l'opération laisse vos projets intacts."
+      ]
+    },
+    {
+      "title": "Si les téléchargements sont bloqués",
+      "paragraphs": [
+        "Sur les postes soumis à des restrictions de téléchargement, la page de chaque modèle propose un bouton Copier qui place son contenu dans le presse-papiers. Ce bouton n'est pas disponible pour les collections : téléchargez la collection ou copiez ses modèles un par un.",
+        "Dans Topogenia, ouvrez la fenêtre Ouvrir un fichier et collez le texte dans la zone prévue. Un projet est créé exactement comme lors de l'ouverture d'un fichier.",
+        "L'empreinte SHA-256 se vérifie uniquement sur le fichier téléchargé tel quel : le texte copié n'est pas le fichier (selon l'éditeur de texte, les fins de ligne changent et avec elles l'empreinte), son empreinte ne se compare donc pas à celle de la page."
+      ]
+    },
+    {
+      "title": "Adapter le modèle",
+      "paragraphs": [
+        "Une fois importé, le modèle devient un projet ordinaire : renommez les couloirs, modifiez les étapes, ajoutez ou retirez des flux et précisez les responsabilités.",
+        "Reprenez-le avec les personnes qui font réellement le travail. Le modèle pose la trame habituelle ; vos exceptions, vos outils et vos règles internes en font votre véritable carte.",
+        "Certains modèles incluent des points à vérifier : ce sont des questions d'atelier à trancher ensemble lors de l'adaptation."
+      ]
+    }
+  ],
+  "en": [
+    {
+      "title": "The gallery",
+      "paragraphs": [
+        "The gallery brings together generic templates, built from the most common practices. Each template provides a consistent starting framework, meant to be tested against the field and adjusted to the way you work. A template describes no real organisation. The templates were written with the help of artificial intelligence, then reviewed and checked against public references.",
+        "Templates are organised by domain. For each one, you can take a single process or download the full collection in one file."
+      ]
+    },
+    {
+      "title": "Download a template or a collection",
+      "paragraphs": [
+        "A template is a .pmap file: plain text, readable directly in Notepad. A collection is a .pmaps file of the same kind, which gathers all the templates of a domain.",
+        "Open the page of a domain and download the template or the collection you want. Topogenia fetches nothing from the internet: your browser downloads the file.",
+        "Each template (.pmap) and each collection (.pmaps) is published with its SHA-256 fingerprint, shown on the page and gathered in a sha256.txt file, so that you can check that the file you received is intact. The images carry no fingerprint."
+      ]
+    },
+    {
+      "title": "Check the fingerprint",
+      "paragraphs": [
+        "The fingerprint is a string of characters computed from the content of the file: the slightest change alters it. This check is optional and takes only a few seconds.",
+        "On Windows, open PowerShell in the folder of the downloaded file and run: Get-FileHash -Algorithm SHA256 file-name",
+        "Compare the result with the fingerprint shown on the domain page or in sha256.txt, ignoring upper and lower case. If the two strings differ, do not open the file and download it again.",
+        "Limit of this check: the fingerprint shows that the file has not been altered since it was published; it does not say who wrote it. Published on the same website as the file, it does not protect against a website that has itself been modified either: it detects a file damaged on the way, not a compromised website."
+      ]
+    },
+    {
+      "title": "Open in Topogenia",
+      "paragraphs": [
+        "In Topogenia, open File, then Open a file, and select the downloaded file. A single template (.pmap) is supported from version 3.3; a collection (.pmaps) needs version 3.4. In Server mode, this operation is reserved for the administrator.",
+        "For a single template, Topogenia creates one project. For a collection, a window first lists the processes it contains, all ticked by default: untick those you do not need, adjust the proposed code if necessary, then confirm to create one project for each process kept.",
+        "No data is written before you confirm. Cancelling the operation leaves your projects untouched."
+      ]
+    },
+    {
+      "title": "If downloads are blocked",
+      "paragraphs": [
+        "On workstations with download restrictions, the page of each template offers a Copy button that puts its content on the clipboard. This button is not available for collections: download the collection or copy its templates one by one.",
+        "In Topogenia, open the Open a file window and paste the text into the area provided. A project is created exactly as when a file is opened.",
+        "The SHA-256 fingerprint can only be checked on the downloaded file as it is: the copied text is not the file (depending on the text editor, line endings change, and the fingerprint with them), so its fingerprint cannot be compared with the one on the page."
+      ]
+    },
+    {
+      "title": "Adapt the template",
+      "paragraphs": [
+        "Once imported, the template becomes an ordinary project: rename the lanes, change the steps, add or remove flows and specify the responsibilities.",
+        "Review it with the people who actually do the work. The template sets out the usual framework; your exceptions, your tools and your internal rules make it your real map.",
+        "Some templates include points to check: these are workshop questions to settle together while adapting it."
+      ]
+    }
+  ]
+}

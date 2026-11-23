@@ -1,0 +1,77 @@
+<!doctype html>
+<!-- en/versions/index.html -->
+<!-- Page fabriquée par outils/versions.cjs à partir de outils/versions.json : ne pas la modifier à la main -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Versions · Topogenia</title>
+  <meta name="description" content="The published versions of Topogenia: the latest one, its downloads and their SHA-256 hash, the history and the Atom feed.">
+  <meta name="theme-color" content="#5B5BD6">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Versions · Topogenia">
+  <meta property="og:description" content="The published versions of Topogenia: the latest one, its downloads and their SHA-256 hash, the history and the Atom feed.">
+  <meta property="og:url" content="https://topogenia.com/en/versions/">
+  <meta property="og:image" content="https://topogenia.com/og-image.png">
+  <meta property="og:locale" content="en_US">
+  <link rel="canonical" href="https://topogenia.com/en/versions/">
+  <link rel="alternate" hreflang="fr" href="https://topogenia.com/versions/">
+  <link rel="alternate" hreflang="en" href="https://topogenia.com/en/versions/">
+  <link rel="alternate" hreflang="x-default" href="https://topogenia.com/en/versions/">
+  <link rel="alternate" type="application/atom+xml" title="Topogenia · versions" href="https://topogenia.com/en/versions/feed.xml">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/assets/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/site.css">
+  <link rel="stylesheet" href="/assets/versions.css">
+  <script type="application/json" id="versions-data">{"store":"https://apps.microsoft.com/detail/9NZ56VV4N6QR","texts":{"latest":"You have the latest version: {version}, {dated}.","update":"Version {version}, {dated}, is available.","yours":"Your version: {read}.","newer":"Your version ({read}) is newer than the latest one published: {version}, {dated}.","none":"Latest version: {version}, {dated}.","portable":"Download the portable version (ZIP)","server":"Download the server ZIP","noServer":"No server ZIP is offered on this website for this version.","sha":"SHA-256 hash: ","pending":"at release","store":"Install from the Microsoft Store"},"versions":[{"version":"3.4.0","dated":"released November 23, 2026","portable":{"url":"https://github.com/PeterBarcauti/topogenia-site/releases/download/v3.4.0/Topogenia-3.4.0-portable.zip","sha256":"7236eb085dcbce4f6b720123da9ca0757fc25403a2a7295b8d1b79b390d4387f"}}]}</script>
+  <script src="/assets/versions.js" defer></script>
+</head>
+<body class="legal-page versions-page">
+  <header class="nav">
+    <a class="brand" href="/en/" aria-label="Topogenia">
+      <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><rect x=".5" y=".5" width="23" height="23" rx="6.5" fill="#5B5BD6"/><rect x=".5" y=".5" width="23" height="11.5" rx="6.5" fill="#4343B8" opacity=".35"/><path d="M6 8h4.5a2 2 0 0 1 2 2v4a2 2 0 0 0 2 2H18" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="6" cy="8" r="1.8" fill="#fff"/><circle cx="18" cy="16" r="1.8" fill="#fff"/></svg>
+      <span>Topogenia</span>
+    </a>
+    <div class="nav-end">
+      <div class="lang" role="group" aria-label="Language / Langue">
+        <a href="/versions/" hreflang="fr">FR</a>
+        <a href="/en/versions/" hreflang="en" aria-current="page">EN</a>
+      </div>
+      <a class="btn btn-ghost btn-small" href="/en/">Back to the site</a>
+    </div>
+  </header>
+
+  <main id="main" class="legal">
+    <article>
+      <p class="kicker">Topogenia</p>
+      <h1>Versions</h1>
+      <p class="lead">The latest version of Topogenia, its downloads and their SHA-256 hash.</p>
+      <div id="versions-verdict" class="versions-verdict" aria-live="polite"></div>
+
+      <section aria-labelledby="historique">
+        <h2 id="historique">History</h2>
+        <ol class="versions-list">
+        <li id="version-3.4.0">
+          <h3>3.4.0 · November 23, 2026</h3>
+          <p>Search across projects, template gallery and collections (.pmaps), action plan on screen, a project as a single document, a new home page and the versions page.</p>
+          <ul class="versions-files">
+            <li><a href="https://github.com/PeterBarcauti/topogenia-site/releases/download/v3.4.0/Topogenia-3.4.0-portable.zip">Portable version (ZIP)</a><br><span class="versions-sha">SHA-256 <code>7236eb085dcbce4f6b720123da9ca0757fc25403a2a7295b8d1b79b390d4387f</code></span></li>
+          </ul>
+        </li>
+        </ol>
+        <p><a href="/en/versions/feed.xml">Atom feed of the versions</a></p>
+      </section>
+
+      <section>
+        <p>Opened from Topogenia, this page reads the installed version in the address, on your computer: the browser does not send that part of the address, and the page sends nothing. The browser history keeps it, like any address visited. <a href="/confidentialite.html?lang=en">Privacy</a></p>
+      </section>
+    </article>
+  </main>
+
+  <footer class="footer legal-foot">
+    <p class="foot-copy">© 2026 Peter Barcauti · <a href="/mentions-legales.html?lang=en">Legal notice</a> · <a href="/en/templates/">Templates</a> · <a href="/en/versions/feed.xml">Atom feed of the versions</a></p>
+  </footer>
+</body>
+</html>

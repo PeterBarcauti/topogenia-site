@@ -1,0 +1,429 @@
+{
+  "format": "topogenia",
+  "version": "1.5",
+  "project": {
+    "name": "Réception d'une livraison fournisseur et mise en stock",
+    "code": "RECEPT",
+    "language": "fr",
+    "description": "Modèle de la galerie : réception d'une livraison fournisseur et mise en stock. Déclencheur : Livraison fournisseur présentée au quai de réception. Résultat : Marchandise disponible en stock ; livraison refusée au quai ; ou marchandise bloquée en quarantaine. À adapter à votre organisation : acteurs, documents, supports, seuils et délais."
+  },
+  "map": {
+    "summary": {
+      "text": "Le réceptionnaire contrôle la livraison au quai, la refuse ou l'accepte avec réserves éventuelles et l'enregistre, puis le contrôle qualité éventuel précède le rangement en stock."
+    },
+    "lanes": [
+      {
+        "id": "supplier-carrier",
+        "name": "Fournisseur / Transporteur",
+        "type": "department"
+      },
+      {
+        "id": "receiver",
+        "name": "Réceptionnaire",
+        "type": "person"
+      },
+      {
+        "id": "quality-inspector",
+        "name": "Contrôleur qualité",
+        "type": "person"
+      },
+      {
+        "id": "warehouse-operator-forklift",
+        "name": "Magasinier / Cariste",
+        "type": "person"
+      }
+    ],
+    "steps": [
+      {
+        "id": "supplier-delivery-presented-dock",
+        "lane": "supplier-carrier",
+        "label": "Livraison fournisseur présentée au quai",
+        "type": "start",
+        "column": 0
+      },
+      {
+        "id": "present-documents-unload-goods",
+        "lane": "supplier-carrier",
+        "label": "Présenter les documents et décharger la marchandise",
+        "column": 1,
+        "sheet": {
+          "purpose": "Le transporteur présente le bon de livraison au quai, décharge les colis ou palettes dans la zone d'attente de contrôle et reste présent jusqu'à la signature du bon de livraison.",
+          "outputs": [
+            {
+              "id": "doc-supplier-delivery-note",
+              "name": "Bon de livraison fournisseur",
+              "medium": "paper"
+            },
+            {
+              "id": "doc-unloaded-goods",
+              "name": "Marchandise déchargée",
+              "medium": "other"
+            }
+          ]
+        }
+      },
+      {
+        "id": "check-delivery-quantity-visible-condition",
+        "lane": "receiver",
+        "label": "Contrôler quantitativement et visuellement la livraison",
+        "column": 2,
+        "sheet": {
+          "purpose": "En présence du transporteur, le réceptionnaire compare références et quantités avec le bon de commande et le bon de livraison, et vérifie l'intégrité apparente des emballages ; un écart mineur ne justifie pas un refus, il sera porté en réserve.",
+          "inputs": [
+            {
+              "name": "Bon de commande",
+              "medium": "software"
+            }
+          ],
+          "uses": [
+            {
+              "document": "doc-supplier-delivery-note"
+            },
+            {
+              "document": "doc-unloaded-goods"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-receipt-findings",
+              "name": "Constat de réception",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "delivery-acceptable-dock",
+        "lane": "receiver",
+        "label": "La livraison est-elle acceptable au quai ?",
+        "type": "decision",
+        "column": 3,
+        "sheet": {
+          "inputs": [
+            {
+              "name": "Bon de commande",
+              "medium": "software"
+            }
+          ],
+          "uses": [
+            {
+              "document": "doc-receipt-findings"
+            }
+          ]
+        }
+      },
+      {
+        "id": "refuse-delivery-state-reason",
+        "lane": "receiver",
+        "label": "Refuser la livraison et motiver le refus",
+        "column": 4,
+        "sheet": {
+          "purpose": "En cas d'erreur manifeste de destinataire, d'absence de commande ou d'avarie majeure rendant la livraison inutilisable, le réceptionnaire refuse la prise en charge et inscrit le motif détaillé du refus sur le bon de livraison.",
+          "uses": [
+            {
+              "document": "doc-receipt-findings"
+            },
+            {
+              "document": "doc-supplier-delivery-note"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-annotated-delivery-note",
+              "name": "Bon de livraison annoté",
+              "medium": "paper"
+            }
+          ]
+        }
+      },
+      {
+        "id": "countersign-annotated-delivery-note",
+        "lane": "supplier-carrier",
+        "label": "Contresigner le bon de livraison annoté",
+        "column": 5,
+        "sheet": {
+          "purpose": "Le transporteur contresigne le bon de livraison annoté pour acter contradictoirement le refus et son motif, puis reprend la marchandise.",
+          "uses": [
+            {
+              "document": "doc-annotated-delivery-note"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-countersigned-delivery-note",
+              "name": "Bon de livraison contresigné",
+              "medium": "paper"
+            }
+          ]
+        }
+      },
+      {
+        "id": "record-receipt-label-lots",
+        "lane": "receiver",
+        "label": "Enregistrer la réception et étiqueter les lots",
+        "column": 4,
+        "row": 1,
+        "sheet": {
+          "purpose": "Pour toute livraison acceptée, le réceptionnaire signe le bon de livraison du transporteur, avec réserves éventuelles, enregistre la réception en statut bloqué ou libre selon le plan de contrôle, connu dès la réception, et imprime les étiquettes des lots.",
+          "inputs": [
+            {
+              "name": "Bon de commande",
+              "medium": "software"
+            },
+            {
+              "name": "Plan de contrôle réception",
+              "medium": "spreadsheet"
+            }
+          ],
+          "uses": [
+            {
+              "document": "doc-supplier-delivery-note"
+            },
+            {
+              "document": "doc-receipt-findings"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-goods-receipt-note",
+              "name": "Bon de réception",
+              "medium": "software"
+            },
+            {
+              "id": "doc-traceability-labels",
+              "name": "Étiquettes de traçabilité",
+              "medium": "paper"
+            }
+          ]
+        }
+      },
+      {
+        "id": "quality-check-receipt-required",
+        "lane": "receiver",
+        "label": "Un contrôle qualité à réception est-il requis ?",
+        "type": "decision",
+        "column": 5,
+        "sheet": {
+          "inputs": [
+            {
+              "name": "Plan de contrôle réception",
+              "medium": "spreadsheet"
+            }
+          ],
+          "uses": [
+            {
+              "document": "doc-goods-receipt-note"
+            }
+          ]
+        }
+      },
+      {
+        "id": "inspect-goods-received",
+        "lane": "quality-inspector",
+        "label": "Inspecter la marchandise réceptionnée",
+        "column": 6,
+        "sheet": {
+          "purpose": "Le contrôleur qualité réalise les contrôles documentaires (certificats matière, certificats de conformité) et physiques prévus au plan de contrôle réception et statue sur la libération.",
+          "inputs": [
+            {
+              "name": "Spécifications techniques",
+              "medium": "file"
+            }
+          ],
+          "uses": [
+            {
+              "document": "doc-goods-receipt-note"
+            },
+            {
+              "document": "doc-traceability-labels"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-receiving-inspection-report",
+              "name": "Rapport de contrôle réception",
+              "medium": "file"
+            }
+          ]
+        }
+      },
+      {
+        "id": "lot-received-meet-specifications",
+        "lane": "quality-inspector",
+        "label": "Le lot réceptionné est-il conforme aux spécifications ?",
+        "type": "decision",
+        "column": 7,
+        "sheet": {
+          "free_text": "Produit selon le cas : Décision de libération (si Oui).",
+          "uses": [
+            {
+              "document": "doc-receiving-inspection-report"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-release-decision",
+              "name": "Décision de libération",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "isolate-non-conforming-lot-quarantine",
+        "lane": "quality-inspector",
+        "label": "Isoler le lot non conforme en zone de quarantaine",
+        "column": 8,
+        "sheet": {
+          "purpose": "En cas de non-conformité, le contrôleur qualité maintient le blocage informatique du lot, le transfère en zone de quarantaine et ouvre une fiche de non-conformité.",
+          "uses": [
+            {
+              "document": "doc-receiving-inspection-report"
+            },
+            {
+              "document": "doc-traceability-labels"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-quarantine-order",
+              "name": "Ordre de mise en quarantaine",
+              "medium": "software"
+            },
+            {
+              "id": "doc-non-conformity-sheet",
+              "name": "Fiche de non-conformité",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "put-goods-away-confirm-movement",
+        "lane": "warehouse-operator-forklift",
+        "label": "Ranger la marchandise en stock et confirmer le mouvement",
+        "column": 8,
+        "sheet": {
+          "purpose": "Le magasinier achemine les palettes ou colis vers l'emplacement assigné et valide le rangement, rendant la marchandise disponible en stock.",
+          "free_text": "Selon le cas : Décision de libération (si contrôle requis).",
+          "uses": [
+            {
+              "document": "doc-goods-receipt-note"
+            },
+            {
+              "document": "doc-traceability-labels"
+            },
+            {
+              "document": "doc-release-decision"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-validated-put-away-movement",
+              "name": "Mouvement de mise en stock validé",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "goods-available-stock",
+        "lane": "warehouse-operator-forklift",
+        "label": "Marchandise disponible en stock",
+        "type": "end",
+        "column": 9
+      },
+      {
+        "id": "goods-blocked-quarantine-quality-handling",
+        "lane": "quality-inspector",
+        "label": "Marchandise bloquée en quarantaine pour traitement qualité",
+        "type": "end",
+        "column": 9
+      },
+      {
+        "id": "delivery-refused-dock-taken-back",
+        "lane": "supplier-carrier",
+        "label": "Livraison refusée au quai et reprise par le transporteur",
+        "type": "end",
+        "column": 6
+      }
+    ],
+    "flows": [
+      {
+        "source": "supplier-delivery-presented-dock",
+        "target": "present-documents-unload-goods"
+      },
+      {
+        "source": "present-documents-unload-goods",
+        "target": "check-delivery-quantity-visible-condition"
+      },
+      {
+        "source": "check-delivery-quantity-visible-condition",
+        "target": "delivery-acceptable-dock"
+      },
+      {
+        "source": "delivery-acceptable-dock",
+        "target": "record-receipt-label-lots",
+        "label": "oui"
+      },
+      {
+        "source": "delivery-acceptable-dock",
+        "target": "refuse-delivery-state-reason",
+        "label": "non"
+      },
+      {
+        "source": "refuse-delivery-state-reason",
+        "target": "countersign-annotated-delivery-note"
+      },
+      {
+        "source": "countersign-annotated-delivery-note",
+        "target": "delivery-refused-dock-taken-back"
+      },
+      {
+        "source": "record-receipt-label-lots",
+        "target": "quality-check-receipt-required"
+      },
+      {
+        "source": "quality-check-receipt-required",
+        "target": "inspect-goods-received",
+        "label": "oui"
+      },
+      {
+        "source": "quality-check-receipt-required",
+        "target": "put-goods-away-confirm-movement",
+        "label": "non"
+      },
+      {
+        "source": "inspect-goods-received",
+        "target": "lot-received-meet-specifications"
+      },
+      {
+        "source": "lot-received-meet-specifications",
+        "target": "put-goods-away-confirm-movement",
+        "label": "oui"
+      },
+      {
+        "source": "lot-received-meet-specifications",
+        "target": "isolate-non-conforming-lot-quarantine",
+        "label": "non"
+      },
+      {
+        "source": "isolate-non-conforming-lot-quarantine",
+        "target": "goods-blocked-quarantine-quality-handling"
+      },
+      {
+        "source": "put-goods-away-confirm-movement",
+        "target": "goods-available-stock"
+      }
+    ]
+  },
+  "uncertainties": [
+    "Modèle générique : remplacer les acteurs, les documents et leurs supports par ceux de votre organisation.",
+    "Durée et délai de chaque étape : à mesurer chez vous, le modèle n'en donne aucun.",
+    "Acceptation sous réserves mineures : lorsque l'écart constaté au quai est partiel (colis manquant ou emballage légèrement endommagé sans rendre le lot inutilisable), la livraison suit le chemin accepté : le réceptionnaire porte les réserves sur le bon de livraison, que le transporteur contresigne, enregistre la réception pour les quantités conformes et signale l'écart aux achats.",
+    "Avis préalable d'expédition : dans certains secteurs et les grandes chaînes logistiques, un avis d'expédition dématérialisé reçu en amont permet une réception rapide par simple lecture des étiquettes de colis.",
+    "Mise à disposition directe : certains articles non gérés en stock ou en flux tendu sont acheminés directement vers le service demandeur ou le bord de ligne après enregistrement de la réception.",
+    "Rapprochement comptable : le bon de réception enregistré sert de référence au service comptable pour le rapprochement ultérieur de la facture fournisseur.",
+    "Support de chaque document (papier, courriel, tableur, fichier, logiciel) : posé par défaut dans ce modèle, à adapter à votre organisation."
+  ]
+}

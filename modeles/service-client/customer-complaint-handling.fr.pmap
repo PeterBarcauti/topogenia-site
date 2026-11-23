@@ -1,0 +1,408 @@
+{
+  "format": "topogenia",
+  "version": "1.5",
+  "project": {
+    "name": "Traitement d'une réclamation client",
+    "code": "RECLAM",
+    "language": "fr",
+    "description": "Modèle de la galerie : traitement d'une réclamation client. Déclencheur : Réclamation transmise par un client. Résultat : Réclamation résolue et acceptée ; clôturée non recevable ; ou escaladée en médiation. À adapter à votre organisation : acteurs, documents, supports, seuils et délais."
+  },
+  "map": {
+    "summary": {
+      "text": "Le service client qualifie la réclamation, la qualité sécurise et analyse, puis la réponse est transmise au client jusqu'à la clôture, le rejet ou l'escalade."
+    },
+    "lanes": [
+      {
+        "id": "customer",
+        "name": "Client",
+        "type": "department"
+      },
+      {
+        "id": "customer-service",
+        "name": "Service client",
+        "type": "department"
+      },
+      {
+        "id": "quality-technical-service",
+        "name": "Qualité / Service technique",
+        "type": "department"
+      },
+      {
+        "id": "order-administration-finance",
+        "name": "Administration commerciale / Finance",
+        "type": "department"
+      }
+    ],
+    "steps": [
+      {
+        "id": "complaint-sent-customer",
+        "lane": "customer",
+        "label": "Réclamation transmise par le client",
+        "type": "start",
+        "column": 0
+      },
+      {
+        "id": "record-acknowledge-qualify-complaint",
+        "lane": "customer-service",
+        "label": "Enregistrer, accuser réception et qualifier la réclamation",
+        "column": 1,
+        "sheet": {
+          "purpose": "Le service client ouvre un dossier traçable, adresse l'accusé de réception au client et contrôle commande, livraison, garantie, périmètre et délais pour qualifier la recevabilité et l'urgence.",
+          "inputs": [
+            {
+              "name": "Réclamation client",
+              "medium": "email"
+            },
+            {
+              "name": "Dossier de commande et livraison",
+              "medium": "file"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-qualified-complaint-file",
+              "name": "Dossier de réclamation qualifié",
+              "medium": "file"
+            },
+            {
+              "id": "doc-acknowledgement-receipt",
+              "name": "Accusé de réception",
+              "medium": "email"
+            }
+          ]
+        }
+      },
+      {
+        "id": "complaint-admissible",
+        "lane": "customer-service",
+        "label": "La réclamation est-elle recevable ?",
+        "type": "decision",
+        "column": 2,
+        "sheet": {
+          "uses": [
+            {
+              "document": "doc-qualified-complaint-file"
+            }
+          ]
+        }
+      },
+      {
+        "id": "notify-customer-rejection-reasons",
+        "lane": "customer-service",
+        "label": "Notifier et argumenter le rejet auprès du client",
+        "column": 3,
+        "sheet": {
+          "purpose": "Lorsque la réclamation n'est pas recevable (hors garantie, hors périmètre ou hors délai), le service client transmet une réponse documentée expliquant le refus et mentionnant les voies de recours éventuelles.",
+          "uses": [
+            {
+              "document": "doc-qualified-complaint-file"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-reasoned-rejection-response",
+              "name": "Réponse de rejet argumentée",
+              "medium": "email"
+            }
+          ]
+        }
+      },
+      {
+        "id": "deploy-immediate-safeguarding-measures",
+        "lane": "quality-technical-service",
+        "label": "Déployer les mesures de sécurisation immédiate",
+        "column": 3,
+        "sheet": {
+          "purpose": "Lorsque le défaut peut toucher d'autres produits, le service qualité ou technique met immédiatement en place des mesures de protection (tri de stock, blocage d'expéditions, dépannage) pour protéger le client.",
+          "uses": [
+            {
+              "document": "doc-qualified-complaint-file"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-executed-safeguarding-plan",
+              "name": "Plan de sécurisation exécuté",
+              "medium": "spreadsheet"
+            }
+          ]
+        }
+      },
+      {
+        "id": "product-return-immediate-replacement-required",
+        "lane": "customer-service",
+        "label": "Un retour produit ou remplacement immédiat est-il requis ?",
+        "type": "decision",
+        "column": 4,
+        "sheet": {
+          "uses": [
+            {
+              "document": "doc-qualified-complaint-file"
+            },
+            {
+              "document": "doc-executed-safeguarding-plan"
+            }
+          ]
+        }
+      },
+      {
+        "id": "arrange-product-return-replacement",
+        "lane": "order-administration-finance",
+        "label": "Organiser le retour produit ou le remplacement",
+        "column": 5,
+        "sheet": {
+          "purpose": "Sans attendre la fin de l'analyse approfondie, l'administration commerciale émet l'autorisation de retour, fait réceptionner la pièce retournée et la remet pour expertise, ou organise l'expédition d'un remplacement.",
+          "free_text": "Produit selon le cas : Pièce retournée (si retour) ; Remplacement (si remplacement).",
+          "uses": [
+            {
+              "document": "doc-qualified-complaint-file"
+            },
+            {
+              "document": "doc-executed-safeguarding-plan"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-returned-part",
+              "name": "Pièce retournée",
+              "medium": "other"
+            },
+            {
+              "id": "doc-replacement",
+              "name": "Remplacement",
+              "medium": "other"
+            }
+          ]
+        }
+      },
+      {
+        "id": "analyse-causes-define-corrective-actions",
+        "lane": "quality-technical-service",
+        "label": "Analyser les causes et définir les actions correctives",
+        "column": 6,
+        "sheet": {
+          "purpose": "L'équipe technique ou qualité recherche les causes racines (y compris sur pièce retournée si applicable), établit si le produit est en cause et formalise les actions correctives durables.",
+          "free_text": "Selon le cas : Pièce retournée (si applicable).",
+          "uses": [
+            {
+              "document": "doc-qualified-complaint-file"
+            },
+            {
+              "document": "doc-executed-safeguarding-plan"
+            },
+            {
+              "document": "doc-returned-part"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-analysis-report-action-plan",
+              "name": "Rapport d'analyse et plan d'actions",
+              "medium": "file"
+            }
+          ]
+        }
+      },
+      {
+        "id": "send-official-response-customer",
+        "lane": "customer-service",
+        "label": "Transmettre la réponse officielle au client",
+        "column": 7,
+        "sheet": {
+          "purpose": "Le service client conclut sur le bien-fondé : fondée, la réponse porte le plan d'actions et, s'il y a lieu, l'avoir proposé ; non fondée (produit conforme, mauvaise utilisation), elle explique le constat et le bon usage ; puis il la transmet au client.",
+          "free_text": "Selon le cas : Remplacement (si applicable).",
+          "uses": [
+            {
+              "document": "doc-qualified-complaint-file"
+            },
+            {
+              "document": "doc-analysis-report-action-plan"
+            },
+            {
+              "document": "doc-replacement"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-official-response-customer",
+              "name": "Réponse officielle au client",
+              "medium": "email"
+            }
+          ]
+        }
+      },
+      {
+        "id": "customer-accept-proposed-resolution",
+        "lane": "customer",
+        "label": "Le client accepte-t-il la résolution proposée ?",
+        "type": "decision",
+        "column": 8,
+        "sheet": {
+          "uses": [
+            {
+              "document": "doc-official-response-customer"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-customer-satisfaction-feedback",
+              "name": "Retour de satisfaction client",
+              "medium": "email"
+            }
+          ]
+        }
+      },
+      {
+        "id": "issue-agreed-credit-note-where",
+        "lane": "order-administration-finance",
+        "label": "Émettre l'avoir convenu, s'il y a lieu",
+        "column": 9,
+        "sheet": {
+          "purpose": "Lorsque la résolution acceptée prévoit un avoir, l'administration commerciale ou la finance l'établit et l'adresse au client ; sinon, rien n'est émis.",
+          "free_text": "Produit selon le cas : Avoir (si accordé).",
+          "uses": [
+            {
+              "document": "doc-official-response-customer"
+            },
+            {
+              "document": "doc-customer-satisfaction-feedback"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-credit-note",
+              "name": "Avoir",
+              "medium": "email"
+            }
+          ]
+        }
+      },
+      {
+        "id": "close-complaint-file",
+        "lane": "customer-service",
+        "label": "Clôturer le dossier de réclamation",
+        "column": 10,
+        "sheet": {
+          "purpose": "Après accord du client, le service client clôt le dossier, vérifie le suivi interne des actions à long terme et alimente les indicateurs de satisfaction.",
+          "free_text": "Selon le cas : Avoir (si accordé).",
+          "uses": [
+            {
+              "document": "doc-customer-satisfaction-feedback"
+            },
+            {
+              "document": "doc-analysis-report-action-plan"
+            },
+            {
+              "document": "doc-credit-note"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-closed-complaint-file",
+              "name": "Dossier de réclamation clôturé",
+              "medium": "file"
+            }
+          ]
+        }
+      },
+      {
+        "id": "complaint-resolved-accepted-customer",
+        "lane": "customer-service",
+        "label": "Réclamation résolue et acceptée par le client",
+        "type": "end",
+        "column": 11
+      },
+      {
+        "id": "file-escalated-commercial-quality-management",
+        "lane": "customer-service",
+        "label": "Dossier escaladé vers la direction commerciale ou qualité",
+        "type": "end",
+        "column": 9
+      },
+      {
+        "id": "complaint-closed-as-inadmissible",
+        "lane": "customer-service",
+        "label": "Réclamation clôturée comme non recevable",
+        "type": "end",
+        "column": 4,
+        "row": 1
+      }
+    ],
+    "flows": [
+      {
+        "source": "complaint-sent-customer",
+        "target": "record-acknowledge-qualify-complaint"
+      },
+      {
+        "source": "record-acknowledge-qualify-complaint",
+        "target": "complaint-admissible"
+      },
+      {
+        "source": "complaint-admissible",
+        "target": "deploy-immediate-safeguarding-measures",
+        "label": "oui"
+      },
+      {
+        "source": "complaint-admissible",
+        "target": "notify-customer-rejection-reasons",
+        "label": "non"
+      },
+      {
+        "source": "notify-customer-rejection-reasons",
+        "target": "complaint-closed-as-inadmissible"
+      },
+      {
+        "source": "deploy-immediate-safeguarding-measures",
+        "target": "product-return-immediate-replacement-required"
+      },
+      {
+        "source": "product-return-immediate-replacement-required",
+        "target": "arrange-product-return-replacement",
+        "label": "oui"
+      },
+      {
+        "source": "product-return-immediate-replacement-required",
+        "target": "analyse-causes-define-corrective-actions",
+        "label": "non"
+      },
+      {
+        "source": "arrange-product-return-replacement",
+        "target": "analyse-causes-define-corrective-actions"
+      },
+      {
+        "source": "analyse-causes-define-corrective-actions",
+        "target": "send-official-response-customer"
+      },
+      {
+        "source": "send-official-response-customer",
+        "target": "customer-accept-proposed-resolution"
+      },
+      {
+        "source": "customer-accept-proposed-resolution",
+        "target": "issue-agreed-credit-note-where",
+        "label": "oui"
+      },
+      {
+        "source": "customer-accept-proposed-resolution",
+        "target": "file-escalated-commercial-quality-management",
+        "label": "non"
+      },
+      {
+        "source": "issue-agreed-credit-note-where",
+        "target": "close-complaint-file"
+      },
+      {
+        "source": "close-complaint-file",
+        "target": "complaint-resolved-accepted-customer"
+      }
+    ]
+  },
+  "uncertainties": [
+    "Modèle générique : remplacer les acteurs, les documents et leurs supports par ceux de votre organisation.",
+    "Durée et délai de chaque étape : à mesurer chez vous, le modèle n'en donne aucun.",
+    "Recours après rejet : si le client conteste un rejet de recevabilité, la demande peut faire l'objet d'une revue de recours par la direction commerciale ou d'un geste commercial exceptionnel.",
+    "Réexamen technique ou commercial après escalade : selon la nature du désaccord, la direction arbitre un complément d'analyse technique ou une proposition commerciale révisée.",
+    "Portails clients : dans certains secteurs, l'accusé de réception, la sécurisation et le rapport d'analyse sont souvent saisis directement dans le portail qualité du donneur d'ordre.",
+    "Support de chaque document (papier, courriel, tableur, fichier, logiciel) : posé par défaut dans ce modèle, à adapter à votre organisation."
+  ]
+}

@@ -1,0 +1,425 @@
+{
+  "format": "topogenia",
+  "version": "1.5",
+  "project": {
+    "name": "Facture fournisseur, de la réception au paiement",
+    "code": "FACFOU",
+    "language": "fr",
+    "description": "Modèle de la galerie : facture fournisseur, de la réception au paiement. Déclencheur : Facture fournisseur reçue par l'entreprise. Résultat : Facture fournisseur payée et soldée ; ou facture maintenue en litige. À adapter à votre organisation : acteurs, documents, supports, seuils et délais."
+  },
+  "map": {
+    "summary": {
+      "text": "Le comptable enregistre et rapproche la facture, un valideur tranche les écarts, puis le règlement est approuvé, exécuté et lettré."
+    },
+    "lanes": [
+      {
+        "id": "supplier",
+        "name": "Fournisseur",
+        "type": "department"
+      },
+      {
+        "id": "accounts-payable-clerk",
+        "name": "Comptable fournisseurs",
+        "type": "person"
+      },
+      {
+        "id": "business-approver",
+        "name": "Valideur métier",
+        "type": "person"
+      },
+      {
+        "id": "treasurer",
+        "name": "Trésorier",
+        "type": "person"
+      },
+      {
+        "id": "finance-management-authorised",
+        "name": "Direction financière / Signataire",
+        "type": "person"
+      }
+    ],
+    "steps": [
+      {
+        "id": "supplier-invoice-received",
+        "lane": "supplier",
+        "label": "Facture fournisseur reçue",
+        "type": "start",
+        "column": 0
+      },
+      {
+        "id": "record-invoice-check-formal-compliance",
+        "lane": "accounts-payable-clerk",
+        "label": "Enregistrer et contrôler la conformité formelle",
+        "column": 1,
+        "sheet": {
+          "purpose": "Le comptable fournisseurs saisit la facture, vérifie les mentions légales obligatoires, contrôle l'absence de doublon et repère l'éventuelle commande ; un doublon est écarté, une facture irrégulière est renvoyée au fournisseur pour réémission.",
+          "inputs": [
+            {
+              "name": "Facture fournisseur",
+              "medium": "email"
+            }
+          ],
+          "uses": [
+            {
+              "document": "doc-corrective-invoice-credit-note"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-recorded-invoice",
+              "name": "Facture enregistrée",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "invoice-backed-purchase-order",
+        "lane": "accounts-payable-clerk",
+        "label": "La facture est-elle adossée à un bon de commande ?",
+        "type": "decision",
+        "column": 2,
+        "sheet": {
+          "uses": [
+            {
+              "document": "doc-recorded-invoice"
+            }
+          ]
+        }
+      },
+      {
+        "id": "match-invoice-order-receipt",
+        "lane": "accounts-payable-clerk",
+        "label": "Rapprocher la facture de la commande et de la réception",
+        "column": 3,
+        "sheet": {
+          "purpose": "Le comptable fournisseurs compare les quantités, prix unitaires, montants et taxes de la facture avec le bon de commande et le bon de réception enregistrés.",
+          "inputs": [
+            {
+              "name": "Bon de commande",
+              "medium": "software"
+            },
+            {
+              "name": "Bon de réception",
+              "medium": "software"
+            }
+          ],
+          "uses": [
+            {
+              "document": "doc-recorded-invoice"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-matching-sheet",
+              "name": "Fiche de rapprochement",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "invoice-agree-order-receipt",
+        "lane": "accounts-payable-clerk",
+        "label": "La facture concorde-t-elle avec la commande et la réception ?",
+        "type": "decision",
+        "column": 4,
+        "sheet": {
+          "uses": [
+            {
+              "document": "doc-matching-sheet"
+            }
+          ]
+        }
+      },
+      {
+        "id": "approve-non-order-invoice-arbitrate",
+        "lane": "business-approver",
+        "label": "Valider la facture hors commande ou arbitrer l'écart",
+        "column": 5,
+        "sheet": {
+          "purpose": "Le valideur métier contrôle l'opportunité et l'imputation d'une facture sans commande (« bon à payer ») ou la justification d'un écart de rapprochement ; il fait régulariser une réception non saisie, seul un écart imputable au fournisseur menant au litige.",
+          "free_text": "Selon le cas : Fiche de rapprochement (si commande).",
+          "uses": [
+            {
+              "document": "doc-recorded-invoice"
+            },
+            {
+              "document": "doc-matching-sheet"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-approval-arbitration-decision",
+              "name": "Décision de validation ou d'arbitrage",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "invoice-difference-accepted",
+        "lane": "business-approver",
+        "label": "La facture ou l'écart constaté est-il accepté ?",
+        "type": "decision",
+        "column": 6,
+        "sheet": {
+          "uses": [
+            {
+              "document": "doc-approval-arbitration-decision"
+            }
+          ]
+        }
+      },
+      {
+        "id": "notify-supplier-dispute",
+        "lane": "accounts-payable-clerk",
+        "label": "Notifier le litige au fournisseur",
+        "column": 7,
+        "sheet": {
+          "purpose": "En cas de refus, le comptable fournisseurs maintient le blocage et adresse une contestation motivée au fournisseur en demandant un avoir ou une facture rectificative.",
+          "uses": [
+            {
+              "document": "doc-approval-arbitration-decision"
+            },
+            {
+              "document": "doc-recorded-invoice"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-supplier-dispute-notice",
+              "name": "Avis de litige fournisseur",
+              "medium": "email"
+            }
+          ]
+        }
+      },
+      {
+        "id": "supplier-issue-credit-note-corrective",
+        "lane": "supplier",
+        "label": "Le fournisseur émet-il un avoir ou une facture rectificative ?",
+        "type": "decision",
+        "column": 8,
+        "sheet": {
+          "free_text": "Produit selon le cas : Facture rectificative ou avoir (si Oui).",
+          "uses": [
+            {
+              "document": "doc-supplier-dispute-notice"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-corrective-invoice-credit-note",
+              "name": "Facture rectificative ou avoir",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "post-invoice-prepare-payment-batch",
+        "lane": "accounts-payable-clerk",
+        "label": "Comptabiliser la facture et préparer le lot de paiement",
+        "column": 7,
+        "row": 1,
+        "sheet": {
+          "purpose": "Le comptable fournisseurs comptabilise définitivement la facture en bon à payer et l'intègre dans la proposition de règlement à son échéance en tenant compte des avoirs ou acomptes, d'un éventuel escompte pour paiement anticipé et des pénalités de retard à éviter.",
+          "uses": [
+            {
+              "document": "doc-recorded-invoice"
+            },
+            {
+              "document": "doc-matching-sheet"
+            },
+            {
+              "document": "doc-approval-arbitration-decision"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-payment-proposal",
+              "name": "Proposition de règlement",
+              "medium": "spreadsheet"
+            }
+          ]
+        }
+      },
+      {
+        "id": "check-approve-payment-proposal",
+        "lane": "finance-management-authorised",
+        "label": "Contrôler et approuver la proposition de règlement",
+        "column": 8,
+        "sheet": {
+          "purpose": "La direction financière ou le signataire habilité, dans la limite de sa délégation, contrôle la proposition de règlement, vérifie la séparation des tâches et autorise le décaissement ; une ligne anormale (coordonnées bancaires modifiées, doute de fraude) est retirée du lot et renvoyée au comptable.",
+          "uses": [
+            {
+              "document": "doc-payment-proposal"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-approved-payment-order",
+              "name": "Ordre de paiement approuvé",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "execute-payment-bank",
+        "lane": "treasurer",
+        "label": "Exécuter le règlement auprès de la banque",
+        "column": 9,
+        "sheet": {
+          "purpose": "Sur la base de l'ordre approuvé, le trésorier vérifie les coordonnées bancaires et la trésorerie disponible, puis transmet l'ordre de virement à la banque.",
+          "uses": [
+            {
+              "document": "doc-approved-payment-order"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-executed-payment-order",
+              "name": "Ordre de paiement exécuté",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "post-reconcile-payment",
+        "lane": "accounts-payable-clerk",
+        "label": "Comptabiliser et lettrer le règlement",
+        "column": 10,
+        "row": 1,
+        "sheet": {
+          "purpose": "Après exécution bancaire, le comptable fournisseurs enregistre l'écriture de décaissement et lettre le paiement avec la facture correspondante.",
+          "inputs": [
+            {
+              "name": "Relevé bancaire",
+              "medium": "file"
+            }
+          ],
+          "uses": [
+            {
+              "document": "doc-executed-payment-order"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-reconciled-supplier-account",
+              "name": "Compte fournisseur lettré",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "supplier-invoice-paid-settled",
+        "lane": "accounts-payable-clerk",
+        "label": "Facture fournisseur payée et soldée",
+        "type": "end",
+        "column": 11,
+        "row": 1
+      },
+      {
+        "id": "invoice-kept-dispute",
+        "lane": "accounts-payable-clerk",
+        "label": "Facture maintenue en litige",
+        "type": "end",
+        "column": 9
+      }
+    ],
+    "flows": [
+      {
+        "source": "supplier-invoice-received",
+        "target": "record-invoice-check-formal-compliance"
+      },
+      {
+        "source": "record-invoice-check-formal-compliance",
+        "target": "invoice-backed-purchase-order"
+      },
+      {
+        "source": "invoice-backed-purchase-order",
+        "target": "match-invoice-order-receipt",
+        "label": "oui"
+      },
+      {
+        "source": "invoice-backed-purchase-order",
+        "target": "approve-non-order-invoice-arbitrate",
+        "label": "non"
+      },
+      {
+        "source": "match-invoice-order-receipt",
+        "target": "invoice-agree-order-receipt"
+      },
+      {
+        "source": "invoice-agree-order-receipt",
+        "target": "post-invoice-prepare-payment-batch",
+        "label": "oui"
+      },
+      {
+        "source": "invoice-agree-order-receipt",
+        "target": "approve-non-order-invoice-arbitrate",
+        "label": "non"
+      },
+      {
+        "source": "approve-non-order-invoice-arbitrate",
+        "target": "invoice-difference-accepted"
+      },
+      {
+        "source": "invoice-difference-accepted",
+        "target": "post-invoice-prepare-payment-batch",
+        "label": "oui"
+      },
+      {
+        "source": "invoice-difference-accepted",
+        "target": "notify-supplier-dispute",
+        "label": "non"
+      },
+      {
+        "source": "notify-supplier-dispute",
+        "target": "supplier-issue-credit-note-corrective"
+      },
+      {
+        "source": "supplier-issue-credit-note-corrective",
+        "target": "record-invoice-check-formal-compliance",
+        "label": "oui"
+      },
+      {
+        "source": "supplier-issue-credit-note-corrective",
+        "target": "invoice-kept-dispute",
+        "label": "non"
+      },
+      {
+        "source": "post-invoice-prepare-payment-batch",
+        "target": "check-approve-payment-proposal"
+      },
+      {
+        "source": "check-approve-payment-proposal",
+        "target": "execute-payment-bank"
+      },
+      {
+        "source": "execute-payment-bank",
+        "target": "post-reconcile-payment"
+      },
+      {
+        "source": "post-reconcile-payment",
+        "target": "supplier-invoice-paid-settled"
+      }
+    ]
+  },
+  "uncertainties": [
+    "Modèle générique : remplacer les acteurs, les documents et leurs supports par ceux de votre organisation.",
+    "Durée et délai de chaque étape : à mesurer chez vous, le modèle n'en donne aucun.",
+    "Automatisation par capture ou facturation électronique : la saisie initiale et le rapprochement sans écart sont fréquemment automatisés par dématérialisation fiscale et reconnaissance optique de caractères.",
+    "Tolérances d'écart : de nombreuses entreprises paramètrent des tolérances d'écart permettant la validation automatique de différences mineures sans intervention du valideur métier.",
+    "Auto-facturation : dans certains secteurs, certains donneurs d'ordre pratiquent l'auto-facturation sur la base des réceptions validées, supprimant la saisie de facture fournisseur.",
+    "Double signature bancaire : selon les règles de contrôle interne, l'approbation ou l'exécution du paiement peut requérir la co-signature de plusieurs personnes habilitées.",
+    "Litige maintenu : la suite (relance du fournisseur, arbitrage, traitement comptable de la dette contestée) sort du périmètre de ce modèle, à traiter selon vos règles ; la facture n'est pas payée tant que le litige dure.",
+    "Avoir spontané : un avoir ou une facture rectificative reçu sans litige préalable entre par la même étape que la facture, « Enregistrer et contrôler la conformité formelle ».",
+    "Preuve de paiement et archivage : l'avis de paiement au fournisseur et l'archivage des pièces ne sont pas dessinés ; en France, les pièces justificatives comptables se conservent dix ans (Code de commerce).",
+    "Support de chaque document (papier, courriel, tableur, fichier, logiciel) : posé par défaut dans ce modèle, à adapter à votre organisation."
+  ]
+}

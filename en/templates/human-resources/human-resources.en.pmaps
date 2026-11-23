@@ -1,0 +1,408 @@
+{
+  "format": "topogenia-collection",
+  "version": "1.0",
+  "name": "Human resources",
+  "description": "The most common recruitment process, from the need to the hire, to adapt to your organisation.",
+  "processes": [
+    {
+      "format": "topogenia",
+      "version": "1.5",
+      "project": {
+        "name": "Recruitment, from the need to the hire",
+        "code": "HIRE",
+        "language": "en",
+        "description": "Gallery template: recruitment, from the need to the hire. Trigger: Recruitment need identified by a manager. Outcome: Hire confirmed and contract signed; or request refused or recruitment suspended. To adapt to your organisation: actors, documents, media, thresholds and lead times."
+      },
+      "map": {
+        "summary": {
+          "text": "The manager sets out the need, management authorises it, the recruiter publishes, the manager assesses, then the offer and contract are signed or recruitment is suspended."
+        },
+        "lanes": [
+          {
+            "id": "hiring-manager",
+            "name": "Hiring manager",
+            "type": "person"
+          },
+          {
+            "id": "management-budget-control",
+            "name": "Management / Budget control",
+            "type": "department"
+          },
+          {
+            "id": "hr-recruiter",
+            "name": "HR recruiter",
+            "type": "person"
+          },
+          {
+            "id": "candidate",
+            "name": "Candidate",
+            "type": "department"
+          }
+        ],
+        "steps": [
+          {
+            "id": "recruitment-need-identified",
+            "lane": "hiring-manager",
+            "label": "Recruitment need identified",
+            "type": "start",
+            "column": 0
+          },
+          {
+            "id": "formalise-request-job-description-budget",
+            "lane": "hiring-manager",
+            "label": "Formalise the request, the job description and the budget",
+            "column": 1,
+            "sheet": {
+              "purpose": "The manager defines the need, the duties, the skills expected, the type of contract and the planned pay range in the recruitment request.",
+              "outputs": [
+                {
+                  "id": "doc-recruitment-request",
+                  "name": "Recruitment request",
+                  "medium": "email"
+                },
+                {
+                  "id": "doc-job-description",
+                  "name": "Job description",
+                  "medium": "software"
+                },
+                {
+                  "id": "doc-budget-range",
+                  "name": "Budget range",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "review-need-budget-range",
+            "lane": "management-budget-control",
+            "label": "Review the need and the budget range",
+            "column": 2,
+            "sheet": {
+              "purpose": "Management or budget control checks that the request fits the headcount plan and the pay policy, and approves the budget envelope before publication.",
+              "inputs": [
+                {
+                  "name": "Headcount budget",
+                  "medium": "spreadsheet"
+                }
+              ],
+              "uses": [
+                {
+                  "document": "doc-recruitment-request"
+                },
+                {
+                  "document": "doc-budget-range"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-opening-decision-approved-budget-envelope",
+                  "name": "Opening decision and approved budget envelope",
+                  "medium": "email"
+                }
+              ]
+            }
+          },
+          {
+            "id": "opening-position-approved",
+            "lane": "management-budget-control",
+            "label": "Is the opening of the position approved?",
+            "type": "decision",
+            "column": 3,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-opening-decision-approved-budget-envelope"
+                }
+              ]
+            }
+          },
+          {
+            "id": "recruitment-request-refused",
+            "lane": "management-budget-control",
+            "label": "Recruitment request refused",
+            "type": "end",
+            "column": 4
+          },
+          {
+            "id": "publish-vacancy-shortlist-applications",
+            "lane": "hr-recruiter",
+            "label": "Publish the vacancy and shortlist the applications",
+            "column": 4,
+            "sheet": {
+              "purpose": "The recruiter publishes the vacancy internally and externally, collects applications, carries out the shortlisting and sends the short list to the manager.",
+              "uses": [
+                {
+                  "document": "doc-job-description"
+                },
+                {
+                  "document": "doc-opening-decision-approved-budget-envelope"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-shortlist-candidates",
+                  "name": "Shortlist of candidates",
+                  "medium": "spreadsheet"
+                }
+              ]
+            }
+          },
+          {
+            "id": "conduct-interviews-assess-candidates",
+            "lane": "hiring-manager",
+            "label": "Conduct the interviews and assess the candidates",
+            "column": 5,
+            "sheet": {
+              "purpose": "The manager (accompanied by human resources or a technical peer) interviews the candidates, collects their expectations and fills in the assessment grids to rank the profiles retained (including reserve candidates).",
+              "uses": [
+                {
+                  "document": "doc-shortlist-candidates"
+                },
+                {
+                  "document": "doc-job-description"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-interview-assessment-grids",
+                  "name": "Interview assessment grids",
+                  "medium": "paper"
+                }
+              ]
+            }
+          },
+          {
+            "id": "candidate-selected-profiles-assessed",
+            "lane": "hiring-manager",
+            "label": "Is a candidate selected from the profiles assessed?",
+            "type": "decision",
+            "column": 6,
+            "sheet": {
+              "free_text": "Produced as applicable: Selected candidate and proposed terms (if yes).",
+              "uses": [
+                {
+                  "document": "doc-interview-assessment-grids"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-selected-candidate-proposed-terms",
+                  "name": "Selected candidate and proposed terms",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "validate-final-terms-offer",
+            "lane": "management-budget-control",
+            "label": "Validate the final terms of the offer",
+            "column": 7,
+            "sheet": {
+              "purpose": "Before anything is sent to the candidate, management validates the terms proposed by the manager (exact pay, status, start date) against the approved envelope.",
+              "uses": [
+                {
+                  "document": "doc-selected-candidate-proposed-terms"
+                },
+                {
+                  "document": "doc-opening-decision-approved-budget-envelope"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-internal-agreement-offer",
+                  "name": "Internal agreement on the offer",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "send-job-offer-candidate",
+            "lane": "hr-recruiter",
+            "label": "Send the job offer to the candidate",
+            "column": 8,
+            "sheet": {
+              "purpose": "The recruiter formalises the job offer approved internally and sends it to the selected candidate.",
+              "uses": [
+                {
+                  "document": "doc-internal-agreement-offer"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-job-offer",
+                  "name": "Job offer",
+                  "medium": "email"
+                }
+              ]
+            }
+          },
+          {
+            "id": "candidate-accept-job-offer",
+            "lane": "candidate",
+            "label": "Does the candidate accept the job offer?",
+            "type": "decision",
+            "column": 9,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-job-offer"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-candidates-reply",
+                  "name": "Candidate's reply",
+                  "medium": "email"
+                }
+              ]
+            }
+          },
+          {
+            "id": "draw-up-contract-obtain-employers",
+            "lane": "hr-recruiter",
+            "label": "Draw up the contract, obtain the employer's signature and send it",
+            "column": 10,
+            "sheet": {
+              "purpose": "The recruiter drafts the final employment contract, has it signed by the authorised employer representative and sends it to the candidate for countersignature.",
+              "uses": [
+                {
+                  "document": "doc-candidates-reply"
+                },
+                {
+                  "document": "doc-internal-agreement-offer"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-contract-signed-employer",
+                  "name": "Contract signed by the employer",
+                  "medium": "paper"
+                }
+              ]
+            }
+          },
+          {
+            "id": "countersign-contract-provide-supporting-documents",
+            "lane": "candidate",
+            "label": "Countersign the contract and provide the supporting documents",
+            "column": 11,
+            "sheet": {
+              "purpose": "The candidate returns the countersigned contract with the required supporting documents, confirming the hire and triggering the onboarding path.",
+              "uses": [
+                {
+                  "document": "doc-contract-signed-employer"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-contract-signed-both-parties",
+                  "name": "Contract signed by both parties",
+                  "medium": "paper"
+                },
+                {
+                  "id": "doc-administrative-documents",
+                  "name": "Administrative documents",
+                  "medium": "paper"
+                }
+              ]
+            }
+          },
+          {
+            "id": "hire-confirmed-onboarding-triggered",
+            "lane": "hr-recruiter",
+            "label": "Hire confirmed and onboarding triggered",
+            "type": "end",
+            "column": 12
+          },
+          {
+            "id": "recruitment-suspended-relaunched-outside-cycle",
+            "lane": "hr-recruiter",
+            "label": "Recruitment suspended or relaunched outside the cycle",
+            "type": "end",
+            "column": 7
+          }
+        ],
+        "flows": [
+          {
+            "source": "recruitment-need-identified",
+            "target": "formalise-request-job-description-budget"
+          },
+          {
+            "source": "formalise-request-job-description-budget",
+            "target": "review-need-budget-range"
+          },
+          {
+            "source": "review-need-budget-range",
+            "target": "opening-position-approved"
+          },
+          {
+            "source": "opening-position-approved",
+            "target": "publish-vacancy-shortlist-applications",
+            "label": "yes"
+          },
+          {
+            "source": "opening-position-approved",
+            "target": "recruitment-request-refused",
+            "label": "no"
+          },
+          {
+            "source": "publish-vacancy-shortlist-applications",
+            "target": "conduct-interviews-assess-candidates"
+          },
+          {
+            "source": "conduct-interviews-assess-candidates",
+            "target": "candidate-selected-profiles-assessed"
+          },
+          {
+            "source": "candidate-selected-profiles-assessed",
+            "target": "validate-final-terms-offer",
+            "label": "yes"
+          },
+          {
+            "source": "candidate-selected-profiles-assessed",
+            "target": "recruitment-suspended-relaunched-outside-cycle",
+            "label": "no"
+          },
+          {
+            "source": "validate-final-terms-offer",
+            "target": "send-job-offer-candidate"
+          },
+          {
+            "source": "send-job-offer-candidate",
+            "target": "candidate-accept-job-offer"
+          },
+          {
+            "source": "candidate-accept-job-offer",
+            "target": "draw-up-contract-obtain-employers",
+            "label": "yes"
+          },
+          {
+            "source": "candidate-accept-job-offer",
+            "target": "candidate-selected-profiles-assessed",
+            "label": "no"
+          },
+          {
+            "source": "draw-up-contract-obtain-employers",
+            "target": "countersign-contract-provide-supporting-documents"
+          },
+          {
+            "source": "countersign-contract-provide-supporting-documents",
+            "target": "hire-confirmed-onboarding-triggered"
+          }
+        ]
+      },
+      "uncertainties": [
+        "Generic model: replace the actors, the documents and their media with those of your organisation.",
+        "Duration and lead time of each step: to be measured in your organisation, the model gives none.",
+        "Internal mobility first: many organisations advertise the position internally first before opening the search externally.",
+        "Restarting the search: when no assessed candidate is selected or the reserve candidates have declined, the manager and human resources decide either to suspend the need or to open a new publication campaign.",
+        "Additional assessments: depending on the job, technical tests, role plays or reference checks come in before the offer is approved.",
+        "Downstream onboarding process: confirming the hire triggers the welcome sub-process (workstation, IT access, medical check-up and induction path).",
+        "Medium of each document (paper, email, spreadsheet, file, software): set by default in this model, to be adapted to your organisation."
+      ]
+    }
+  ]
+}

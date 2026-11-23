@@ -34,7 +34,7 @@
       <p class="kicker">Application Topogenia</p>
       <h1>Confidentialité</h1>
       <p class="lead">Topogenia fonctionne sur votre ordinateur. L'éditeur ne reçoit aucune de vos données.</p>
-      <p>Version du 14 novembre 2026. Elle vaut pour la version portable et pour la version du Microsoft Store, en mode Poste. Le site topogenia.com a ses propres règles, dans les <a href="mentions-legales.html">mentions légales</a>.</p>
+      <p>Version du 21 novembre 2026. Elle vaut pour la version portable et pour la version du Microsoft Store, en mode Poste. Le site topogenia.com a ses propres règles, dans les <a href="mentions-legales.html">mentions légales</a>.</p>
 
       <section>
         <h2>En bref</h2>
@@ -42,6 +42,7 @@
           <li>Pas de compte, pas de mesure d'audience, pas de publicité.</li>
           <li>Vos projets restent dans un fichier de données, sur votre ordinateur.</li>
           <li>L'assistant IA est facultatif et désactivé par défaut. Avec un modèle installé sur votre ordinateur, rien ne quitte l'ordinateur. Avec un fournisseur en ligne, ce que vous lui demandez part directement de votre ordinateur vers ce fournisseur, sous votre propre compte.</li>
+          <li>L'application ne va jamais voir sur internet si une version plus récente existe, ni chercher des modèles : c'est votre navigateur qui ouvre une page du site, quand vous le demandez.</li>
           <li>La présentation lit ses phrases avec une voix de votre ordinateur. Une voix naturelle en ligne est facultative : si vous la choisissez, votre navigateur envoie le texte lu à son éditeur (Microsoft pour Edge, Google pour Chrome).</li>
         </ul>
       </section>
@@ -64,7 +65,7 @@
         </ul>
         <p>Ce qui part ne porte pas les comptes des membres du projet. Ce que vous avez écrit part tel quel : il peut comprendre des noms de personnes que vous avez saisis, par exemple le responsable d'une action.</p>
         <p>Par défaut, seuls les projets classés « Interne » peuvent être envoyés à l'IA. Les projets confidentiels ne partent que si vous l'autorisez dans les paramètres de l'IA.</p>
-        <p>La clé d'API du fournisseur choisi est enregistrée chiffrée sur votre ordinateur, pour votre seul compte Windows. Aucune clé AWS n'est enregistrée : Bedrock passe par le profil AWS de votre ordinateur.</p>
+        <p>Si le fournisseur choisi demande une clé d'API, elle est enregistrée chiffrée sur votre ordinateur, pour votre seul compte Windows, et n'est transmise qu'à ce fournisseur. Ollama et LM Studio n'en demandent pas. Un connecteur qui s'appuie sur une connexion déjà configurée sur votre ordinateur, comme AWS Bedrock, n'enregistre aucune clé.</p>
         <p>Le contenu produit par une IA peut être inexact. Vous voyez chaque proposition avant de l'appliquer.</p>
       </section>
 
@@ -86,7 +87,16 @@
 
       <section>
         <h2>Fichiers que vous exportez</h2>
-        <p>PDF, images PNG et SVG, classeurs Excel, fichiers Markdown, fichiers .pmap et paquets d'échange sont enregistrés là où vous le décidez. Un paquet d'échange laisse de côté les comptes des membres du projet, sauf si vous choisissez de les inclure ; ce que vous avez écrit y reste tel quel, y compris le responsable d'une action.</p>
+        <p>PDF, images PNG et SVG, classeurs Excel, fichiers Markdown, fichiers BPMN 2.0 (.bpmn), fichiers .pmap et paquets d'échange sont enregistrés là où vous le décidez. Un paquet d'échange laisse de côté les comptes des membres du projet, sauf si vous choisissez de les inclure ; ce que vous avez écrit y reste tel quel, y compris le responsable d'une action.</p>
+      </section>
+
+      <section>
+        <h2>Mises à jour et modèles</h2>
+        <p>L'application ne contacte ni le site, ni le Microsoft Store pour savoir si une version existe ou pour chercher des modèles : elle ne télécharge ni n'installe rien. Elle connaît seulement le numéro de sa version et le jour où elle a été publiée.</p>
+        <p>« Rechercher une mise à jour » (menu Aide, menu du compte, rappel de l'accueil) et « Galerie de modèles » (accueil) ouvrent une page de topogenia.com dans un nouvel onglet de votre navigateur, seulement quand vous cliquez. Dans la version du Microsoft Store, « Rechercher une mise à jour » ouvre la fiche de l'application dans le Store.</p>
+        <p>Le numéro de votre version est écrit dans l'adresse de la page des versions, après le signe #. Le navigateur ne transmet jamais cette partie de l'adresse au site : le site reçoit une visite ordinaire de la page, sans ce numéro et sans l'adresse locale de votre ordinateur. L'adresse complète, numéro compris, reste en revanche dans l'historique de votre navigateur, et si vous avez activé la synchronisation de votre compte (Edge, Chrome, Firefox…), cet historique est copié chez l'éditeur du navigateur. La page lit le numéro sur place, dans votre navigateur, et le compare à sa propre liste de versions. Elle ne l'envoie à personne, ne le garde pas, ne mesure pas l'audience et ne charge rien d'un tiers. Comme pour toute page du site, l'hébergeur enregistre l'adresse IP des visiteurs (voir les <a href="mentions-legales.html">mentions légales</a>).</p>
+        <p>Les modèles de la galerie sont des fichiers que votre navigateur télécharge, comme n'importe quel fichier d'un site : vous les ouvrez ensuite dans l'application, depuis votre ordinateur. L'application ne va rien chercher sur le site.</p>
+        <p>Une entreprise peut masquer tous ces liens (la ligne « Rechercher une mise à jour », le rappel et la « Galerie de modèles ») par le réglage d'exploitation <code>SiteLinks</code> ; le reste de l'application ne change pas.</p>
       </section>
 
       <section>
@@ -106,7 +116,7 @@
       <p class="kicker">Topogenia app</p>
       <h1>Privacy policy</h1>
       <p class="lead">Topogenia runs on your computer. The publisher receives none of your data.</p>
-      <p>Version of 14 November 2026. It covers the portable release and the Microsoft Store release, in desktop mode. The topogenia.com website has its own rules, in the <a href="mentions-legales.html">legal notice</a>.</p>
+      <p>Version of 21 November 2026. It covers the portable release and the Microsoft Store release, in desktop mode. The topogenia.com website has its own rules, in the <a href="mentions-legales.html">legal notice</a>.</p>
 
       <section>
         <h2>In short</h2>
@@ -114,6 +124,7 @@
           <li>No account, no analytics, no advertising.</li>
           <li>Your projects stay in a data file, on your computer.</li>
           <li>The AI assistant is optional and turned off by default. With a model installed on your computer, nothing leaves the computer. With an online provider, what you ask goes straight from your computer to that provider, under your own account.</li>
+          <li>The app never goes to the internet to see whether a newer version exists, nor to look for templates: it is your browser that opens a page of the website, when you ask.</li>
           <li>The presentation reads its sentences with a voice of your computer. A natural online voice is optional: if you choose it, your browser sends the text read aloud to its maker (Microsoft for Edge, Google for Chrome).</li>
         </ul>
       </section>
@@ -136,7 +147,7 @@
         </ul>
         <p>What is sent does not carry the accounts of the project members. What you wrote is sent as it is: it may include names of people you entered, for example the owner of an action.</p>
         <p>By default, only projects classified as “Internal” can be sent to the AI. Confidential projects are only sent if you allow it in the AI settings.</p>
-        <p>The API key of the chosen provider is stored encrypted on your computer, for your Windows account only. No AWS key is stored: Bedrock uses the AWS profile of your computer.</p>
+        <p>If the chosen provider asks for an API key, it is stored encrypted on your computer, for your Windows account only, and sent to that provider only. Ollama and LM Studio ask for none. A connector that relies on a connection already set up on your computer, such as AWS Bedrock, stores no key.</p>
         <p>Content produced by an AI may be inaccurate. You see each proposal before you apply it.</p>
       </section>
 
@@ -158,7 +169,16 @@
 
       <section>
         <h2>Files you export</h2>
-        <p>PDFs, PNG and SVG images, Excel workbooks, Markdown files, .pmap files and exchange packages are saved where you decide. An exchange package leaves out the accounts of the project members, unless you choose to include them; what you wrote stays in it as it is, including the owner of an action.</p>
+        <p>PDFs, PNG and SVG images, Excel workbooks, Markdown files, BPMN 2.0 (.bpmn) files, .pmap files and exchange packages are saved where you decide. An exchange package leaves out the accounts of the project members, unless you choose to include them; what you wrote stays in it as it is, including the owner of an action.</p>
+      </section>
+
+      <section>
+        <h2>Updates and templates</h2>
+        <p>The app contacts neither the website nor the Microsoft Store to see whether a version exists or to look for templates: it downloads or installs nothing. It only knows the number of its version and the day it was published.</p>
+        <p>“Check for updates” (Help menu, account menu, reminder on the home page) and “Template gallery” (home page) open a page of topogenia.com in a new tab of your browser, only when you click. In the Microsoft Store release, “Check for updates” opens the app's page in the Store.</p>
+        <p>The number of your version is written in the address of the versions page, after the # sign. The browser never sends that part of the address to the website: the website receives an ordinary visit to the page, without that number and without the local address of your computer. The full address, number included, does stay in your browser history, and if you have turned on the synchronisation of your account (Edge, Chrome, Firefox…), that history is copied to the browser's publisher. The page reads the number on the spot, in your browser, and compares it with its own list of versions. It does not send it to anyone, does not keep it, does not measure audience (no analytics) and loads nothing from third parties. As with any page of the website, the host logs the IP address of visitors (see the <a href="mentions-legales.html">legal notice</a>).</p>
+        <p>The templates of the gallery are files that your browser downloads, like any file from a website: you then open them in the app, from your computer. The app fetches nothing from the website.</p>
+        <p>A company can hide all these links (the “Check for updates” line, the reminder and the “Template gallery”) with the <code>SiteLinks</code> operating setting; the rest of the app does not change.</p>
       </section>
 
       <section>

@@ -1,0 +1,459 @@
+{
+  "format": "topogenia",
+  "version": "1.5",
+  "project": {
+    "name": "Gestion d'une modification technique",
+    "code": "MODTEC",
+    "language": "fr",
+    "description": "Modèle de la galerie : gestion d'une modification technique. Déclencheur : Besoin d'évolution produit ou procédé identifié. Résultat : Modification technique déployée et clôturée ; ou demande rejetée ou abandonnée, et notifiée. À adapter à votre organisation : acteurs, documents, supports, seuils et délais."
+  },
+  "map": {
+    "summary": {
+      "text": "Le demandeur formule le besoin, le bureau d'études et le comité l'évaluent, puis la modification est qualifiée, déployée en série et clôturée, ou rejetée."
+    },
+    "lanes": [
+      {
+        "id": "change-requester",
+        "name": "Demandeur de modification",
+        "type": "person"
+      },
+      {
+        "id": "design-office",
+        "name": "Bureau d'études",
+        "type": "department"
+      },
+      {
+        "id": "change-board",
+        "name": "Comité de modification",
+        "type": "department"
+      },
+      {
+        "id": "industrialisation-operations",
+        "name": "Industrialisation et opérations",
+        "type": "department"
+      }
+    ],
+    "steps": [
+      {
+        "id": "engineering-change-need-identified",
+        "lane": "change-requester",
+        "label": "Besoin de modification technique identifié",
+        "type": "start",
+        "column": 0
+      },
+      {
+        "id": "draft-engineering-change-request",
+        "lane": "change-requester",
+        "label": "Rédiger la demande de modification technique",
+        "column": 1,
+        "sheet": {
+          "purpose": "Le demandeur formalise le motif de l'évolution, les références concernées et le résultat attendu dans une demande de modification technique.",
+          "outputs": [
+            {
+              "id": "doc-engineering-change-request",
+              "name": "Demande de modification technique",
+              "medium": "email"
+            }
+          ]
+        }
+      },
+      {
+        "id": "carry-out-feasibility-study-impact",
+        "lane": "design-office",
+        "label": "Réaliser l'étude de faisabilité et l'estimation d'impact",
+        "column": 2,
+        "sheet": {
+          "purpose": "Le bureau d'études évalue la faisabilité technique, identifie les pièces, plans et nomenclatures impactés et produit une estimation préliminaire d'ingénierie.",
+          "inputs": [
+            {
+              "name": "Dossier de définition actuel",
+              "medium": "file"
+            }
+          ],
+          "uses": [
+            {
+              "document": "doc-engineering-change-request"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-preliminary-feasibility-study",
+              "name": "Étude préliminaire de faisabilité",
+              "medium": "file"
+            }
+          ]
+        }
+      },
+      {
+        "id": "assess-preliminary-quality-cost-stock",
+        "lane": "change-board",
+        "label": "Évaluer les impacts préliminaires qualité, coûts et stocks",
+        "column": 3,
+        "sheet": {
+          "purpose": "Le comité pluridisciplinaire chiffre de manière préliminaire les impacts sur les outillages, fournisseurs, stocks, coûts et délais avant d'engager les travaux de reconception détaillée.",
+          "uses": [
+            {
+              "document": "doc-engineering-change-request"
+            },
+            {
+              "document": "doc-preliminary-feasibility-study"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-preliminary-multidisciplinary-opinion",
+              "name": "Avis préliminaire pluridisciplinaire",
+              "medium": "email"
+            }
+          ]
+        }
+      },
+      {
+        "id": "change-request-approved",
+        "lane": "change-board",
+        "label": "La demande de modification est-elle approuvée ?",
+        "type": "decision",
+        "column": 4,
+        "sheet": {
+          "free_text": "Produit selon le cas : Notification de rejet motivée (si Non).",
+          "uses": [
+            {
+              "document": "doc-preliminary-multidisciplinary-opinion"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-reasoned-rejection-notice",
+              "name": "Notification de rejet motivée",
+              "medium": "email"
+            }
+          ]
+        }
+      },
+      {
+        "id": "acknowledge-rejection-close-request",
+        "lane": "change-requester",
+        "label": "Prendre acte du rejet et clore la demande",
+        "column": 9,
+        "sheet": {
+          "purpose": "Le demandeur prend connaissance des motifs de rejet notifiés par le comité de modification, avant ou après qualification, et clôt sa demande.",
+          "free_text": "Selon le cas : Ordre de modification annulé (si abandon après approbation).",
+          "uses": [
+            {
+              "document": "doc-reasoned-rejection-notice"
+            },
+            {
+              "document": "doc-reasoned-rejection-notice-alt"
+            },
+            {
+              "document": "doc-cancelled-change-order"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-request-closed-as-rejected",
+              "name": "Demande clôturée en rejet",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "issue-revise-change-order-definition",
+        "lane": "design-office",
+        "label": "Émettre ou réviser l'ordre de modification et la définition",
+        "column": 5,
+        "sheet": {
+          "purpose": "Après accord de principe, le bureau d'études crée l'ordre de modification officiel, incrémente l'indice de révision et reconçoit les plans et nomenclatures ; après une qualification non concluante, il révise l'ordre et la définition.",
+          "free_text": "Selon le cas : Rapport de qualification (si révision).",
+          "inputs": [
+            {
+              "name": "Dossier de définition actuel",
+              "medium": "file"
+            }
+          ],
+          "uses": [
+            {
+              "document": "doc-preliminary-multidisciplinary-opinion"
+            },
+            {
+              "document": "doc-qualification-report"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-change-order",
+              "name": "Ordre de modification",
+              "medium": "file"
+            },
+            {
+              "id": "doc-revised-drawings-bills-materials",
+              "name": "Plans et nomenclatures révisés",
+              "medium": "file"
+            }
+          ]
+        }
+      },
+      {
+        "id": "adapt-means-involve-suppliers-qualify",
+        "lane": "industrialisation-operations",
+        "label": "Adapter moyens, impliquer les fournisseurs et qualifier",
+        "column": 6,
+        "sheet": {
+          "purpose": "Les équipes méthodes et opérations adaptent gammes et outillages, mobilisent les fournisseurs concernés dès la phase prototype ou présérie, exécutent les essais de qualification et sollicitent l'accord du client s'il est contractuellement requis.",
+          "uses": [
+            {
+              "document": "doc-change-order"
+            },
+            {
+              "document": "doc-revised-drawings-bills-materials"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-updated-routings",
+              "name": "Gammes actualisées",
+              "medium": "file"
+            },
+            {
+              "id": "doc-qualification-report",
+              "name": "Rapport de qualification",
+              "medium": "file"
+            }
+          ]
+        }
+      },
+      {
+        "id": "qualification-final-impact-customer-agreement",
+        "lane": "change-board",
+        "label": "La qualification, l'impact final et l'accord client sont-ils acquis ?",
+        "type": "decision",
+        "column": 7,
+        "sheet": {
+          "free_text": "Selon le cas : Accord client (si requis).",
+          "inputs": [
+            {
+              "name": "Accord client",
+              "medium": "email"
+            }
+          ],
+          "uses": [
+            {
+              "document": "doc-qualification-report"
+            },
+            {
+              "document": "doc-change-order"
+            }
+          ]
+        }
+      },
+      {
+        "id": "can-definition-corrected",
+        "lane": "change-board",
+        "label": "La définition peut-elle être corrigée ?",
+        "type": "decision",
+        "column": 8,
+        "sheet": {
+          "free_text": "Produit selon le cas : Notification de rejet motivée (si Non) ; Ordre de modification annulé (si Non).",
+          "uses": [
+            {
+              "document": "doc-qualification-report"
+            },
+            {
+              "document": "doc-revised-drawings-bills-materials"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-reasoned-rejection-notice-alt",
+              "name": "Notification de rejet motivée",
+              "medium": "email"
+            },
+            {
+              "id": "doc-cancelled-change-order",
+              "name": "Ordre de modification annulé",
+              "medium": "file"
+            }
+          ]
+        }
+      },
+      {
+        "id": "validate-series-changeover-handling-stocks",
+        "lane": "change-board",
+        "label": "Valider la bascule série et le sort des stocks",
+        "column": 8,
+        "row": 1,
+        "sheet": {
+          "purpose": "Le comité vérifie les coûts et impacts définitifs, fixe la date de bascule et définit le sort des stocks à l'ancien indice.",
+          "uses": [
+            {
+              "document": "doc-qualification-report"
+            },
+            {
+              "document": "doc-change-order"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-implementation-decision",
+              "name": "Décision de mise en application",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "switch-technical-data-deploy-series",
+        "lane": "industrialisation-operations",
+        "label": "Basculer les données techniques et déployer en série",
+        "column": 9,
+        "sheet": {
+          "purpose": "Les équipes opérationnelles activent les nouvelles nomenclatures et gammes, confirment la date d'application aux fournisseurs et déploient la modification sur les lignes.",
+          "uses": [
+            {
+              "document": "doc-implementation-decision"
+            },
+            {
+              "document": "doc-revised-drawings-bills-materials"
+            },
+            {
+              "document": "doc-updated-routings"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-updated-technical-data",
+              "name": "Données techniques actualisées",
+              "medium": "software"
+            },
+            {
+              "id": "doc-change-applied",
+              "name": "Modification appliquée",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "check-actual-application-close-order",
+        "lane": "design-office",
+        "label": "Vérifier l'application effective et clôturer l'ordre",
+        "column": 10,
+        "sheet": {
+          "purpose": "Le bureau d'études confirme l'application effective de la nouvelle définition, vérifie l'archivage documentaire et transmet l'avis de clôture au demandeur.",
+          "uses": [
+            {
+              "document": "doc-change-applied"
+            },
+            {
+              "document": "doc-implementation-decision"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-change-closure-notice",
+              "name": "Avis de clôture de modification",
+              "medium": "email"
+            }
+          ]
+        }
+      },
+      {
+        "id": "technical-change-force-notified-requester",
+        "lane": "change-requester",
+        "label": "Modification technique en vigueur et notifiée au demandeur",
+        "type": "end",
+        "column": 11
+      },
+      {
+        "id": "change-request-rejected-notified-requester",
+        "lane": "change-requester",
+        "label": "Demande de modification rejetée et notifiée au demandeur",
+        "type": "end",
+        "column": 10
+      }
+    ],
+    "flows": [
+      {
+        "source": "engineering-change-need-identified",
+        "target": "draft-engineering-change-request"
+      },
+      {
+        "source": "draft-engineering-change-request",
+        "target": "carry-out-feasibility-study-impact"
+      },
+      {
+        "source": "carry-out-feasibility-study-impact",
+        "target": "assess-preliminary-quality-cost-stock"
+      },
+      {
+        "source": "assess-preliminary-quality-cost-stock",
+        "target": "change-request-approved"
+      },
+      {
+        "source": "change-request-approved",
+        "target": "issue-revise-change-order-definition",
+        "label": "oui"
+      },
+      {
+        "source": "change-request-approved",
+        "target": "acknowledge-rejection-close-request",
+        "label": "non"
+      },
+      {
+        "source": "acknowledge-rejection-close-request",
+        "target": "change-request-rejected-notified-requester"
+      },
+      {
+        "source": "issue-revise-change-order-definition",
+        "target": "adapt-means-involve-suppliers-qualify"
+      },
+      {
+        "source": "adapt-means-involve-suppliers-qualify",
+        "target": "qualification-final-impact-customer-agreement"
+      },
+      {
+        "source": "qualification-final-impact-customer-agreement",
+        "target": "validate-series-changeover-handling-stocks",
+        "label": "oui"
+      },
+      {
+        "source": "qualification-final-impact-customer-agreement",
+        "target": "can-definition-corrected",
+        "label": "non"
+      },
+      {
+        "source": "can-definition-corrected",
+        "target": "issue-revise-change-order-definition",
+        "label": "oui"
+      },
+      {
+        "source": "can-definition-corrected",
+        "target": "acknowledge-rejection-close-request",
+        "label": "non"
+      },
+      {
+        "source": "validate-series-changeover-handling-stocks",
+        "target": "switch-technical-data-deploy-series"
+      },
+      {
+        "source": "switch-technical-data-deploy-series",
+        "target": "check-actual-application-close-order"
+      },
+      {
+        "source": "check-actual-application-close-order",
+        "target": "technical-change-force-notified-requester"
+      }
+    ]
+  },
+  "uncertainties": [
+    "Modèle générique : remplacer les acteurs, les documents et leurs supports par ceux de votre organisation.",
+    "Durée et délai de chaque étape : à mesurer chez vous, le modèle n'en donne aucun.",
+    "Validation client formelle : dans certains secteurs, lorsqu'une modification affecte la forme, l'ajustement ou la fonction, une étape dédiée d'homologation d'échantillons initiaux est réalisée avec le client avant la décision de qualification.",
+    "Modification d'urgence : face à un risque sécurité ou à un arrêt de production imminent, un circuit accéléré permet une validation rapide suivie d'une régularisation documentaire encadrée.",
+    "Modification mineure sans changement d'indice : les ajustements purement documentaires peuvent suivre un circuit allégé sans réunion complète du comité.",
+    "Gestion de la configuration : lorsque le produit est fabriqué sur plusieurs sites, l'ordre de modification est propagé et suivi individuellement sur chaque usine.",
+    "Abandon après approbation : lorsque la définition ne peut plus être corrigée dans des conditions acceptables (coût, délai, qualification), le comité annule l'ordre de modification ; les plans, nomenclatures et gammes révisés sous cet ordre, jamais basculés en série, sont retirés et la définition en vigueur reste applicable.",
+    "Support de chaque document (papier, courriel, tableur, fichier, logiciel) : posé par défaut dans ce modèle, à adapter à votre organisation."
+  ]
+}

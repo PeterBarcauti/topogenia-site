@@ -1,0 +1,469 @@
+{
+  "format": "topogenia-collection",
+  "version": "1.0",
+  "name": "Logistique",
+  "description": "Le processus logistique le plus courant, de la préparation d'une commande à son expédition, à adapter à votre organisation.",
+  "processes": [
+    {
+      "format": "topogenia",
+      "version": "1.5",
+      "project": {
+        "name": "Préparation et expédition d'une commande",
+        "code": "EXPED",
+        "language": "fr",
+        "description": "Modèle de la galerie : préparation et expédition d'une commande. Déclencheur : Ordre de livraison libéré pour préparation en entrepôt. Résultat : Commande expédiée et sortie de stock enregistrée ; ou commande en attente de réapprovisionnement. À adapter à votre organisation : acteurs, documents, supports, seuils et délais."
+      },
+      "map": {
+        "summary": {
+          "text": "Le planificateur lance la préparation, le préparateur prélève et emballe, le contrôleur vérifie et charge, puis le départ est confirmé et le stock déduit."
+        },
+        "lanes": [
+          {
+            "id": "logistics-planner",
+            "name": "Planificateur logistique",
+            "type": "person"
+          },
+          {
+            "id": "order-picker",
+            "name": "Préparateur de commandes",
+            "type": "person"
+          },
+          {
+            "id": "shipping-checker",
+            "name": "Contrôleur expédition",
+            "type": "person"
+          },
+          {
+            "id": "carrier",
+            "name": "Transporteur",
+            "type": "department"
+          }
+        ],
+        "steps": [
+          {
+            "id": "delivery-order-released-warehouse",
+            "lane": "logistics-planner",
+            "label": "Ordre de livraison libéré pour l'entrepôt",
+            "type": "start",
+            "column": 0
+          },
+          {
+            "id": "plan-picking-wave-book-transport",
+            "lane": "logistics-planner",
+            "label": "Planifier la vague de préparation et réserver le transport",
+            "column": 1,
+            "sheet": {
+              "purpose": "Le planificateur logistique regroupe les ordres de livraison par tournée ou priorité, lance les ordres de préparation et transmet la demande d'enlèvement au transporteur.",
+              "inputs": [
+                {
+                  "name": "Ordre de livraison",
+                  "medium": "software"
+                },
+                {
+                  "name": "État des stocks",
+                  "medium": "spreadsheet"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-picking-order",
+                  "name": "Ordre de préparation",
+                  "medium": "software"
+                },
+                {
+                  "id": "doc-collection-request",
+                  "name": "Demande d'enlèvement",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "confirm-collection-slot",
+            "lane": "carrier",
+            "label": "Confirmer le créneau d'enlèvement",
+            "column": 2,
+            "sheet": {
+              "purpose": "Le transporteur confirme la disponibilité du véhicule et le créneau de mise à quai pour l'enlèvement.",
+              "uses": [
+                {
+                  "document": "doc-collection-request"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-confirmed-loading-slot",
+                  "name": "Créneau de chargement confirmé",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "pick-items-stock-locations",
+            "lane": "order-picker",
+            "label": "Prélever les articles dans les emplacements de stock",
+            "column": 3,
+            "sheet": {
+              "purpose": "Le préparateur prélève les références et quantités demandées dans les emplacements indiqués en respectant la gestion de lots ou de numéros de série.",
+              "uses": [
+                {
+                  "document": "doc-picking-order"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-picked-items",
+                  "name": "Articles prélevés",
+                  "medium": "other"
+                },
+                {
+                  "id": "doc-completed-picking-list",
+                  "name": "Liste de prélèvement renseignée",
+                  "medium": "spreadsheet"
+                }
+              ]
+            }
+          },
+          {
+            "id": "all-items-order-available-stock",
+            "lane": "order-picker",
+            "label": "Tous les articles de l'ordre sont-ils disponibles en stock ?",
+            "type": "decision",
+            "column": 4,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-completed-picking-list"
+                },
+                {
+                  "document": "doc-picking-order"
+                }
+              ]
+            }
+          },
+          {
+            "id": "pack-weigh-label-parcels",
+            "lane": "order-picker",
+            "label": "Emballer, peser et étiqueter les colis",
+            "column": 5,
+            "sheet": {
+              "purpose": "Le préparateur conditionne les articles dans les emballages adaptés, mesure les poids et volumes réels, édite la liste de colisage et appose les étiquettes logistiques normalisées.",
+              "uses": [
+                {
+                  "document": "doc-picked-items"
+                },
+                {
+                  "document": "doc-completed-picking-list"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-labelled-parcels",
+                  "name": "Colis étiquetés",
+                  "medium": "other"
+                },
+                {
+                  "id": "doc-packing-list",
+                  "name": "Liste de colisage",
+                  "medium": "paper"
+                }
+              ]
+            }
+          },
+          {
+            "id": "check-preparation-draw-up-loading",
+            "lane": "shipping-checker",
+            "label": "Contrôler la préparation et établir le plan de chargement",
+            "column": 6,
+            "sheet": {
+              "purpose": "Le contrôleur expédition vérifie la concordance entre les colis physiques, la liste de colisage et l'ordre de livraison, puis établit le plan de chargement à partir du nombre et des dimensions réels des colis.",
+              "uses": [
+                {
+                  "document": "doc-labelled-parcels"
+                },
+                {
+                  "document": "doc-corrected-parcels"
+                },
+                {
+                  "document": "doc-packing-list"
+                },
+                {
+                  "document": "doc-updated-packing-list"
+                },
+                {
+                  "document": "doc-confirmed-loading-slot"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-check-sheet",
+                  "name": "Fiche de contrôle",
+                  "medium": "software"
+                },
+                {
+                  "id": "doc-loading-plan",
+                  "name": "Plan de chargement",
+                  "medium": "spreadsheet"
+                }
+              ]
+            }
+          },
+          {
+            "id": "preparation-match-delivery-order",
+            "lane": "shipping-checker",
+            "label": "La préparation est-elle conforme à l'ordre de livraison ?",
+            "type": "decision",
+            "column": 7,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-check-sheet"
+                }
+              ]
+            }
+          },
+          {
+            "id": "correct-picking-labelling-discrepancies",
+            "lane": "order-picker",
+            "label": "Corriger les écarts de préparation ou d'étiquetage",
+            "column": 8,
+            "sheet": {
+              "purpose": "En cas d'erreur de référence, de quantité ou d'étiquetage, le préparateur corrige la préparation et actualise la liste de colisage avant un nouveau contrôle.",
+              "uses": [
+                {
+                  "document": "doc-check-sheet"
+                },
+                {
+                  "document": "doc-picking-order"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-corrected-parcels",
+                  "name": "Colis corrigés",
+                  "medium": "other"
+                },
+                {
+                  "id": "doc-updated-packing-list",
+                  "name": "Liste de colisage mise à jour",
+                  "medium": "paper"
+                }
+              ]
+            }
+          },
+          {
+            "id": "load-parcels-into-vehicle-according",
+            "lane": "shipping-checker",
+            "label": "Charger les colis dans le véhicule selon le plan",
+            "column": 8,
+            "sheet": {
+              "purpose": "Le contrôleur expédition supervise le chargement des colis dans le véhicule du transporteur conformément au plan de chargement et relève le décompte exact des unités chargées.",
+              "uses": [
+                {
+                  "document": "doc-labelled-parcels"
+                },
+                {
+                  "document": "doc-corrected-parcels"
+                },
+                {
+                  "document": "doc-loading-plan"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-counted-completed-load",
+                  "name": "Chargement réalisé et compté",
+                  "medium": "other"
+                }
+              ]
+            }
+          },
+          {
+            "id": "issue-shipping-documents-loaded-quantities",
+            "lane": "shipping-checker",
+            "label": "Éditer les documents d'expédition sur quantités chargées",
+            "column": 9,
+            "sheet": {
+              "purpose": "Sur la base des quantités effectivement chargées, le contrôleur expédition génère le bon de livraison et la lettre de voiture.",
+              "inputs": [
+                {
+                  "name": "Ordre de livraison",
+                  "medium": "software"
+                }
+              ],
+              "uses": [
+                {
+                  "document": "doc-counted-completed-load"
+                },
+                {
+                  "document": "doc-packing-list"
+                },
+                {
+                  "document": "doc-updated-packing-list"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-delivery-note",
+                  "name": "Bon de livraison",
+                  "medium": "paper"
+                },
+                {
+                  "id": "doc-consignment-note",
+                  "name": "Lettre de voiture",
+                  "medium": "paper"
+                }
+              ]
+            }
+          },
+          {
+            "id": "check-load-sign-consignment-note",
+            "lane": "carrier",
+            "label": "Contrôler le chargement et signer la lettre de voiture",
+            "column": 10,
+            "sheet": {
+              "purpose": "Le transporteur vérifie la concordance entre les unités chargées et les documents remis, puis signe la lettre de voiture pour formaliser la prise en charge.",
+              "uses": [
+                {
+                  "document": "doc-delivery-note"
+                },
+                {
+                  "document": "doc-consignment-note"
+                },
+                {
+                  "document": "doc-counted-completed-load"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-signed-consignment-note",
+                  "name": "Lettre de voiture signée",
+                  "medium": "paper"
+                }
+              ]
+            }
+          },
+          {
+            "id": "confirm-shipment-record-stock-issue",
+            "lane": "shipping-checker",
+            "label": "Confirmer l'expédition et enregistrer la sortie de stock",
+            "column": 11,
+            "sheet": {
+              "purpose": "Le contrôleur expédition valide informatiquement le départ, ce qui déduit le stock, déclenche l'avis d'expédition au client et autorise la facturation.",
+              "uses": [
+                {
+                  "document": "doc-signed-consignment-note"
+                },
+                {
+                  "document": "doc-delivery-note"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-shipping-notice",
+                  "name": "Avis d'expédition",
+                  "medium": "email"
+                },
+                {
+                  "id": "doc-stock-issue-movement",
+                  "name": "Mouvement de sortie de stock",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "order-shipped-stock-deducted",
+            "lane": "shipping-checker",
+            "label": "Commande expédiée et stock déduit",
+            "type": "end",
+            "column": 12
+          },
+          {
+            "id": "order-awaiting-replenishment-backorder",
+            "lane": "logistics-planner",
+            "label": "Commande en attente de réapprovisionnement ou reliquat",
+            "type": "end",
+            "column": 5
+          }
+        ],
+        "flows": [
+          {
+            "source": "delivery-order-released-warehouse",
+            "target": "plan-picking-wave-book-transport"
+          },
+          {
+            "source": "plan-picking-wave-book-transport",
+            "target": "confirm-collection-slot"
+          },
+          {
+            "source": "confirm-collection-slot",
+            "target": "pick-items-stock-locations"
+          },
+          {
+            "source": "pick-items-stock-locations",
+            "target": "all-items-order-available-stock"
+          },
+          {
+            "source": "all-items-order-available-stock",
+            "target": "pack-weigh-label-parcels",
+            "label": "oui"
+          },
+          {
+            "source": "all-items-order-available-stock",
+            "target": "order-awaiting-replenishment-backorder",
+            "label": "non"
+          },
+          {
+            "source": "pack-weigh-label-parcels",
+            "target": "check-preparation-draw-up-loading"
+          },
+          {
+            "source": "check-preparation-draw-up-loading",
+            "target": "preparation-match-delivery-order"
+          },
+          {
+            "source": "preparation-match-delivery-order",
+            "target": "load-parcels-into-vehicle-according",
+            "label": "oui"
+          },
+          {
+            "source": "preparation-match-delivery-order",
+            "target": "correct-picking-labelling-discrepancies",
+            "label": "non"
+          },
+          {
+            "source": "correct-picking-labelling-discrepancies",
+            "target": "check-preparation-draw-up-loading"
+          },
+          {
+            "source": "load-parcels-into-vehicle-according",
+            "target": "issue-shipping-documents-loaded-quantities"
+          },
+          {
+            "source": "issue-shipping-documents-loaded-quantities",
+            "target": "check-load-sign-consignment-note"
+          },
+          {
+            "source": "check-load-sign-consignment-note",
+            "target": "confirm-shipment-record-stock-issue"
+          },
+          {
+            "source": "confirm-shipment-record-stock-issue",
+            "target": "order-shipped-stock-deducted"
+          }
+        ]
+      },
+      "uncertainties": [
+        "Modèle générique : remplacer les acteurs, les documents et leurs supports par ceux de votre organisation.",
+        "Durée et délai de chaque étape : à mesurer chez vous, le modèle n'en donne aucun.",
+        "Expédition partielle : en cas d'article manquant au prélèvement, l'entreprise peut, avec l'accord du client, expédier les quantités disponibles et créer un ordre de reliquat pour le solde.",
+        "Expéditions internationales : pour les livraisons hors zone douanière, la préparation de la facture pro forma, du certificat d'origine et de la déclaration douanière s'intercale avant le chargement.",
+        "Échange de données informatisé : dans certains secteurs, l'avis d'expédition est transmis automatiquement par voie électronique au moment de la validation du départ.",
+        "Entrepôt automatisé ou externalisé : les étapes de prélèvement, d'emballage et de chargement peuvent être confiées à un prestataire logistique ou pilotées par un système de gestion d'entrepôt dédié.",
+        "Support de chaque document (papier, courriel, tableur, fichier, logiciel) : posé par défaut dans ce modèle, à adapter à votre organisation."
+      ]
+    }
+  ]
+}

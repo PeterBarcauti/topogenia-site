@@ -1,0 +1,28 @@
+/* galerie.css */
+/* The gallery pages: the list of domains, a template with its image, its files, their SHA-256 hash and its text to copy */
+
+.galerie-back { margin: 0 0 12px; }
+.galerie-back a { color: var(--accent-strong); text-underline-offset: 3px; }
+.galerie-licence { margin-top: 14px; color: var(--text-muted); font-size: 14px; }
+.galerie-guide ul, .galerie-guide ol { margin: 12px 0 0; padding-left: 22px; color: var(--text-muted); line-height: 1.65; }
+
+.galerie-domains { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 14px; }
+.galerie-domains li { display: grid; gap: 4px; padding: 16px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; }
+.galerie-domains a { font-size: 18px; font-weight: 600; color: var(--accent-strong); text-underline-offset: 3px; }
+.galerie-count { font-size: 13px; color: var(--text-muted); }
+.galerie-names { color: var(--text-muted); line-height: 1.5; }
+
+.galerie-models-title { margin-top: 48px; }
+.galerie-figure { margin: 18px 0 0; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); overflow: hidden; }
+.galerie-figure img { display: block; width: 100%; height: auto; }
+.galerie-sha { font-size: 14px; color: var(--text-muted); }
+.galerie-sha code { overflow-wrap: anywhere; font-size: 13px; }
+.galerie-note { font-size: 14px; }
+
+.galerie-details { margin-top: 16px; }
+.galerie-details summary { cursor: pointer; font-weight: 600; color: var(--accent-strong); }
+.galerie-copy { margin: 14px 0 10px; height: 38px; padding: 0 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font: inherit; font-weight: 600; cursor: pointer; }
+.galerie-copy:hover { border-color: #C9CBD3; }
+.galerie-copy:focus-visible, .galerie-text:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.galerie-text { margin: 0; max-height: 420px; overflow: auto; padding: 14px 16px; background: var(--lane-even); border: 1px solid var(--border); border-radius: 10px; font-family: ui-monospace, Consolas, monospace; font-size: 12.5px; line-height: 1.55; white-space: pre; }
+.galerie-text code { font: inherit; }

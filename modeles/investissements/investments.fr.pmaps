@@ -1,0 +1,406 @@
+{
+  "format": "topogenia-collection",
+  "version": "1.0",
+  "name": "Investissements",
+  "description": "La validation la plus courante d'une demande d'investissement, jusqu'à sa mise en service, à adapter à votre organisation.",
+  "processes": [
+    {
+      "format": "topogenia",
+      "version": "1.5",
+      "project": {
+        "name": "Validation et mise en service d'une demande d'investissement",
+        "code": "INVEST",
+        "language": "fr",
+        "description": "Modèle de la galerie : validation et mise en service d'une demande d'investissement. Déclencheur : Besoin d'investissement identifié par un service opérationnel ou support. Résultat : Investissement mis en service et immobilisé ; ou demande refusée ou reportée. À adapter à votre organisation : acteurs, documents, supports, seuils et délais."
+      },
+      "map": {
+        "summary": {
+          "text": "Le porteur constitue le dossier, le service financier l'évalue, le comité statue, puis le projet est suivi, contrôlé et l'immobilisation activée à la mise en service."
+        },
+        "lanes": [
+          {
+            "id": "project-owner",
+            "name": "Porteur de projet",
+            "type": "person"
+          },
+          {
+            "id": "finance-department",
+            "name": "Service financier",
+            "type": "department"
+          },
+          {
+            "id": "investment-committee",
+            "name": "Comité d'investissement",
+            "type": "department"
+          },
+          {
+            "id": "fixed-asset-accounting",
+            "name": "Comptabilité des immobilisations",
+            "type": "department"
+          }
+        ],
+        "steps": [
+          {
+            "id": "investment-need-identified",
+            "lane": "project-owner",
+            "label": "Besoin d'investissement identifié",
+            "type": "start",
+            "column": 0
+          },
+          {
+            "id": "build-investment-request-file",
+            "lane": "project-owner",
+            "label": "Constituer le dossier de demande d'investissement",
+            "column": 1,
+            "sheet": {
+              "purpose": "Le porteur de projet formalise l'objectif, les caractéristiques techniques, les devis indicatifs, le calendrier de déploiement et les gains ou économies attendus.",
+              "outputs": [
+                {
+                  "id": "doc-costed-investment-request",
+                  "name": "Demande d'investissement chiffrée",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "check-completeness-assess-profitability",
+            "lane": "finance-department",
+            "label": "Vérifier la complétude et évaluer la rentabilité",
+            "column": 2,
+            "sheet": {
+              "purpose": "Le service financier vérifie la complétude du dossier, l'inscription au plan budgétaire et la nature immobilisable des dépenses, puis calcule les indicateurs de rentabilité et formule un avis financier motivé.",
+              "inputs": [
+                {
+                  "name": "Budget d'investissement",
+                  "medium": "spreadsheet"
+                }
+              ],
+              "uses": [
+                {
+                  "document": "doc-costed-investment-request"
+                },
+                {
+                  "document": "doc-revised-investment-request"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-financial-opinion-return-analysis",
+                  "name": "Avis financier et analyse de rentabilité",
+                  "medium": "email"
+                }
+              ]
+            }
+          },
+          {
+            "id": "file-complete-presentation-committee",
+            "lane": "finance-department",
+            "label": "Le dossier est-il complet pour présentation au comité ?",
+            "type": "decision",
+            "column": 3,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-financial-opinion-return-analysis"
+                }
+              ]
+            }
+          },
+          {
+            "id": "complete-investment-request-file",
+            "lane": "project-owner",
+            "label": "Compléter le dossier de demande d'investissement",
+            "column": 4,
+            "sheet": {
+              "purpose": "Lorsque des justificatifs ou informations manquent, le porteur de projet complète son dossier avant un nouvel examen par le service financier.",
+              "uses": [
+                {
+                  "document": "doc-financial-opinion-return-analysis"
+                },
+                {
+                  "document": "doc-costed-investment-request"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-revised-investment-request",
+                  "name": "Demande d'investissement révisée",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "review-case-profitability-decide",
+            "lane": "investment-committee",
+            "label": "Examiner l'opportunité, la rentabilité et statuer",
+            "column": 4,
+            "sheet": {
+              "purpose": "Le comité d'investissement examine tout dossier complet (y compris en cas d'avis financier réservé), apprécie l'alignement stratégique et la rentabilité globale, puis statue.",
+              "uses": [
+                {
+                  "document": "doc-costed-investment-request"
+                },
+                {
+                  "document": "doc-revised-investment-request"
+                },
+                {
+                  "document": "doc-financial-opinion-return-analysis"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-investment-committee-decision",
+                  "name": "Décision du comité d'investissement",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "investment-request-approved",
+            "lane": "investment-committee",
+            "label": "La demande d'investissement est-elle approuvée ?",
+            "type": "decision",
+            "column": 5,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-investment-committee-decision"
+                }
+              ]
+            }
+          },
+          {
+            "id": "investment-request-refused-postponed",
+            "lane": "investment-committee",
+            "label": "Demande d'investissement refusée ou reportée",
+            "type": "end",
+            "column": 6
+          },
+          {
+            "id": "open-project-code-budget-envelope",
+            "lane": "finance-department",
+            "label": "Ouvrir le code projet et l'enveloppe budgétaire",
+            "column": 6,
+            "sheet": {
+              "purpose": "Le service financier crée la référence budgétaire dédiée afin de permettre l'engagement des commandes et le suivi continu des dépenses.",
+              "uses": [
+                {
+                  "document": "doc-investment-committee-decision"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-project-code-authorised-envelope",
+                  "name": "Code projet et enveloppe autorisée",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "manage-project-track-budget-commission",
+            "lane": "project-owner",
+            "label": "Piloter le projet, suivre le budget et prononcer la mise en service",
+            "column": 7,
+            "sheet": {
+              "purpose": "Le porteur de projet pilote la réalisation, suit les engagements budgétaires avec le service financier, puis prononce formellement la réception technique et fixe la date effective de mise en service.",
+              "uses": [
+                {
+                  "document": "doc-project-code-authorised-envelope"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-dated-acceptance-commissioning-report",
+                  "name": "Procès-verbal de réception et de mise en service daté",
+                  "medium": "paper"
+                }
+              ]
+            }
+          },
+          {
+            "id": "check-actual-cost-against-envelope",
+            "lane": "finance-department",
+            "label": "Contrôler le coût réalisé par rapport à l'enveloppe",
+            "column": 8,
+            "sheet": {
+              "purpose": "À l'achèvement du projet, le service financier rapproche l'ensemble des factures et coûts internes imputés de l'enveloppe autorisée et identifie tout dépassement éventuel.",
+              "inputs": [
+                {
+                  "name": "Relevé des dépenses",
+                  "medium": "spreadsheet"
+                }
+              ],
+              "uses": [
+                {
+                  "document": "doc-dated-acceptance-commissioning-report"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-closing-financial-review",
+                  "name": "Bilan financier de clôture",
+                  "medium": "spreadsheet"
+                }
+              ]
+            }
+          },
+          {
+            "id": "actual-cost-stay-within-authorised",
+            "lane": "finance-department",
+            "label": "Le coût réalisé respecte-t-il l'enveloppe autorisée ?",
+            "type": "decision",
+            "column": 9,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-closing-financial-review"
+                }
+              ]
+            }
+          },
+          {
+            "id": "decide-regularisation-budget-overrun",
+            "lane": "investment-committee",
+            "label": "Statuer sur la régularisation du dépassement budgétaire",
+            "column": 10,
+            "sheet": {
+              "purpose": "En cas de dépassement constaté, le comité d'investissement examine les justifications, puis accorde la rallonge ou la refuse, le dépassement étant alors imputé au budget du porteur ; l'actif, déjà en service, est activé dans les deux cas.",
+              "uses": [
+                {
+                  "document": "doc-closing-financial-review"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-budget-adjustment-decision",
+                  "name": "Décision de régularisation budgétaire",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "activate-fixed-asset-commissioning-date",
+            "lane": "fixed-asset-accounting",
+            "label": "Activer l'immobilisation à la date de mise en service",
+            "column": 11,
+            "sheet": {
+              "purpose": "La comptabilité des immobilisations transfère les coûts cumulés vers la fiche d'actif définitif et lance le plan d'amortissement à compter de la date figurant sur le procès-verbal de mise en service.",
+              "free_text": "Selon le cas : Décision de régularisation budgétaire (si dépassement).",
+              "uses": [
+                {
+                  "document": "doc-dated-acceptance-commissioning-report"
+                },
+                {
+                  "document": "doc-closing-financial-review"
+                },
+                {
+                  "document": "doc-budget-adjustment-decision"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-activated-fixed-asset-record",
+                  "name": "Fiche d'immobilisation activée",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "investment-commissioned-capitalised",
+            "lane": "fixed-asset-accounting",
+            "label": "Investissement mis en service et immobilisé",
+            "type": "end",
+            "column": 12
+          }
+        ],
+        "flows": [
+          {
+            "source": "investment-need-identified",
+            "target": "build-investment-request-file"
+          },
+          {
+            "source": "build-investment-request-file",
+            "target": "check-completeness-assess-profitability"
+          },
+          {
+            "source": "check-completeness-assess-profitability",
+            "target": "file-complete-presentation-committee"
+          },
+          {
+            "source": "file-complete-presentation-committee",
+            "target": "review-case-profitability-decide",
+            "label": "oui"
+          },
+          {
+            "source": "file-complete-presentation-committee",
+            "target": "complete-investment-request-file",
+            "label": "non"
+          },
+          {
+            "source": "complete-investment-request-file",
+            "target": "check-completeness-assess-profitability"
+          },
+          {
+            "source": "review-case-profitability-decide",
+            "target": "investment-request-approved"
+          },
+          {
+            "source": "investment-request-approved",
+            "target": "open-project-code-budget-envelope",
+            "label": "oui"
+          },
+          {
+            "source": "investment-request-approved",
+            "target": "investment-request-refused-postponed",
+            "label": "non"
+          },
+          {
+            "source": "open-project-code-budget-envelope",
+            "target": "manage-project-track-budget-commission"
+          },
+          {
+            "source": "manage-project-track-budget-commission",
+            "target": "check-actual-cost-against-envelope"
+          },
+          {
+            "source": "check-actual-cost-against-envelope",
+            "target": "actual-cost-stay-within-authorised"
+          },
+          {
+            "source": "actual-cost-stay-within-authorised",
+            "target": "activate-fixed-asset-commissioning-date",
+            "label": "oui"
+          },
+          {
+            "source": "actual-cost-stay-within-authorised",
+            "target": "decide-regularisation-budget-overrun",
+            "label": "non"
+          },
+          {
+            "source": "decide-regularisation-budget-overrun",
+            "target": "activate-fixed-asset-commissioning-date"
+          },
+          {
+            "source": "activate-fixed-asset-commissioning-date",
+            "target": "investment-commissioned-capitalised"
+          }
+        ]
+      },
+      "uncertainties": [
+        "Modèle générique : remplacer les acteurs, les documents et leurs supports par ceux de votre organisation.",
+        "Durée et délai de chaque étape : à mesurer chez vous, le modèle n'en donne aucun.",
+        "Rallonge anticipée en cours de réalisation : si un dépassement est anticipé avant la fin des travaux, une demande de rallonge est soumise au comité d'investissement avant tout nouvel engagement.",
+        "Circuit d'approbation par paliers : le niveau de décision varie selon l'enjeu et la nature de l'investissement (renouvellement, capacité, réglementaire, sécurité).",
+        "Articulation avec les achats : l'acquisition effective des équipements ou prestations s'appuie sur le processus « De la demande d'achat à la commande » en référence au code projet ouvert.",
+        "Revue post-investissement : pour les projets majeurs, le service financier réalise une revue a posteriori comparant les bénéfices réellement obtenus aux prévisions.",
+        "Support de chaque document (papier, courriel, tableur, fichier, logiciel) : posé par défaut dans ce modèle, à adapter à votre organisation."
+      ]
+    }
+  ]
+}

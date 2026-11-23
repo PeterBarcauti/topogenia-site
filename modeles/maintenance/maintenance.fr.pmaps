@@ -1,0 +1,426 @@
+{
+  "format": "topogenia-collection",
+  "version": "1.0",
+  "name": "Maintenance",
+  "description": "La maintenance corrective la plus courante, de la demande d'intervention à la clôture, à adapter à votre organisation.",
+  "processes": [
+    {
+      "format": "topogenia",
+      "version": "1.5",
+      "project": {
+        "name": "Maintenance corrective, de la demande d'intervention à la clôture",
+        "code": "MAINCO",
+        "language": "fr",
+        "description": "Modèle de la galerie : maintenance corrective, de la demande d'intervention à la clôture. Déclencheur : Panne ou anomalie constatée sur un équipement. Résultat : Équipement remis en service et ordre de travail clôturé ; demande clôturée sans intervention ; ou ordre de travail en attente de pièce. À adapter à votre organisation : acteurs, documents, supports, seuils et délais."
+      },
+      "map": {
+        "summary": {
+          "text": "L'exploitant déclare la panne, le préparateur planifie l'ordre, le technicien diagnostique et répare, puis l'exploitant valide les essais avant la clôture."
+        },
+        "lanes": [
+          {
+            "id": "operator-production",
+            "name": "Exploitant / Production",
+            "type": "person"
+          },
+          {
+            "id": "maintenance-planner",
+            "name": "Préparateur maintenance",
+            "type": "person"
+          },
+          {
+            "id": "maintenance-technician",
+            "name": "Technicien de maintenance",
+            "type": "person"
+          },
+          {
+            "id": "spare-parts-store",
+            "name": "Magasin pièces de rechange",
+            "type": "department"
+          }
+        ],
+        "steps": [
+          {
+            "id": "breakdown-anomaly-detected-equipment",
+            "lane": "operator-production",
+            "label": "Panne ou anomalie détectée sur un équipement",
+            "type": "start",
+            "column": 0
+          },
+          {
+            "id": "create-work-request",
+            "lane": "operator-production",
+            "label": "Créer la demande d'intervention",
+            "column": 1,
+            "sheet": {
+              "purpose": "L'exploitant décrit les symptômes observés, identifie l'équipement concerné, indique l'impact sur la sécurité ou la production et transmet la demande d'intervention.",
+              "outputs": [
+                {
+                  "id": "doc-work-request",
+                  "name": "Demande d'intervention",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "qualify-request-assess-urgency",
+            "lane": "maintenance-planner",
+            "label": "Qualifier la demande et évaluer son urgence",
+            "column": 2,
+            "sheet": {
+              "purpose": "Le préparateur maintenance vérifie la pertinence de la demande, contrôle l'absence de doublon et fixe la priorité selon la criticité de l'équipement ; si aucune intervention n'est retenue, il en informe le demandeur.",
+              "inputs": [
+                {
+                  "name": "Historique équipement",
+                  "medium": "spreadsheet"
+                }
+              ],
+              "uses": [
+                {
+                  "document": "doc-work-request"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-qualified-request",
+                  "name": "Demande qualifiée",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "request-require-work-order",
+            "lane": "maintenance-planner",
+            "label": "La demande nécessite-t-elle un ordre de travail ?",
+            "type": "decision",
+            "column": 3,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-qualified-request"
+                }
+              ]
+            }
+          },
+          {
+            "id": "request-closed-without-intervention",
+            "lane": "maintenance-planner",
+            "label": "Demande clôturée sans intervention",
+            "type": "end",
+            "column": 4
+          },
+          {
+            "id": "create-schedule-work-order",
+            "lane": "maintenance-planner",
+            "label": "Créer et planifier l'ordre de travail",
+            "column": 4,
+            "row": 1,
+            "sheet": {
+              "purpose": "Le préparateur convertit la demande en ordre de travail, affecte les compétences requises, précise les consignes de sécurité et planifie l'intervention sans pré-réserver de pièces non confirmées.",
+              "inputs": [
+                {
+                  "name": "Documentation technique",
+                  "medium": "file"
+                }
+              ],
+              "uses": [
+                {
+                  "document": "doc-qualified-request"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-work-order",
+                  "name": "Ordre de travail",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "lock-out-equipment-diagnose-fault",
+            "lane": "maintenance-technician",
+            "label": "Consigner l'équipement et diagnostiquer la panne",
+            "column": 5,
+            "sheet": {
+              "purpose": "Le technicien établit le diagnostic, dont une partie peut se faire sous tension (lecture des défauts, observation du cycle), consigne l'équipement avant toute intervention physique et identifie la cause réelle de la panne et les pièces requises.",
+              "free_text": "Selon le cas : Ordre de travail (initial ou après essai non concluant).",
+              "uses": [
+                {
+                  "document": "doc-work-order"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-locked-out-equipment",
+                  "name": "Équipement consigné",
+                  "medium": "other"
+                },
+                {
+                  "id": "doc-fault-diagnosis",
+                  "name": "Diagnostic de panne",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "spare-parts-needed",
+            "lane": "maintenance-technician",
+            "label": "Des pièces de rechange sont-elles nécessaires ?",
+            "type": "decision",
+            "column": 6,
+            "sheet": {
+              "free_text": "Produit selon le cas : Demande de pièces (si Oui).",
+              "uses": [
+                {
+                  "document": "doc-fault-diagnosis"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-parts-request",
+                  "name": "Demande de pièces",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "part-available-store",
+            "lane": "spare-parts-store",
+            "label": "La pièce est-elle disponible au magasin ?",
+            "type": "decision",
+            "column": 7,
+            "sheet": {
+              "free_text": "Produit selon le cas : Pièces de rechange (si Oui) ; Bon de sortie pièces (si Oui).",
+              "uses": [
+                {
+                  "document": "doc-parts-request"
+                },
+                {
+                  "document": "doc-work-order"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-spare-parts",
+                  "name": "Pièces de rechange",
+                  "medium": "other"
+                },
+                {
+                  "id": "doc-parts-issue-note",
+                  "name": "Bon de sortie pièces",
+                  "medium": "paper"
+                }
+              ]
+            }
+          },
+          {
+            "id": "repair-release-equipment",
+            "lane": "maintenance-technician",
+            "label": "Réparer et déconsigner l'équipement",
+            "column": 8,
+            "sheet": {
+              "purpose": "Le technicien répare ou remplace sur l'équipement consigné, réalise les contrôles statiques, rédige le compte rendu (cause, travaux, temps d'intervention et d'arrêt, pièces consommées), puis déconsigne l'équipement en vue des essais.",
+              "free_text": "Selon le cas : Pièces de rechange (si nécessaires).",
+              "uses": [
+                {
+                  "document": "doc-locked-out-equipment"
+                },
+                {
+                  "document": "doc-fault-diagnosis"
+                },
+                {
+                  "document": "doc-spare-parts"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-repaired-equipment-released-lock-out",
+                  "name": "Équipement réparé et déconsigné",
+                  "medium": "other"
+                },
+                {
+                  "id": "doc-work-report",
+                  "name": "Compte rendu d'intervention",
+                  "medium": "file"
+                }
+              ]
+            }
+          },
+          {
+            "id": "check-equipment-works-properly",
+            "lane": "operator-production",
+            "label": "Vérifier le bon fonctionnement de l'équipement",
+            "column": 9,
+            "sheet": {
+              "purpose": "L'exploitant procède aux essais fonctionnels en conditions réelles et confirme si l'équipement peut reprendre la production en toute sécurité et conformité qualité.",
+              "uses": [
+                {
+                  "document": "doc-repaired-equipment-released-lock-out"
+                },
+                {
+                  "document": "doc-work-order"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-test-report",
+                  "name": "Procès-verbal d'essai",
+                  "medium": "paper"
+                }
+              ]
+            }
+          },
+          {
+            "id": "nominal-operation-restored",
+            "lane": "operator-production",
+            "label": "Le fonctionnement nominal est-il rétabli ?",
+            "type": "decision",
+            "column": 10,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-test-report"
+                }
+              ]
+            }
+          },
+          {
+            "id": "close-work-order-update-history",
+            "lane": "maintenance-planner",
+            "label": "Clôturer l'ordre de travail et mettre à jour l'historique",
+            "column": 11,
+            "sheet": {
+              "purpose": "Le préparateur vérifie la complétude du compte rendu saisi par le technicien et des données techniques et financières, clôture l'ordre de travail et enrichit l'historique de fiabilité de l'équipement.",
+              "free_text": "Selon le cas : Bon de sortie pièces (si applicable).",
+              "uses": [
+                {
+                  "document": "doc-work-report"
+                },
+                {
+                  "document": "doc-parts-issue-note"
+                },
+                {
+                  "document": "doc-test-report"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-closed-work-order",
+                  "name": "Ordre de travail clôturé",
+                  "medium": "software"
+                },
+                {
+                  "id": "doc-updated-history",
+                  "name": "Historique actualisé",
+                  "medium": "spreadsheet"
+                }
+              ]
+            }
+          },
+          {
+            "id": "equipment-back-service-work-closed",
+            "lane": "maintenance-planner",
+            "label": "Équipement remis en service et intervention clôturée",
+            "type": "end",
+            "column": 12
+          },
+          {
+            "id": "work-order-waiting-part",
+            "lane": "maintenance-planner",
+            "label": "Ordre de travail en attente de pièce",
+            "type": "end",
+            "column": 8
+          }
+        ],
+        "flows": [
+          {
+            "source": "breakdown-anomaly-detected-equipment",
+            "target": "create-work-request"
+          },
+          {
+            "source": "create-work-request",
+            "target": "qualify-request-assess-urgency"
+          },
+          {
+            "source": "qualify-request-assess-urgency",
+            "target": "request-require-work-order"
+          },
+          {
+            "source": "request-require-work-order",
+            "target": "create-schedule-work-order",
+            "label": "oui"
+          },
+          {
+            "source": "request-require-work-order",
+            "target": "request-closed-without-intervention",
+            "label": "non"
+          },
+          {
+            "source": "create-schedule-work-order",
+            "target": "lock-out-equipment-diagnose-fault"
+          },
+          {
+            "source": "lock-out-equipment-diagnose-fault",
+            "target": "spare-parts-needed"
+          },
+          {
+            "source": "spare-parts-needed",
+            "target": "part-available-store",
+            "label": "oui"
+          },
+          {
+            "source": "spare-parts-needed",
+            "target": "repair-release-equipment",
+            "label": "non"
+          },
+          {
+            "source": "part-available-store",
+            "target": "repair-release-equipment",
+            "label": "oui"
+          },
+          {
+            "source": "part-available-store",
+            "target": "work-order-waiting-part",
+            "label": "non"
+          },
+          {
+            "source": "repair-release-equipment",
+            "target": "check-equipment-works-properly"
+          },
+          {
+            "source": "check-equipment-works-properly",
+            "target": "nominal-operation-restored"
+          },
+          {
+            "source": "nominal-operation-restored",
+            "target": "close-work-order-update-history",
+            "label": "oui"
+          },
+          {
+            "source": "nominal-operation-restored",
+            "target": "lock-out-equipment-diagnose-fault",
+            "label": "non"
+          },
+          {
+            "source": "close-work-order-update-history",
+            "target": "equipment-back-service-work-closed"
+          }
+        ]
+      },
+      "uncertainties": [
+        "Modèle générique : remplacer les acteurs, les documents et leurs supports par ceux de votre organisation.",
+        "Durée et délai de chaque étape : à mesurer chez vous, le modèle n'en donne aucun.",
+        "Intervention d'urgence : en cas d'arrêt critique de ligne ou de risque sécurité immédiat, le technicien intervient sur appel direct et l'ordre de travail est créé a posteriori pour tracer les temps et pièces.",
+        "Pièce hors stock ou sous-traitance : si la pièce est absente du magasin ou si un prestataire externe est nécessaire, une demande d'achat est émise, l'ordre de travail reste en attente d'approvisionnement et l'intervention reprend à réception de la pièce.",
+        "Approbation préalable : pour les interventions coûteuses ou nécessitant un arrêt prolongé de production, une validation par le responsable maintenance ou la direction industrielle peut être exigée avant planification.",
+        "Lien avec la maintenance préventive : l'analyse des pannes répétitives consignées à la clôture conduit à ajuster le plan de maintenance préventive ou à engager une action d'amélioration.",
+        "Support de chaque document (papier, courriel, tableur, fichier, logiciel) : posé par défaut dans ce modèle, à adapter à votre organisation."
+      ]
+    }
+  ]
+}

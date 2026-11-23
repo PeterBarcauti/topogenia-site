@@ -1,0 +1,2 @@
+33f07f655e243cb12cbd5cc2bc2e2b12a0fd3c31c56cac21aea793f6ad9d53a6  logistics.fr.pmaps
+be1d85ba7ae178366a30a497c579442aaa17e588c52c442ed5e907420f0c3cc9  order-picking-and-shipping.fr.pmap

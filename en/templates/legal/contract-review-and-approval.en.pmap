@@ -1,0 +1,439 @@
+{
+  "format": "topogenia",
+  "version": "1.5",
+  "project": {
+    "name": "Reviewing and approving a contract",
+    "code": "CNTRCT",
+    "language": "en",
+    "description": "Gallery template: reviewing and approving a contract. Trigger: Need to formalise a commercial, supplier or partnership contract identified. Outcome: Contract signed, archived and circulated; or contracting abandoned. To adapt to your organisation: actors, documents, media, thresholds and lead times."
+  },
+  "map": {
+    "summary": {
+      "text": "The project owner prepares the draft, legal reviews it, negotiation with the external party leads to a final version that is signed, archived and circulated."
+    },
+    "lanes": [
+      {
+        "id": "project-owner",
+        "name": "Project owner",
+        "type": "person"
+      },
+      {
+        "id": "legal-department",
+        "name": "Legal department",
+        "type": "department"
+      },
+      {
+        "id": "authorised-signatory",
+        "name": "Authorised signatory",
+        "type": "person"
+      },
+      {
+        "id": "external-party",
+        "name": "External party",
+        "type": "department"
+      }
+    ],
+    "steps": [
+      {
+        "id": "contracting-need-identified",
+        "lane": "project-owner",
+        "label": "Contracting need identified",
+        "type": "start",
+        "column": 0
+      },
+      {
+        "id": "prepare-draft-contract-background-note",
+        "lane": "project-owner",
+        "label": "Prepare the draft contract and the background note",
+        "column": 1,
+        "sheet": {
+          "purpose": "The project owner gathers the technical appendices and the preliminary commercial terms (subject to legal review) and completes the company's standard template or attaches the external draft.",
+          "inputs": [
+            {
+              "name": "Standard contract template",
+              "medium": "file"
+            },
+            {
+              "name": "Preliminary commercial terms",
+              "medium": "software"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-initial-draft-contract",
+              "name": "Initial draft contract",
+              "medium": "file"
+            },
+            {
+              "id": "doc-background-note",
+              "name": "Background note",
+              "medium": "file"
+            }
+          ]
+        }
+      },
+      {
+        "id": "review-clauses-risks-specialist-opinions",
+        "lane": "legal-department",
+        "label": "Review the clauses, risks and specialist opinions",
+        "column": 2,
+        "sheet": {
+          "purpose": "The legal department checks legal compliance, reviews sensitive clauses (liability, intellectual property, confidentiality, termination) and seeks specialist opinions where needed (finance, insurance, personal data) to produce a consolidated opinion.",
+          "free_text": "As applicable: Request to change the final version (if refused).",
+          "uses": [
+            {
+              "document": "doc-initial-draft-contract"
+            },
+            {
+              "document": "doc-counter-proposed-draft"
+            },
+            {
+              "document": "doc-request-change-final-version"
+            },
+            {
+              "document": "doc-background-note"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-annotated-draft",
+              "name": "Annotated draft",
+              "medium": "software"
+            },
+            {
+              "id": "doc-consolidated-legal-opinion",
+              "name": "Consolidated legal opinion",
+              "medium": "email"
+            }
+          ]
+        }
+      },
+      {
+        "id": "draft-contract-ready-final-agreement",
+        "lane": "legal-department",
+        "label": "Is the draft contract ready for final agreement?",
+        "type": "decision",
+        "column": 3,
+        "sheet": {
+          "uses": [
+            {
+              "document": "doc-consolidated-legal-opinion"
+            }
+          ]
+        }
+      },
+      {
+        "id": "send-amendments-external-party",
+        "lane": "project-owner",
+        "label": "Send the amendments to the external party",
+        "column": 4,
+        "sheet": {
+          "purpose": "The project owner presents the requested amendments to the external party and leads the negotiation in coordination with the legal department.",
+          "uses": [
+            {
+              "document": "doc-annotated-draft"
+            },
+            {
+              "document": "doc-consolidated-legal-opinion"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-amended-version-sent",
+              "name": "Amended version sent",
+              "medium": "email"
+            }
+          ]
+        }
+      },
+      {
+        "id": "analyse-amendments-reply",
+        "lane": "external-party",
+        "label": "Analyse the amendments and reply",
+        "column": 5,
+        "sheet": {
+          "purpose": "The external party reviews the proposed amendments and returns either its acceptance or a counter-proposed version.",
+          "uses": [
+            {
+              "document": "doc-amended-version-sent"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-counter-proposed-draft",
+              "name": "Counter-proposed draft",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "negotiation-allow-moving-towards-agreement",
+        "lane": "project-owner",
+        "label": "Does the negotiation allow moving towards an agreement?",
+        "type": "decision",
+        "column": 6,
+        "sheet": {
+          "uses": [
+            {
+              "document": "doc-counter-proposed-draft"
+            },
+            {
+              "document": "doc-request-change-final-version"
+            },
+            {
+              "document": "doc-consolidated-legal-opinion"
+            }
+          ]
+        }
+      },
+      {
+        "id": "produce-final-version-contract",
+        "lane": "legal-department",
+        "label": "Produce the final version of the contract",
+        "column": 4,
+        "sheet": {
+          "purpose": "When the clauses are stable and judged acceptable, the legal department prepares the final version, ready for agreement and signature.",
+          "uses": [
+            {
+              "document": "doc-annotated-draft"
+            },
+            {
+              "document": "doc-counter-proposed-draft"
+            },
+            {
+              "document": "doc-consolidated-legal-opinion"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-final-version-contract",
+              "name": "Final version of the contract",
+              "medium": "software"
+            }
+          ]
+        }
+      },
+      {
+        "id": "external-party-confirm-final-version",
+        "lane": "external-party",
+        "label": "Does the external party confirm the final version?",
+        "type": "decision",
+        "column": 5,
+        "row": 1,
+        "sheet": {
+          "free_text": "Produced as applicable: Agreement on the final version (if yes) ; Request to change the final version (if no).",
+          "uses": [
+            {
+              "document": "doc-final-version-contract"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-agreement-final-version",
+              "name": "Agreement on the final version",
+              "medium": "software"
+            },
+            {
+              "id": "doc-request-change-final-version",
+              "name": "Request to change the final version",
+              "medium": "email"
+            }
+          ]
+        }
+      },
+      {
+        "id": "approve-sign-contract-organisation",
+        "lane": "authorised-signatory",
+        "label": "Approve and sign the contract for the organisation",
+        "column": 6,
+        "sheet": {
+          "purpose": "After the external party has confirmed the final version, the authorised signatory reviews the file and the legal opinion, then signs.",
+          "uses": [
+            {
+              "document": "doc-final-version-contract"
+            },
+            {
+              "document": "doc-agreement-final-version"
+            },
+            {
+              "document": "doc-consolidated-legal-opinion"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-contract-signed-organisation",
+              "name": "Contract signed by the organisation",
+              "medium": "paper"
+            }
+          ]
+        }
+      },
+      {
+        "id": "countersign-final-contract",
+        "lane": "external-party",
+        "label": "Countersign the final contract",
+        "column": 7,
+        "sheet": {
+          "purpose": "The external party countersigns the final document already confirmed at the final version confirmation step, making the agreement legally binding.",
+          "uses": [
+            {
+              "document": "doc-contract-signed-organisation"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-countersigned-contract",
+              "name": "Countersigned contract",
+              "medium": "paper"
+            }
+          ]
+        }
+      },
+      {
+        "id": "archive-contract-record-key-deadlines",
+        "lane": "legal-department",
+        "label": "Archive the contract and record the key deadlines",
+        "column": 8,
+        "sheet": {
+          "purpose": "The legal department files the signed original in the central contract repository and sets up the key date alerts (renewal, notice, review).",
+          "uses": [
+            {
+              "document": "doc-countersigned-contract"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-archived-contract",
+              "name": "Archived contract",
+              "medium": "file"
+            },
+            {
+              "id": "doc-key-dates-sheet",
+              "name": "Key dates sheet",
+              "medium": "spreadsheet"
+            }
+          ]
+        }
+      },
+      {
+        "id": "circulate-commitments-operational-teams",
+        "lane": "project-owner",
+        "label": "Circulate the commitments to the operational teams",
+        "column": 9,
+        "sheet": {
+          "purpose": "The project owner communicates the operational obligations, deliverables and service levels agreed to the teams responsible for execution.",
+          "uses": [
+            {
+              "document": "doc-archived-contract"
+            },
+            {
+              "document": "doc-key-dates-sheet"
+            }
+          ],
+          "outputs": [
+            {
+              "id": "doc-circulated-performance-summary",
+              "name": "Circulated performance summary",
+              "medium": "file"
+            }
+          ]
+        }
+      },
+      {
+        "id": "contract-force-archived-circulated",
+        "lane": "project-owner",
+        "label": "Contract in force, archived and circulated",
+        "type": "end",
+        "column": 10
+      },
+      {
+        "id": "contracting-abandoned-file-closed",
+        "lane": "project-owner",
+        "label": "Contracting abandoned and file closed",
+        "type": "end",
+        "column": 7
+      }
+    ],
+    "flows": [
+      {
+        "source": "contracting-need-identified",
+        "target": "prepare-draft-contract-background-note"
+      },
+      {
+        "source": "prepare-draft-contract-background-note",
+        "target": "review-clauses-risks-specialist-opinions"
+      },
+      {
+        "source": "review-clauses-risks-specialist-opinions",
+        "target": "draft-contract-ready-final-agreement"
+      },
+      {
+        "source": "draft-contract-ready-final-agreement",
+        "target": "produce-final-version-contract",
+        "label": "yes"
+      },
+      {
+        "source": "draft-contract-ready-final-agreement",
+        "target": "send-amendments-external-party",
+        "label": "no"
+      },
+      {
+        "source": "send-amendments-external-party",
+        "target": "analyse-amendments-reply"
+      },
+      {
+        "source": "analyse-amendments-reply",
+        "target": "negotiation-allow-moving-towards-agreement"
+      },
+      {
+        "source": "negotiation-allow-moving-towards-agreement",
+        "target": "review-clauses-risks-specialist-opinions",
+        "label": "yes"
+      },
+      {
+        "source": "negotiation-allow-moving-towards-agreement",
+        "target": "contracting-abandoned-file-closed",
+        "label": "no"
+      },
+      {
+        "source": "produce-final-version-contract",
+        "target": "external-party-confirm-final-version"
+      },
+      {
+        "source": "external-party-confirm-final-version",
+        "target": "approve-sign-contract-organisation",
+        "label": "yes"
+      },
+      {
+        "source": "external-party-confirm-final-version",
+        "target": "negotiation-allow-moving-towards-agreement",
+        "label": "no"
+      },
+      {
+        "source": "approve-sign-contract-organisation",
+        "target": "countersign-final-contract"
+      },
+      {
+        "source": "countersign-final-contract",
+        "target": "archive-contract-record-key-deadlines"
+      },
+      {
+        "source": "archive-contract-record-key-deadlines",
+        "target": "circulate-commitments-operational-teams"
+      },
+      {
+        "source": "circulate-commitments-operational-teams",
+        "target": "contract-force-archived-circulated"
+      }
+    ]
+  },
+  "uncertainties": [
+    "Generic model: replace the actors, the documents and their media with those of your organisation.",
+    "Duration and lead time of each step: to be measured in your organisation, the model gives none.",
+    "Unmodified standard template contract: when a contract rests entirely on an approved template with no clause changed, the legal review may be lightened according to internal policy.",
+    "Acceptance of a residual risk: if the external party refuses to give way on a clause judged risky, the legal department submits an arbitration request to general management in order to accept the residual risk or not.",
+    "Contract amendment: the modification of an active contract follows the same sequence, relying on the archived initial contract.",
+    "Medium of each document (paper, email, spreadsheet, file, software): set by default in this model, to be adapted to your organisation."
+  ]
+}

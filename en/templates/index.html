@@ -1,0 +1,178 @@
+<!doctype html>
+<!-- en/templates/index.html -->
+<!-- Page fabriquée par outils/galerie.cjs à partir des modèles : ne pas la modifier à la main -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Process templates · Topogenia</title>
+  <meta name="description" content="Processes ready to open in Topogenia, by domain, to adapt to your organisation.">
+  <meta name="theme-color" content="#5B5BD6">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Process templates · Topogenia">
+  <meta property="og:description" content="Processes ready to open in Topogenia, by domain, to adapt to your organisation.">
+  <meta property="og:url" content="https://topogenia.com/en/templates/">
+  <meta property="og:image" content="https://topogenia.com/og-image.png">
+  <meta property="og:locale" content="en_US">
+  <link rel="canonical" href="https://topogenia.com/en/templates/">
+  <link rel="alternate" hreflang="fr" href="https://topogenia.com/modeles/">
+  <link rel="alternate" hreflang="en" href="https://topogenia.com/en/templates/">
+  <link rel="alternate" hreflang="x-default" href="https://topogenia.com/en/templates/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/assets/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/site.css">
+  <link rel="stylesheet" href="/assets/galerie.css">
+  <script src="/assets/galerie.js" defer></script>
+</head>
+<body class="legal-page galerie-page">
+  <header class="nav">
+    <a class="brand" href="/en/" aria-label="Topogenia">
+      <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><rect x=".5" y=".5" width="23" height="23" rx="6.5" fill="#5B5BD6"/><rect x=".5" y=".5" width="23" height="11.5" rx="6.5" fill="#4343B8" opacity=".35"/><path d="M6 8h4.5a2 2 0 0 1 2 2v4a2 2 0 0 0 2 2H18" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="6" cy="8" r="1.8" fill="#fff"/><circle cx="18" cy="16" r="1.8" fill="#fff"/></svg>
+      <span>Topogenia</span>
+    </a>
+    <div class="nav-end">
+      <div class="lang" role="group" aria-label="Language / Langue">
+        <a href="/modeles/" hreflang="fr">FR</a>
+        <a href="/en/templates/" hreflang="en" aria-current="page">EN</a>
+      </div>
+      <a class="btn btn-ghost btn-small" href="/en/">Back to the site</a>
+    </div>
+  </header>
+
+  <main id="main" class="legal">
+    <article>
+      <p class="kicker">Topogenia</p>
+      <h1>Process templates</h1>
+      <p class="lead">Swimlane maps ready to open in Topogenia, sorted by domain. A standard base, so you never start from a blank page.</p>
+      <p class="galerie-licence">The .pmap and .pmaps files and the PNG images of this gallery are released under the CC0 1.0 licence. The © in the footer applies to the website only, not to these files.</p>
+      <section class="galerie-guide">
+        <h2>The gallery</h2>
+        <p>The gallery brings together generic templates, built from the most common practices. Each template provides a consistent starting framework, meant to be tested against the field and adjusted to the way you work. A template describes no real organisation. The templates were written with the help of artificial intelligence, then reviewed and checked against public references.</p>
+        <p>Templates are organised by domain. For each one, you can take a single process or download the full collection in one file.</p>
+      </section>
+      <section class="galerie-guide">
+        <h2>Download a template or a collection</h2>
+        <p>A template is a .pmap file: plain text, readable directly in Notepad. A collection is a .pmaps file of the same kind, which gathers all the templates of a domain.</p>
+        <p>Open the page of a domain and download the template or the collection you want. Topogenia fetches nothing from the internet: your browser downloads the file.</p>
+        <p>Each template (.pmap) and each collection (.pmaps) is published with its SHA-256 fingerprint, shown on the page and gathered in a sha256.txt file, so that you can check that the file you received is intact. The images carry no fingerprint.</p>
+      </section>
+      <section class="galerie-guide">
+        <h2>Check the fingerprint</h2>
+        <p>The fingerprint is a string of characters computed from the content of the file: the slightest change alters it. This check is optional and takes only a few seconds.</p>
+        <p>On Windows, open PowerShell in the folder of the downloaded file and run: Get-FileHash -Algorithm SHA256 file-name</p>
+        <p>Compare the result with the fingerprint shown on the domain page or in sha256.txt, ignoring upper and lower case. If the two strings differ, do not open the file and download it again.</p>
+        <p>Limit of this check: the fingerprint shows that the file has not been altered since it was published; it does not say who wrote it. Published on the same website as the file, it does not protect against a website that has itself been modified either: it detects a file damaged on the way, not a compromised website.</p>
+      </section>
+      <section class="galerie-guide">
+        <h2>Open in Topogenia</h2>
+        <p>In Topogenia, open File, then Open a file, and select the downloaded file. A single template (.pmap) is supported from version 3.3; a collection (.pmaps) needs version 3.4. In Server mode, this operation is reserved for the administrator.</p>
+        <p>For a single template, Topogenia creates one project. For a collection, a window first lists the processes it contains, all ticked by default: untick those you do not need, adjust the proposed code if necessary, then confirm to create one project for each process kept.</p>
+        <p>No data is written before you confirm. Cancelling the operation leaves your projects untouched.</p>
+      </section>
+      <section class="galerie-guide">
+        <h2>If downloads are blocked</h2>
+        <p>On workstations with download restrictions, the page of each template offers a Copy button that puts its content on the clipboard. This button is not available for collections: download the collection or copy its templates one by one.</p>
+        <p>In Topogenia, open the Open a file window and paste the text into the area provided. A project is created exactly as when a file is opened.</p>
+        <p>The SHA-256 fingerprint can only be checked on the downloaded file as it is: the copied text is not the file (depending on the text editor, line endings change, and the fingerprint with them), so its fingerprint cannot be compared with the one on the page.</p>
+      </section>
+      <section class="galerie-guide">
+        <h2>Adapt the template</h2>
+        <p>Once imported, the template becomes an ordinary project: rename the lanes, change the steps, add or remove flows and specify the responsibilities.</p>
+        <p>Review it with the people who actually do the work. The template sets out the usual framework; your exceptions, your tools and your internal rules make it your real map.</p>
+        <p>Some templates include points to check: these are workshop questions to settle together while adapting it.</p>
+      </section>
+      <section>
+        <h2>Domains</h2>
+        <ul class="galerie-domains">
+          <li>
+            <a href="/en/templates/purchasing/">Purchasing</a>
+            <span class="galerie-count">1 template</span>
+            <span class="galerie-names">From purchase request to order</span>
+          </li>
+          <li>
+            <a href="/en/templates/inbound-logistics/">Inbound logistics</a>
+            <span class="galerie-count">1 template</span>
+            <span class="galerie-names">Receipt of a supplier delivery and put-away</span>
+          </li>
+          <li>
+            <a href="/en/templates/logistics/">Logistics</a>
+            <span class="galerie-count">1 template</span>
+            <span class="galerie-names">Order picking and shipping</span>
+          </li>
+          <li>
+            <a href="/en/templates/finance/">Finance</a>
+            <span class="galerie-count">1 template</span>
+            <span class="galerie-names">Supplier invoice, from receipt to payment</span>
+          </li>
+          <li>
+            <a href="/en/templates/sales/">Customer orders</a>
+            <span class="galerie-count">1 template</span>
+            <span class="galerie-names">From a customer order to its delivery</span>
+          </li>
+          <li>
+            <a href="/en/templates/planning/">Planning</a>
+            <span class="galerie-count">1 template</span>
+            <span class="galerie-names">Building the production plan and calculating requirements</span>
+          </li>
+          <li>
+            <a href="/en/templates/production/">Production</a>
+            <span class="galerie-count">1 template</span>
+            <span class="galerie-names">From the production order to production reporting</span>
+          </li>
+          <li>
+            <a href="/en/templates/maintenance/">Maintenance</a>
+            <span class="galerie-count">1 template</span>
+            <span class="galerie-names">Corrective maintenance, from the work request to closure</span>
+          </li>
+          <li>
+            <a href="/en/templates/quality/">Quality</a>
+            <span class="galerie-count">1 template</span>
+            <span class="galerie-names">Non-conformity handling</span>
+          </li>
+          <li>
+            <a href="/en/templates/engineering/">Engineering</a>
+            <span class="galerie-count">1 template</span>
+            <span class="galerie-names">Managing an engineering change</span>
+          </li>
+          <li>
+            <a href="/en/templates/customer-service/">Customer service</a>
+            <span class="galerie-count">1 template</span>
+            <span class="galerie-names">Handling a customer complaint</span>
+          </li>
+          <li>
+            <a href="/en/templates/health-safety-environment/">Health, safety and environment</a>
+            <span class="galerie-count">1 template</span>
+            <span class="galerie-names">Reporting and analysing an accident or a near miss</span>
+          </li>
+          <li>
+            <a href="/en/templates/human-resources/">Human resources</a>
+            <span class="galerie-count">1 template</span>
+            <span class="galerie-names">Recruitment, from the need to the hire</span>
+          </li>
+          <li>
+            <a href="/en/templates/information-technology/">Information technology</a>
+            <span class="galerie-count">1 template</span>
+            <span class="galerie-names">Handling an IT incident</span>
+          </li>
+          <li>
+            <a href="/en/templates/legal/">Legal</a>
+            <span class="galerie-count">1 template</span>
+            <span class="galerie-names">Reviewing and approving a contract</span>
+          </li>
+          <li>
+            <a href="/en/templates/investments/">Capital investments</a>
+            <span class="galerie-count">1 template</span>
+            <span class="galerie-names">Validating and commissioning an investment request</span>
+          </li>
+        </ul>
+      </section>
+    </article>
+  </main>
+
+  <footer class="footer legal-foot">
+    <p class="foot-copy">Website © 2026 Peter Barcauti · <a href="/mentions-legales.html?lang=en">Legal notice</a> · <a href="/en/versions/">Versions</a></p>
+  </footer>
+</body>
+</html>

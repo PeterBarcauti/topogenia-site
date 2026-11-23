@@ -1,0 +1,2 @@
+7cec622725a37cd77402c627349354ee0724fa923c661b0b6b2fb55919361f5c  human-resources.fr.pmaps
+b0c5d84224717865be6ec024a2741ec602d65de660074fd226734aa3e5dfcf5a  recruitment-need-to-hire.fr.pmap

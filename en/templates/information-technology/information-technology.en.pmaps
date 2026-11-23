@@ -1,0 +1,426 @@
+{
+  "format": "topogenia-collection",
+  "version": "1.0",
+  "name": "Information technology",
+  "description": "The most common handling of an IT incident, to adapt to your organisation.",
+  "processes": [
+    {
+      "format": "topogenia",
+      "version": "1.5",
+      "project": {
+        "name": "Handling an IT incident",
+        "code": "ITINC",
+        "language": "en",
+        "description": "Gallery template: handling an IT incident. Trigger: Unplanned interruption or degradation of an IT service reported. Outcome: IT service restored and ticket closed; or incident kept open and linked to a problem. To adapt to your organisation: actors, documents, media, thresholds and lead times."
+      },
+      "map": {
+        "summary": {
+          "text": "The user reports, the service desk qualifies and diagnoses, the expert team steps in if needed, then the service is checked and the ticket closed."
+        },
+        "lanes": [
+          {
+            "id": "user",
+            "name": "User",
+            "type": "person"
+          },
+          {
+            "id": "service-desk",
+            "name": "IT service desk",
+            "type": "department"
+          },
+          {
+            "id": "technical-expert-team",
+            "name": "Technical expert team",
+            "type": "department"
+          }
+        ],
+        "steps": [
+          {
+            "id": "service-malfunction-observed",
+            "lane": "user",
+            "label": "IT service malfunction observed",
+            "type": "start",
+            "column": 0
+          },
+          {
+            "id": "report-incident-service-desk",
+            "lane": "user",
+            "label": "Report the incident to the service desk",
+            "column": 1,
+            "sheet": {
+              "purpose": "The user describes the malfunction encountered and its impact on their work through the support portal, the telephone or the dedicated mailbox.",
+              "outputs": [
+                {
+                  "id": "doc-incident-report",
+                  "name": "Incident report",
+                  "medium": "email"
+                }
+              ]
+            }
+          },
+          {
+            "id": "record-categorise-prioritise-ticket",
+            "lane": "service-desk",
+            "label": "Record, categorise and prioritise the ticket",
+            "column": 2,
+            "sheet": {
+              "purpose": "The service desk creates the ticket, enters an initial category and sets the priority by combining business impact and urgency to direct the handling.",
+              "uses": [
+                {
+                  "document": "doc-incident-report"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-qualified-incident-ticket",
+                  "name": "Qualified incident ticket",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "diagnose-adjust-qualification-if-needed",
+            "lane": "service-desk",
+            "label": "Diagnose and adjust the qualification if needed",
+            "column": 3,
+            "sheet": {
+              "purpose": "The service desk consults the knowledge base, runs the first diagnostic tests and refines the category or priority if the technical findings justify it.",
+              "inputs": [
+                {
+                  "name": "Knowledge base",
+                  "medium": "software"
+                }
+              ],
+              "uses": [
+                {
+                  "document": "doc-qualified-incident-ticket"
+                },
+                {
+                  "document": "doc-reopened-ticket"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-initial-diagnosis-result",
+                  "name": "Initial diagnosis result",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "can-incident-resolved-service-desk",
+            "lane": "service-desk",
+            "label": "Can the incident be resolved by the service desk?",
+            "type": "decision",
+            "column": 4,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-initial-diagnosis-result"
+                }
+              ]
+            }
+          },
+          {
+            "id": "escalate-ticket-expert-team",
+            "lane": "service-desk",
+            "label": "Escalate the ticket to the expert team",
+            "column": 5,
+            "sheet": {
+              "purpose": "When resolution exceeds its skills or authorisations, the service desk adds its findings to the ticket and transfers it to the competent expert team.",
+              "uses": [
+                {
+                  "document": "doc-qualified-incident-ticket"
+                },
+                {
+                  "document": "doc-initial-diagnosis-result"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-escalated-ticket",
+                  "name": "Escalated ticket",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "investigate-apply-solution-workaround",
+            "lane": "technical-expert-team",
+            "label": "Investigate and apply a solution or workaround",
+            "column": 9,
+            "sheet": {
+              "purpose": "The expert team looks for a fix or workaround and, if successful, applies it and sends the resolution notice; otherwise it informs the user that the incident stays open, linked to a problem, until the service is restored.",
+              "inputs": [
+                {
+                  "name": "Knowledge base",
+                  "medium": "software"
+                }
+              ],
+              "uses": [
+                {
+                  "document": "doc-escalated-ticket"
+                },
+                {
+                  "document": "doc-reopened-ticket"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-technical-investigation-report",
+                  "name": "Technical investigation report",
+                  "medium": "spreadsheet"
+                }
+              ]
+            }
+          },
+          {
+            "id": "solution-workaround-found",
+            "lane": "technical-expert-team",
+            "label": "Is a solution or workaround found?",
+            "type": "decision",
+            "column": 10,
+            "sheet": {
+              "free_text": "Produced as applicable: Resolution notice (if yes).",
+              "uses": [
+                {
+                  "document": "doc-technical-investigation-report"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-resolution-notice",
+                  "name": "Resolution notice",
+                  "medium": "email"
+                }
+              ]
+            }
+          },
+          {
+            "id": "apply-resolution-notify-user",
+            "lane": "service-desk",
+            "label": "Apply the resolution and notify the user",
+            "column": 5,
+            "row": 1,
+            "sheet": {
+              "purpose": "When the solution is within its reach, the service desk restores the service and sends the resolution notice to the user for verification.",
+              "uses": [
+                {
+                  "document": "doc-qualified-incident-ticket"
+                },
+                {
+                  "document": "doc-initial-diagnosis-result"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-resolution-notice-alt",
+                  "name": "Resolution notice",
+                  "medium": "email"
+                }
+              ]
+            }
+          },
+          {
+            "id": "check-service-actually-restored",
+            "lane": "user",
+            "label": "Check that the service is actually restored",
+            "column": 6,
+            "sheet": {
+              "purpose": "On receipt of the resolution notice, the user tests the service concerned to confirm that normal activity has resumed.",
+              "uses": [
+                {
+                  "document": "doc-resolution-notice"
+                },
+                {
+                  "document": "doc-resolution-notice-alt"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-user-validation-feedback",
+                  "name": "User validation feedback",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "service-working-normally",
+            "lane": "user",
+            "label": "Is the service working normally?",
+            "type": "decision",
+            "column": 7,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-user-validation-feedback"
+                }
+              ]
+            }
+          },
+          {
+            "id": "had-incident-already-escalated-experts",
+            "lane": "service-desk",
+            "label": "Had the incident already been escalated to the experts?",
+            "type": "decision",
+            "column": 8,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-user-validation-feedback"
+                },
+                {
+                  "document": "doc-qualified-incident-ticket"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-reopened-ticket",
+                  "name": "Reopened ticket",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "document-solution-close-ticket",
+            "lane": "service-desk",
+            "label": "Document the solution and close the ticket",
+            "column": 8,
+            "row": 1,
+            "sheet": {
+              "purpose": "The service desk checks the final categorisation, enriches the knowledge base with the solution applied and formally closes the ticket.",
+              "uses": [
+                {
+                  "document": "doc-user-validation-feedback"
+                },
+                {
+                  "document": "doc-resolution-notice"
+                },
+                {
+                  "document": "doc-resolution-notice-alt"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-closed-ticket",
+                  "name": "Closed ticket",
+                  "medium": "software"
+                },
+                {
+                  "id": "doc-updated-knowledge-base",
+                  "name": "Updated knowledge base",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "incident-resolved-ticket-closed",
+            "lane": "service-desk",
+            "label": "Incident resolved and ticket closed",
+            "type": "end",
+            "column": 9
+          },
+          {
+            "id": "incident-kept-open-linked-problem",
+            "lane": "technical-expert-team",
+            "label": "Incident kept open and linked to a problem",
+            "type": "end",
+            "column": 11
+          }
+        ],
+        "flows": [
+          {
+            "source": "service-malfunction-observed",
+            "target": "report-incident-service-desk"
+          },
+          {
+            "source": "report-incident-service-desk",
+            "target": "record-categorise-prioritise-ticket"
+          },
+          {
+            "source": "record-categorise-prioritise-ticket",
+            "target": "diagnose-adjust-qualification-if-needed"
+          },
+          {
+            "source": "diagnose-adjust-qualification-if-needed",
+            "target": "can-incident-resolved-service-desk"
+          },
+          {
+            "source": "can-incident-resolved-service-desk",
+            "target": "apply-resolution-notify-user",
+            "label": "yes"
+          },
+          {
+            "source": "can-incident-resolved-service-desk",
+            "target": "escalate-ticket-expert-team",
+            "label": "no"
+          },
+          {
+            "source": "escalate-ticket-expert-team",
+            "target": "investigate-apply-solution-workaround"
+          },
+          {
+            "source": "investigate-apply-solution-workaround",
+            "target": "solution-workaround-found"
+          },
+          {
+            "source": "solution-workaround-found",
+            "target": "check-service-actually-restored",
+            "label": "yes"
+          },
+          {
+            "source": "solution-workaround-found",
+            "target": "incident-kept-open-linked-problem",
+            "label": "no"
+          },
+          {
+            "source": "apply-resolution-notify-user",
+            "target": "check-service-actually-restored"
+          },
+          {
+            "source": "check-service-actually-restored",
+            "target": "service-working-normally"
+          },
+          {
+            "source": "service-working-normally",
+            "target": "document-solution-close-ticket",
+            "label": "yes"
+          },
+          {
+            "source": "service-working-normally",
+            "target": "had-incident-already-escalated-experts",
+            "label": "no"
+          },
+          {
+            "source": "had-incident-already-escalated-experts",
+            "target": "investigate-apply-solution-workaround",
+            "label": "yes"
+          },
+          {
+            "source": "had-incident-already-escalated-experts",
+            "target": "diagnose-adjust-qualification-if-needed",
+            "label": "no"
+          },
+          {
+            "source": "document-solution-close-ticket",
+            "target": "incident-resolved-ticket-closed"
+          }
+        ]
+      },
+      "uncertainties": [
+        "Generic model: replace the actors, the documents and their media with those of your organisation.",
+        "Duration and lead time of each step: to be measured in your organisation, the model gives none.",
+        "Automatic detection: many infrastructure or application incidents are detected automatically by monitoring tools, which open a ticket directly.",
+        "Major incident management: a critical incident paralysing activity triggers a dedicated crisis procedure with a coordinator and regular communication to the business.",
+        "Service request: if qualification shows a standard request (access, equipment, information), the ticket is requalified to the service request fulfilment process.",
+        "Medium of each document (paper, email, spreadsheet, file, software): set by default in this model, to be adapted to your organisation."
+      ]
+    }
+  ]
+}

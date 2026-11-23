@@ -1,0 +1,447 @@
+{
+  "format": "topogenia-collection",
+  "version": "1.0",
+  "name": "Juridique",
+  "description": "La revue et la validation les plus courantes d'un contrat, à adapter à votre organisation.",
+  "processes": [
+    {
+      "format": "topogenia",
+      "version": "1.5",
+      "project": {
+        "name": "Revue et validation d'un contrat",
+        "code": "CONTRA",
+        "language": "fr",
+        "description": "Modèle de la galerie : revue et validation d'un contrat. Déclencheur : Besoin de formalisation d'un contrat commercial, fournisseur ou partenariat identifié. Résultat : Contrat signé, archivé et diffusé ; ou contractualisation abandonnée. À adapter à votre organisation : acteurs, documents, supports, seuils et délais."
+      },
+      "map": {
+        "summary": {
+          "text": "Le porteur prépare le projet, le service juridique l'examine, la négociation avec la partie externe aboutit à une version définitive signée, archivée et diffusée."
+        },
+        "lanes": [
+          {
+            "id": "project-owner",
+            "name": "Porteur de projet",
+            "type": "person"
+          },
+          {
+            "id": "legal-department",
+            "name": "Service juridique",
+            "type": "department"
+          },
+          {
+            "id": "authorised-signatory",
+            "name": "Signataire habilité",
+            "type": "person"
+          },
+          {
+            "id": "external-party",
+            "name": "Partie externe",
+            "type": "department"
+          }
+        ],
+        "steps": [
+          {
+            "id": "contracting-need-identified",
+            "lane": "project-owner",
+            "label": "Besoin de contractualisation identifié",
+            "type": "start",
+            "column": 0
+          },
+          {
+            "id": "prepare-draft-contract-background-note",
+            "lane": "project-owner",
+            "label": "Préparer le projet de contrat et la fiche de contexte",
+            "column": 1,
+            "sheet": {
+              "purpose": "Le porteur de projet rassemble les annexes techniques et les termes commerciaux préliminaires (sous réserve de revue juridique) et complète le modèle standard de l'entreprise ou joint le projet externe.",
+              "inputs": [
+                {
+                  "name": "Modèle de contrat standard",
+                  "medium": "file"
+                },
+                {
+                  "name": "Termes commerciaux préliminaires",
+                  "medium": "software"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-initial-draft-contract",
+                  "name": "Projet de contrat initial",
+                  "medium": "file"
+                },
+                {
+                  "id": "doc-background-note",
+                  "name": "Fiche de contexte",
+                  "medium": "file"
+                }
+              ]
+            }
+          },
+          {
+            "id": "review-clauses-risks-specialist-opinions",
+            "lane": "legal-department",
+            "label": "Examiner les clauses, risques et avis spécialisés",
+            "column": 2,
+            "sheet": {
+              "purpose": "Le service juridique vérifie la conformité légale, contrôle les clauses sensibles (responsabilité, propriété intellectuelle, confidentialité, résiliation) et sollicite au besoin les avis spécialisés (finance, assurances, données personnelles) pour produire un avis consolidé.",
+              "free_text": "Selon le cas : Demande de modification de la version définitive (si refus).",
+              "uses": [
+                {
+                  "document": "doc-initial-draft-contract"
+                },
+                {
+                  "document": "doc-counter-proposed-draft"
+                },
+                {
+                  "document": "doc-request-change-final-version"
+                },
+                {
+                  "document": "doc-background-note"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-annotated-draft",
+                  "name": "Projet annoté",
+                  "medium": "software"
+                },
+                {
+                  "id": "doc-consolidated-legal-opinion",
+                  "name": "Avis juridique consolidé",
+                  "medium": "email"
+                }
+              ]
+            }
+          },
+          {
+            "id": "draft-contract-ready-final-agreement",
+            "lane": "legal-department",
+            "label": "Le projet de contrat est-il prêt pour accord final ?",
+            "type": "decision",
+            "column": 3,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-consolidated-legal-opinion"
+                }
+              ]
+            }
+          },
+          {
+            "id": "send-amendments-external-party",
+            "lane": "project-owner",
+            "label": "Transmettre les amendements à la partie externe",
+            "column": 4,
+            "sheet": {
+              "purpose": "Le porteur de projet présente les amendements demandés à la partie externe et conduit la négociation en coordination avec le service juridique.",
+              "uses": [
+                {
+                  "document": "doc-annotated-draft"
+                },
+                {
+                  "document": "doc-consolidated-legal-opinion"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-amended-version-sent",
+                  "name": "Version amendée transmise",
+                  "medium": "email"
+                }
+              ]
+            }
+          },
+          {
+            "id": "analyse-amendments-reply",
+            "lane": "external-party",
+            "label": "Analyser les amendements et répondre",
+            "column": 5,
+            "sheet": {
+              "purpose": "La partie externe examine les amendements proposés et retourne soit son acceptation, soit une version contre-proposée.",
+              "uses": [
+                {
+                  "document": "doc-amended-version-sent"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-counter-proposed-draft",
+                  "name": "Projet contre-proposé",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "negotiation-allow-moving-towards-agreement",
+            "lane": "project-owner",
+            "label": "La négociation permet-elle de poursuivre vers un accord ?",
+            "type": "decision",
+            "column": 6,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-counter-proposed-draft"
+                },
+                {
+                  "document": "doc-request-change-final-version"
+                },
+                {
+                  "document": "doc-consolidated-legal-opinion"
+                }
+              ]
+            }
+          },
+          {
+            "id": "produce-final-version-contract",
+            "lane": "legal-department",
+            "label": "Produire la version définitive du contrat",
+            "column": 4,
+            "sheet": {
+              "purpose": "Lorsque les clauses sont stabilisées et jugées acceptables, le service juridique met au propre la version définitive prête pour accord et mise en signature.",
+              "uses": [
+                {
+                  "document": "doc-annotated-draft"
+                },
+                {
+                  "document": "doc-counter-proposed-draft"
+                },
+                {
+                  "document": "doc-consolidated-legal-opinion"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-final-version-contract",
+                  "name": "Version définitive du contrat",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "external-party-confirm-final-version",
+            "lane": "external-party",
+            "label": "La partie externe confirme-t-elle la version définitive ?",
+            "type": "decision",
+            "column": 5,
+            "row": 1,
+            "sheet": {
+              "free_text": "Produit selon le cas : Accord sur version définitive (si Oui) ; Demande de modification de la version définitive (si Non).",
+              "uses": [
+                {
+                  "document": "doc-final-version-contract"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-agreement-final-version",
+                  "name": "Accord sur version définitive",
+                  "medium": "software"
+                },
+                {
+                  "id": "doc-request-change-final-version",
+                  "name": "Demande de modification de la version définitive",
+                  "medium": "email"
+                }
+              ]
+            }
+          },
+          {
+            "id": "approve-sign-contract-organisation",
+            "lane": "authorised-signatory",
+            "label": "Approuver et signer le contrat pour l'entreprise",
+            "column": 6,
+            "sheet": {
+              "purpose": "Après confirmation de la version définitive par la partie externe, le signataire habilité prend connaissance du dossier et de l'avis juridique, puis appose sa signature.",
+              "uses": [
+                {
+                  "document": "doc-final-version-contract"
+                },
+                {
+                  "document": "doc-agreement-final-version"
+                },
+                {
+                  "document": "doc-consolidated-legal-opinion"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-contract-signed-organisation",
+                  "name": "Contrat signé par l'entreprise",
+                  "medium": "paper"
+                }
+              ]
+            }
+          },
+          {
+            "id": "countersign-final-contract",
+            "lane": "external-party",
+            "label": "Contresigner le contrat définitif",
+            "column": 7,
+            "sheet": {
+              "purpose": "La partie externe contresigne le document définitif déjà validé à l'étape de confirmation de la version définitive, rendant l'accord juridiquement opposable.",
+              "uses": [
+                {
+                  "document": "doc-contract-signed-organisation"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-countersigned-contract",
+                  "name": "Contrat contresigné",
+                  "medium": "paper"
+                }
+              ]
+            }
+          },
+          {
+            "id": "archive-contract-record-key-deadlines",
+            "lane": "legal-department",
+            "label": "Archiver le contrat et enregistrer les échéances clés",
+            "column": 8,
+            "sheet": {
+              "purpose": "Le service juridique classe l'original signé dans la contrathèque centralisée et paramètre les alertes d'échéance (renouvellement, préavis, révision).",
+              "uses": [
+                {
+                  "document": "doc-countersigned-contract"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-archived-contract",
+                  "name": "Contrat archivé",
+                  "medium": "file"
+                },
+                {
+                  "id": "doc-key-dates-sheet",
+                  "name": "Fiche d'échéances",
+                  "medium": "spreadsheet"
+                }
+              ]
+            }
+          },
+          {
+            "id": "circulate-commitments-operational-teams",
+            "lane": "project-owner",
+            "label": "Diffuser les engagements aux équipes opérationnelles",
+            "column": 9,
+            "sheet": {
+              "purpose": "Le porteur de projet communique les obligations opérationnelles, livrables et niveaux de service convenus aux équipes chargées de l'exécution.",
+              "uses": [
+                {
+                  "document": "doc-archived-contract"
+                },
+                {
+                  "document": "doc-key-dates-sheet"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-circulated-performance-summary",
+                  "name": "Synthèse d'exécution diffusée",
+                  "medium": "file"
+                }
+              ]
+            }
+          },
+          {
+            "id": "contract-force-archived-circulated",
+            "lane": "project-owner",
+            "label": "Contrat en vigueur, archivé et diffusé",
+            "type": "end",
+            "column": 10
+          },
+          {
+            "id": "contracting-abandoned-file-closed",
+            "lane": "project-owner",
+            "label": "Contractualisation abandonnée et dossier clos",
+            "type": "end",
+            "column": 7
+          }
+        ],
+        "flows": [
+          {
+            "source": "contracting-need-identified",
+            "target": "prepare-draft-contract-background-note"
+          },
+          {
+            "source": "prepare-draft-contract-background-note",
+            "target": "review-clauses-risks-specialist-opinions"
+          },
+          {
+            "source": "review-clauses-risks-specialist-opinions",
+            "target": "draft-contract-ready-final-agreement"
+          },
+          {
+            "source": "draft-contract-ready-final-agreement",
+            "target": "produce-final-version-contract",
+            "label": "oui"
+          },
+          {
+            "source": "draft-contract-ready-final-agreement",
+            "target": "send-amendments-external-party",
+            "label": "non"
+          },
+          {
+            "source": "send-amendments-external-party",
+            "target": "analyse-amendments-reply"
+          },
+          {
+            "source": "analyse-amendments-reply",
+            "target": "negotiation-allow-moving-towards-agreement"
+          },
+          {
+            "source": "negotiation-allow-moving-towards-agreement",
+            "target": "review-clauses-risks-specialist-opinions",
+            "label": "oui"
+          },
+          {
+            "source": "negotiation-allow-moving-towards-agreement",
+            "target": "contracting-abandoned-file-closed",
+            "label": "non"
+          },
+          {
+            "source": "produce-final-version-contract",
+            "target": "external-party-confirm-final-version"
+          },
+          {
+            "source": "external-party-confirm-final-version",
+            "target": "approve-sign-contract-organisation",
+            "label": "oui"
+          },
+          {
+            "source": "external-party-confirm-final-version",
+            "target": "negotiation-allow-moving-towards-agreement",
+            "label": "non"
+          },
+          {
+            "source": "approve-sign-contract-organisation",
+            "target": "countersign-final-contract"
+          },
+          {
+            "source": "countersign-final-contract",
+            "target": "archive-contract-record-key-deadlines"
+          },
+          {
+            "source": "archive-contract-record-key-deadlines",
+            "target": "circulate-commitments-operational-teams"
+          },
+          {
+            "source": "circulate-commitments-operational-teams",
+            "target": "contract-force-archived-circulated"
+          }
+        ]
+      },
+      "uncertainties": [
+        "Modèle générique : remplacer les acteurs, les documents et leurs supports par ceux de votre organisation.",
+        "Durée et délai de chaque étape : à mesurer chez vous, le modèle n'en donne aucun.",
+        "Contrat sur modèle standard non modifié : lorsqu'un contrat repose intégralement sur un modèle approuvé sans modification de clause, la revue juridique peut être allégée selon la politique interne.",
+        "Validation d'un risque résiduel : si la partie externe refuse de céder sur une clause jugée risquée, le service juridique soumet une demande d'arbitrage à la direction générale afin d'accepter ou non le risque résiduel.",
+        "Avenant contractuel : la modification d'un contrat actif suit le même enchaînement en s'appuyant sur le contrat initial archivé.",
+        "Support de chaque document (papier, courriel, tableur, fichier, logiciel) : posé par défaut dans ce modèle, à adapter à votre organisation."
+      ]
+    }
+  ]
+}

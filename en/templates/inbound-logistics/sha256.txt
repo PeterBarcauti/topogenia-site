@@ -1,0 +1,2 @@
+a99e937b0aaf16d20e919ff240a828b4ca4b042456f64c236f50106160e09ed1  goods-receipt-to-stock.en.pmap
+c93d1ff4e415e00439bf3aba3b28a83db0c3f0fe63bd6e4c51bf9d18c260cfed  inbound-logistics.en.pmaps

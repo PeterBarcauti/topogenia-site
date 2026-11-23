@@ -1,0 +1,485 @@
+{
+  "format": "topogenia-collection",
+  "version": "1.0",
+  "name": "Planification",
+  "description": "L'élaboration la plus courante du plan de production et du calcul des besoins, à adapter à votre organisation.",
+  "processes": [
+    {
+      "format": "topogenia",
+      "version": "1.5",
+      "project": {
+        "name": "Élaboration du plan de production et calcul des besoins",
+        "code": "PLANIF",
+        "language": "fr",
+        "description": "Modèle de la galerie : élaboration du plan de production et calcul des besoins. Déclencheur : Ouverture d'un nouveau cycle de planification industrielle. Résultat : Programme de production ferme et besoins d'approvisionnement diffusés. À adapter à votre organisation : acteurs, documents, supports, seuils et délais."
+      },
+      "map": {
+        "summary": {
+          "text": "Le service commercial consolide la demande, le planificateur construit le programme, la charge est vérifiée, puis le calcul des besoins génère les ordres fermes."
+        },
+        "lanes": [
+          {
+            "id": "commercial-department",
+            "name": "Service commercial",
+            "type": "department"
+          },
+          {
+            "id": "industrial-planner",
+            "name": "Planificateur industriel",
+            "type": "person"
+          },
+          {
+            "id": "planning-system",
+            "name": "Système de planification",
+            "type": "system"
+          },
+          {
+            "id": "production-manager",
+            "name": "Responsable de production",
+            "type": "person"
+          },
+          {
+            "id": "industrial-management",
+            "name": "Direction industrielle",
+            "type": "person"
+          }
+        ],
+        "steps": [
+          {
+            "id": "new-planning-cycle-opened",
+            "lane": "commercial-department",
+            "label": "Nouveau cycle de planification ouvert",
+            "type": "start",
+            "column": 0
+          },
+          {
+            "id": "consolidate-demand-forecasts-order-book",
+            "lane": "commercial-department",
+            "label": "Consolider les prévisions de la demande et le carnet",
+            "column": 1,
+            "sheet": {
+              "purpose": "Le service commercial consolide les commandes fermes et les prévisions commerciales sur l'horizon de planification afin d'établir la demande prévisionnelle globale.",
+              "inputs": [
+                {
+                  "name": "Carnet de commandes clients",
+                  "medium": "spreadsheet"
+                },
+                {
+                  "name": "Historique des commandes",
+                  "medium": "spreadsheet"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-consolidated-demand-plan",
+                  "name": "Plan de demande consolidé",
+                  "medium": "spreadsheet"
+                }
+              ]
+            }
+          },
+          {
+            "id": "draw-up-draft-master-production",
+            "lane": "industrial-planner",
+            "label": "Élaborer le projet de programme directeur",
+            "column": 2,
+            "sheet": {
+              "purpose": "Le planificateur industriel traduit le plan de demande en quantités à produire par famille et par référence, en tenant compte des stocks disponibles et des objectifs de stock de sécurité.",
+              "inputs": [
+                {
+                  "name": "Politique de stock",
+                  "medium": "file"
+                }
+              ],
+              "uses": [
+                {
+                  "document": "doc-consolidated-demand-plan"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-draft-master-schedule",
+                  "name": "Projet de programme directeur",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "assess-load-capacity-critical-materials",
+            "lane": "production-manager",
+            "label": "Évaluer la charge, la capacité et les matières critiques",
+            "column": 3,
+            "sheet": {
+              "purpose": "Le responsable de production compare la charge induite avec les capacités de l'atelier (machines, main-d'œuvre, outillages) et vérifie la disponibilité des matières et capacités fournisseurs critiques.",
+              "inputs": [
+                {
+                  "name": "Capacités atelier et fournisseurs clés",
+                  "medium": "spreadsheet"
+                }
+              ],
+              "uses": [
+                {
+                  "document": "doc-draft-master-schedule"
+                },
+                {
+                  "document": "doc-adjusted-draft-schedule"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-load-capacity-materials-assessment",
+                  "name": "Bilan charge-capacité et matières",
+                  "medium": "spreadsheet"
+                }
+              ]
+            }
+          },
+          {
+            "id": "capacity-materials-allow-schedule",
+            "lane": "production-manager",
+            "label": "La capacité et les matières permettent-elles le programme ?",
+            "type": "decision",
+            "column": 4,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-load-capacity-materials-assessment"
+                }
+              ]
+            }
+          },
+          {
+            "id": "levelling-priority-adjustment-enough",
+            "lane": "industrial-planner",
+            "label": "Un ajustement de lissage ou de priorité suffit-il ?",
+            "type": "decision",
+            "column": 9,
+            "sheet": {
+              "free_text": "Selon le cas : Bilan des exceptions (si rupture).",
+              "uses": [
+                {
+                  "document": "doc-load-capacity-materials-assessment"
+                },
+                {
+                  "document": "doc-exception-review"
+                }
+              ]
+            }
+          },
+          {
+            "id": "adjust-schedule-arbitrate-priorities",
+            "lane": "industrial-planner",
+            "label": "Ajuster le programme ou arbitrer les priorités",
+            "column": 11,
+            "sheet": {
+              "purpose": "En cas de surcharge gérable dans le cadre courant, ou selon l'arbitrage de la direction, le planificateur lisse le programme, arbitre les priorités ou mobilise les leviers de capacité retenus avant une nouvelle vérification.",
+              "free_text": "Selon le cas : Bilan des exceptions (si rupture) ; Décision d'arbitrage (si escalade).",
+              "uses": [
+                {
+                  "document": "doc-load-capacity-materials-assessment"
+                },
+                {
+                  "document": "doc-draft-master-schedule"
+                },
+                {
+                  "document": "doc-exception-review"
+                },
+                {
+                  "document": "doc-arbitration-decision"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-adjusted-draft-schedule",
+                  "name": "Projet de programme ajusté",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "validate-master-production-schedule",
+            "lane": "industrial-planner",
+            "label": "Valider le programme directeur de production",
+            "column": 5,
+            "sheet": {
+              "purpose": "Une fois l'équilibre charge-capacité et matières atteint, le planificateur valide avec le responsable de production le programme directeur, qui sert de référence officielle pour le calcul des besoins.",
+              "uses": [
+                {
+                  "document": "doc-draft-master-schedule"
+                },
+                {
+                  "document": "doc-adjusted-draft-schedule"
+                },
+                {
+                  "document": "doc-load-capacity-materials-assessment"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-validated-master-schedule",
+                  "name": "Programme directeur validé",
+                  "medium": "spreadsheet"
+                }
+              ]
+            }
+          },
+          {
+            "id": "run-net-requirements-calculation",
+            "lane": "planning-system",
+            "label": "Exécuter le calcul des besoins nets",
+            "column": 6,
+            "automation": "automated",
+            "sheet": {
+              "purpose": "Le système de planification éclate les nomenclatures, déduit les stocks et en-cours existants, puis génère les propositions d'ordres de fabrication et d'achat ainsi que les alertes.",
+              "inputs": [
+                {
+                  "name": "Nomenclatures",
+                  "medium": "file"
+                },
+                {
+                  "name": "État des stocks et en-cours",
+                  "medium": "spreadsheet"
+                }
+              ],
+              "uses": [
+                {
+                  "document": "doc-validated-master-schedule"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-order-proposals",
+                  "name": "Propositions d'ordres",
+                  "medium": "spreadsheet"
+                },
+                {
+                  "id": "doc-exception-messages",
+                  "name": "Messages d'exception",
+                  "medium": "spreadsheet"
+                }
+              ]
+            }
+          },
+          {
+            "id": "analyse-exception-messages-shortages",
+            "lane": "industrial-planner",
+            "label": "Analyser les messages d'exception et ruptures",
+            "column": 7,
+            "sheet": {
+              "purpose": "Le planificateur examine les messages d'exception (avancement, report, annulation, rupture potentielle) et identifie les aléas bloquants.",
+              "uses": [
+                {
+                  "document": "doc-order-proposals"
+                },
+                {
+                  "document": "doc-exception-messages"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-exception-review",
+                  "name": "Bilan des exceptions",
+                  "medium": "spreadsheet"
+                }
+              ]
+            }
+          },
+          {
+            "id": "critical-shortages-require-schedule-revised",
+            "lane": "industrial-planner",
+            "label": "Des ruptures critiques imposent-elles de revoir le programme ?",
+            "type": "decision",
+            "column": 8,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-exception-review"
+                }
+              ]
+            }
+          },
+          {
+            "id": "firm-up-orders-over-frozen",
+            "lane": "industrial-planner",
+            "label": "Affermir les ordres sur l'horizon ferme",
+            "column": 9,
+            "row": 1,
+            "sheet": {
+              "purpose": "En l'absence de rupture critique remettant en cause le programme, le planificateur convertit les propositions de la zone ferme en ordres de fabrication et demandes d'achat fermes.",
+              "uses": [
+                {
+                  "document": "doc-order-proposals"
+                },
+                {
+                  "document": "doc-exception-review"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-firm-manufacturing-orders",
+                  "name": "Ordres de fabrication fermes",
+                  "medium": "software"
+                },
+                {
+                  "id": "doc-firm-purchase-requests",
+                  "name": "Demandes d'achat fermes",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "issue-orders-forecasts-downstream-departments",
+            "lane": "planning-system",
+            "label": "Diffuser les ordres et prévisions aux services aval",
+            "column": 10,
+            "automation": "automated",
+            "sheet": {
+              "purpose": "Le système met à disposition les ordres fermes auprès de l'ordonnancement de production et des approvisionnements, et transmet les prévisions glissantes aux fournisseurs.",
+              "uses": [
+                {
+                  "document": "doc-firm-manufacturing-orders"
+                },
+                {
+                  "document": "doc-firm-purchase-requests"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-production-schedule",
+                  "name": "Planning de production",
+                  "medium": "spreadsheet"
+                },
+                {
+                  "id": "doc-supply-programme",
+                  "name": "Programme d'approvisionnement",
+                  "medium": "spreadsheet"
+                }
+              ]
+            }
+          },
+          {
+            "id": "production-plan-supply-requirements-issued",
+            "lane": "industrial-planner",
+            "label": "Plan de production et besoins d'approvisionnement diffusés",
+            "type": "end",
+            "column": 11,
+            "row": 1
+          },
+          {
+            "id": "arbitrate-between-demand-capacity",
+            "lane": "industrial-management",
+            "label": "Arbitrer la demande et la capacité",
+            "column": 10,
+            "sheet": {
+              "purpose": "Lorsque le lissage ne suffit pas, la direction industrielle arbitre entre la demande et la capacité (priorités clients, capacité supplémentaire, sous-traitance, report de commandes) et transmet sa décision au planificateur.",
+              "free_text": "Selon le cas : Bilan des exceptions (si rupture).",
+              "uses": [
+                {
+                  "document": "doc-load-capacity-materials-assessment"
+                },
+                {
+                  "document": "doc-exception-review"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-arbitration-decision",
+                  "name": "Décision d'arbitrage",
+                  "medium": "software"
+                }
+              ]
+            }
+          }
+        ],
+        "flows": [
+          {
+            "source": "new-planning-cycle-opened",
+            "target": "consolidate-demand-forecasts-order-book"
+          },
+          {
+            "source": "consolidate-demand-forecasts-order-book",
+            "target": "draw-up-draft-master-production"
+          },
+          {
+            "source": "draw-up-draft-master-production",
+            "target": "assess-load-capacity-critical-materials"
+          },
+          {
+            "source": "assess-load-capacity-critical-materials",
+            "target": "capacity-materials-allow-schedule"
+          },
+          {
+            "source": "capacity-materials-allow-schedule",
+            "target": "validate-master-production-schedule",
+            "label": "oui"
+          },
+          {
+            "source": "capacity-materials-allow-schedule",
+            "target": "levelling-priority-adjustment-enough",
+            "label": "non"
+          },
+          {
+            "source": "levelling-priority-adjustment-enough",
+            "target": "adjust-schedule-arbitrate-priorities",
+            "label": "oui"
+          },
+          {
+            "source": "levelling-priority-adjustment-enough",
+            "target": "arbitrate-between-demand-capacity",
+            "label": "non"
+          },
+          {
+            "source": "adjust-schedule-arbitrate-priorities",
+            "target": "assess-load-capacity-critical-materials"
+          },
+          {
+            "source": "validate-master-production-schedule",
+            "target": "run-net-requirements-calculation"
+          },
+          {
+            "source": "run-net-requirements-calculation",
+            "target": "analyse-exception-messages-shortages"
+          },
+          {
+            "source": "analyse-exception-messages-shortages",
+            "target": "critical-shortages-require-schedule-revised"
+          },
+          {
+            "source": "critical-shortages-require-schedule-revised",
+            "target": "levelling-priority-adjustment-enough",
+            "label": "oui"
+          },
+          {
+            "source": "critical-shortages-require-schedule-revised",
+            "target": "firm-up-orders-over-frozen",
+            "label": "non"
+          },
+          {
+            "source": "firm-up-orders-over-frozen",
+            "target": "issue-orders-forecasts-downstream-departments"
+          },
+          {
+            "source": "issue-orders-forecasts-downstream-departments",
+            "target": "production-plan-supply-requirements-issued"
+          },
+          {
+            "source": "arbitrate-between-demand-capacity",
+            "target": "adjust-schedule-arbitrate-priorities"
+          }
+        ]
+      },
+      "uncertainties": [
+        "Modèle générique : remplacer les acteurs, les documents et leurs supports par ceux de votre organisation.",
+        "Durée et délai de chaque étape : à mesurer chez vous, le modèle n'en donne aucun.",
+        "Plan industriel et commercial en amont : dans de nombreuses entreprises, ce processus s'inscrit sous un cycle mensuel d'arbitrage directionnel alignant demande, production, stocks et finances.",
+        "Flux tiré : pour les articles gérés en flux tiré par cartes ou appels de consommation, le réapprovisionnement s'effectue directement sur consommation réelle sans passer par le calcul des besoins classique.",
+        "Intégration fournisseurs : dans certains secteurs, les besoins nets d'approvisionnement alimentent des programmes de livraison glissants envoyés périodiquement aux fournisseurs par échange de données informatisé.",
+        "Replanification événementielle : un aléa majeur (panne longue, rupture fournisseur, commande urgente) peut déclencher une réexécution ciblée du calcul des besoins hors cycle normal.",
+        "Support de chaque document (papier, courriel, tableur, fichier, logiciel) : posé par défaut dans ce modèle, à adapter à votre organisation."
+      ]
+    }
+  ]
+}

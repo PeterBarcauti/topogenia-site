@@ -1,0 +1,429 @@
+{
+  "format": "topogenia-collection",
+  "version": "1.0",
+  "name": "Health, safety and environment",
+  "description": "The most common handling of an accident or near miss, from reporting to analysis, to adapt to your organisation.",
+  "processes": [
+    {
+      "format": "topogenia",
+      "version": "1.5",
+      "project": {
+        "name": "Reporting and analysing an accident or a near miss",
+        "code": "INCID",
+        "language": "en",
+        "description": "Gallery template: reporting and analysing an accident or a near miss. Trigger: Workplace accident, environmental incident or near miss occurred. Outcome: Event analysed, effectiveness verified and HSE file closed. To adapt to your organisation: actors, documents, media, thresholds and lead times."
+      },
+      "map": {
+        "summary": {
+          "text": "The area secures and reports the event, the HSE officer gathers facts and analyses, then the action plan is approved, deployed and verified before closure."
+        },
+        "lanes": [
+          {
+            "id": "witness-victim-first",
+            "name": "Witness / Victim / First aider",
+            "type": "person"
+          },
+          {
+            "id": "area-manager",
+            "name": "Area manager",
+            "type": "person"
+          },
+          {
+            "id": "hse-officer",
+            "name": "HSE officer",
+            "type": "person"
+          },
+          {
+            "id": "management-human-resources",
+            "name": "Management / Human resources",
+            "type": "department"
+          }
+        ],
+        "steps": [
+          {
+            "id": "accident-near-miss-occurred",
+            "lane": "witness-victim-first",
+            "label": "Accident or near miss occurred",
+            "type": "start",
+            "column": 0
+          },
+          {
+            "id": "give-first-aid-make-area",
+            "lane": "witness-victim-first",
+            "label": "Give first aid and make the area safe immediately",
+            "column": 1,
+            "sheet": {
+              "purpose": "The witness, the victim or the first aider raises the alarm, gives first aid, calls the external emergency services if necessary and neutralises any immediate danger.",
+              "outputs": [
+                {
+                  "id": "doc-area-made-safe",
+                  "name": "Area made safe",
+                  "medium": "other"
+                },
+                {
+                  "id": "doc-alert-sent",
+                  "name": "Alert sent",
+                  "medium": "email"
+                }
+              ]
+            }
+          },
+          {
+            "id": "record-internal-report-event",
+            "lane": "area-manager",
+            "label": "Record the internal report of the event",
+            "column": 2,
+            "sheet": {
+              "purpose": "The area manager records the first objective facts (date, place, people involved, immediate circumstances) in the internal event record.",
+              "uses": [
+                {
+                  "document": "doc-alert-sent"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-hse-event-sheet",
+                  "name": "HSE event sheet",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "event-require-legal-report-victim",
+            "lane": "hse-officer",
+            "label": "Does the event require a legal report or victim follow-up?",
+            "type": "decision",
+            "column": 3,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-hse-event-sheet"
+                }
+              ]
+            }
+          },
+          {
+            "id": "report-authorities-follow-up-victim",
+            "lane": "management-human-resources",
+            "label": "Report to the authorities and follow up the victim",
+            "column": 4,
+            "sheet": {
+              "purpose": "Where the event causes bodily or environmental harm subject to a legal obligation, human resources or management send the initial regulatory report within the legal time limits and ensure follow-up of the victim (care, support, return to work).",
+              "uses": [
+                {
+                  "document": "doc-hse-event-sheet"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-regulatory-declaration",
+                  "name": "Regulatory declaration",
+                  "medium": "software"
+                },
+                {
+                  "id": "doc-victim-follow-up-opened",
+                  "name": "Victim follow-up opened",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "gather-facts-site",
+            "lane": "hse-officer",
+            "label": "Gather the facts on site",
+            "column": 5,
+            "sheet": {
+              "purpose": "The HSE officer goes to the site quickly with the area manager and the staff representatives to observe the real situation, preserve evidence and collect witness statements.",
+              "uses": [
+                {
+                  "document": "doc-hse-event-sheet"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-factual-record-witness-statements",
+                  "name": "Factual record and witness statements",
+                  "medium": "file"
+                }
+              ]
+            }
+          },
+          {
+            "id": "analyse-direct-root-causes",
+            "lane": "hse-officer",
+            "label": "Analyse the direct and root causes",
+            "column": 6,
+            "sheet": {
+              "purpose": "The analysis group reconstructs the logical sequence of events to identify the immediate and root causes (technical, human and organisational).",
+              "uses": [
+                {
+                  "document": "doc-factual-record-witness-statements"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-cause-analysis-report",
+                  "name": "Cause analysis report",
+                  "medium": "file"
+                }
+              ]
+            }
+          },
+          {
+            "id": "draw-up-prevention-action-plan",
+            "lane": "hse-officer",
+            "label": "Draw up the prevention action plan",
+            "column": 7,
+            "sheet": {
+              "purpose": "The HSE officer defines corrective and preventive actions that act at the source of the risk, without creating a new hazard.",
+              "free_text": "As applicable: Effectiveness verification review (in case of revision).",
+              "uses": [
+                {
+                  "document": "doc-cause-analysis-report"
+                },
+                {
+                  "document": "doc-effectiveness-verification-review"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-draft-hse-action-plan",
+                  "name": "Draft HSE action plan",
+                  "medium": "spreadsheet"
+                }
+              ]
+            }
+          },
+          {
+            "id": "validate-action-plan-allocate-resources",
+            "lane": "management-human-resources",
+            "label": "Validate the action plan and allocate the resources",
+            "column": 8,
+            "sheet": {
+              "purpose": "Management validates the relevance of the action plan, arbitrates the priorities and allocates the necessary financial, technical and human resources.",
+              "uses": [
+                {
+                  "document": "doc-draft-hse-action-plan"
+                },
+                {
+                  "document": "doc-cause-analysis-report"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-validated-hse-action-plan",
+                  "name": "Validated HSE action plan",
+                  "medium": "spreadsheet"
+                }
+              ]
+            }
+          },
+          {
+            "id": "deploy-actions-raise-team-awareness",
+            "lane": "area-manager",
+            "label": "Deploy the actions and raise team awareness",
+            "column": 9,
+            "sheet": {
+              "purpose": "The area manager implements the measures decided on and shares the lessons learned with the teams exposed.",
+              "uses": [
+                {
+                  "document": "doc-validated-hse-action-plan"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-evidence-deployment",
+                  "name": "Evidence of deployment",
+                  "medium": "file"
+                },
+                {
+                  "id": "doc-awareness-session-report",
+                  "name": "Awareness session report",
+                  "medium": "file"
+                }
+              ]
+            }
+          },
+          {
+            "id": "verify-effectiveness-after-field-observation",
+            "lane": "hse-officer",
+            "label": "Verify effectiveness after field observation",
+            "column": 10,
+            "sheet": {
+              "purpose": "After a sufficient period of field observation, the HSE officer checks the actual application of the measures and verifies that the risk is effectively under control.",
+              "uses": [
+                {
+                  "document": "doc-evidence-deployment"
+                },
+                {
+                  "document": "doc-validated-hse-action-plan"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-effectiveness-verification-review",
+                  "name": "Effectiveness verification review",
+                  "medium": "spreadsheet"
+                }
+              ]
+            }
+          },
+          {
+            "id": "risk-durably-under-control-field",
+            "lane": "hse-officer",
+            "label": "Is the risk durably under control in the field?",
+            "type": "decision",
+            "column": 11,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-effectiveness-verification-review"
+                }
+              ]
+            }
+          },
+          {
+            "id": "update-risk-assessment-instructions",
+            "lane": "hse-officer",
+            "label": "Update the risk assessment and the instructions",
+            "column": 12,
+            "sheet": {
+              "purpose": "The HSE officer updates the occupational risk assessment document, the prevention programme and the workstation instructions concerned.",
+              "uses": [
+                {
+                  "document": "doc-effectiveness-verification-review"
+                },
+                {
+                  "document": "doc-cause-analysis-report"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-updated-risk-assessment",
+                  "name": "Updated risk assessment",
+                  "medium": "file"
+                }
+              ]
+            }
+          },
+          {
+            "id": "have-report-completed-if-needed",
+            "lane": "hse-officer",
+            "label": "Have the report completed if needed and close the file",
+            "column": 13,
+            "sheet": {
+              "purpose": "The HSE officer checks whether the investigation requires a supplement to the initial regulatory report and has human resources or management draw it up, archives the supporting documents and formally closes the file.",
+              "free_text": "As applicable: Regulatory declaration (if applicable).",
+              "uses": [
+                {
+                  "document": "doc-updated-risk-assessment"
+                },
+                {
+                  "document": "doc-effectiveness-verification-review"
+                },
+                {
+                  "document": "doc-regulatory-declaration"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-closed-hse-file",
+                  "name": "Closed HSE file",
+                  "medium": "file"
+                }
+              ]
+            }
+          },
+          {
+            "id": "event-handled-prevention-reinforced-file",
+            "lane": "hse-officer",
+            "label": "Event handled, prevention reinforced and file closed",
+            "type": "end",
+            "column": 14
+          }
+        ],
+        "flows": [
+          {
+            "source": "accident-near-miss-occurred",
+            "target": "give-first-aid-make-area"
+          },
+          {
+            "source": "give-first-aid-make-area",
+            "target": "record-internal-report-event"
+          },
+          {
+            "source": "record-internal-report-event",
+            "target": "event-require-legal-report-victim"
+          },
+          {
+            "source": "event-require-legal-report-victim",
+            "target": "report-authorities-follow-up-victim",
+            "label": "yes"
+          },
+          {
+            "source": "event-require-legal-report-victim",
+            "target": "gather-facts-site",
+            "label": "no"
+          },
+          {
+            "source": "report-authorities-follow-up-victim",
+            "target": "gather-facts-site"
+          },
+          {
+            "source": "gather-facts-site",
+            "target": "analyse-direct-root-causes"
+          },
+          {
+            "source": "analyse-direct-root-causes",
+            "target": "draw-up-prevention-action-plan"
+          },
+          {
+            "source": "draw-up-prevention-action-plan",
+            "target": "validate-action-plan-allocate-resources"
+          },
+          {
+            "source": "validate-action-plan-allocate-resources",
+            "target": "deploy-actions-raise-team-awareness"
+          },
+          {
+            "source": "deploy-actions-raise-team-awareness",
+            "target": "verify-effectiveness-after-field-observation"
+          },
+          {
+            "source": "verify-effectiveness-after-field-observation",
+            "target": "risk-durably-under-control-field"
+          },
+          {
+            "source": "risk-durably-under-control-field",
+            "target": "update-risk-assessment-instructions",
+            "label": "yes"
+          },
+          {
+            "source": "risk-durably-under-control-field",
+            "target": "draw-up-prevention-action-plan",
+            "label": "no"
+          },
+          {
+            "source": "update-risk-assessment-instructions",
+            "target": "have-report-completed-if-needed"
+          },
+          {
+            "source": "have-report-completed-if-needed",
+            "target": "event-handled-prevention-reinforced-file"
+          }
+        ]
+      },
+      "uncertainties": [
+        "Generic model: replace the actors, the documents and their media with those of your organisation.",
+        "Duration and lead time of each step: to be measured in your organisation, the model gives none.",
+        "Participation of staff representatives: in most organisations, the elected health and safety representatives take part in gathering the facts, analysing the causes and following up the actions.",
+        "Simplified investigation of near misses: for dangerous situations of low potential severity, the analysis may be carried out in a simplified way directly by the area manager.",
+        "Multi-site sharing: in multi-site companies, serious events are the subject of a safety alert sent to all sites.",
+        "Analysis method: cause analysis often relies on a retrospective graphical method (such as the cause tree) that separates facts from interpretations.",
+        "Medium of each document (paper, email, spreadsheet, file, software): set by default in this model, to be adapted to your organisation."
+      ]
+    }
+  ]
+}

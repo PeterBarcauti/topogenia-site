@@ -1,0 +1,431 @@
+{
+  "format": "topogenia-collection",
+  "version": "1.0",
+  "name": "Purchasing",
+  "description": "The most common purchasing process, from the purchase request to the order, to adapt to your organisation.",
+  "processes": [
+    {
+      "format": "topogenia",
+      "version": "1.5",
+      "project": {
+        "name": "From purchase request to order",
+        "code": "PURCH",
+        "language": "en",
+        "description": "Gallery template: from purchase request to order. Trigger: A purchase need identified by an internal department. Outcome: Order confirmed by the supplier; or purchase refused or abandoned. To adapt to your organisation: actors, documents, media, thresholds and lead times."
+      },
+      "map": {
+        "summary": {
+          "text": "The requester states the need, the buyer prices it, a manager approves it, then the order is placed with the supplier."
+        },
+        "lanes": [
+          {
+            "id": "requester",
+            "name": "Requester",
+            "type": "person"
+          },
+          {
+            "id": "approving-manager",
+            "name": "Approving manager",
+            "type": "person"
+          },
+          {
+            "id": "buyer",
+            "name": "Buyer",
+            "type": "person"
+          },
+          {
+            "id": "supplier",
+            "name": "Supplier",
+            "type": "department"
+          }
+        ],
+        "steps": [
+          {
+            "id": "purchase-need-identified",
+            "lane": "requester",
+            "label": "Purchase need identified",
+            "type": "start",
+            "column": 0
+          },
+          {
+            "id": "draft-purchase-request",
+            "lane": "requester",
+            "label": "Draft the purchase request",
+            "column": 1,
+            "sheet": {
+              "purpose": "The requester sets out the need (description of the item or service, quantity, desired date, budget allocation) and sends the purchase request to the purchasing department for qualification and costing.",
+              "outputs": [
+                {
+                  "id": "doc-purchase-request",
+                  "name": "Purchase request",
+                  "medium": "email"
+                }
+              ]
+            }
+          },
+          {
+            "id": "check-supplier-listing-prices",
+            "lane": "buyer",
+            "label": "Check the supplier listing and prices",
+            "column": 2,
+            "sheet": {
+              "purpose": "The buyer checks that the request is technically complete and looks in the master data to see whether a framework contract or an active catalogue already sets a supplier and a price.",
+              "inputs": [
+                {
+                  "name": "Supplier master data",
+                  "medium": "software"
+                }
+              ],
+              "uses": [
+                {
+                  "document": "doc-purchase-request"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-qualified-purchase-request",
+                  "name": "Qualified purchase request",
+                  "medium": "email"
+                }
+              ]
+            }
+          },
+          {
+            "id": "listed-supplier-price-exist",
+            "lane": "buyer",
+            "label": "Do a listed supplier and price exist?",
+            "type": "decision",
+            "column": 3,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-qualified-purchase-request"
+                }
+              ]
+            }
+          },
+          {
+            "id": "consult-suppliers",
+            "lane": "buyer",
+            "label": "Consult suppliers",
+            "column": 4,
+            "sheet": {
+              "purpose": "With no listed price, the buyer asks one or more suppliers able to meet the need by sending them a request for quotation.",
+              "uses": [
+                {
+                  "document": "doc-qualified-purchase-request"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-request-quotation",
+                  "name": "Request for quotation",
+                  "medium": "email"
+                }
+              ]
+            }
+          },
+          {
+            "id": "submit-quotation",
+            "lane": "supplier",
+            "label": "Submit a quotation",
+            "column": 5,
+            "sheet": {
+              "purpose": "The supplier analyses the stated need and returns a commercial proposal giving the price, the terms and the delivery lead time.",
+              "uses": [
+                {
+                  "document": "doc-request-quotation"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-supplier-quotation",
+                  "name": "Supplier quotation",
+                  "medium": "email"
+                }
+              ]
+            }
+          },
+          {
+            "id": "satisfactory-offer-selected",
+            "lane": "buyer",
+            "label": "Is a satisfactory offer selected?",
+            "type": "decision",
+            "column": 6,
+            "sheet": {
+              "free_text": "Produced as applicable: Selected offer (if yes).",
+              "uses": [
+                {
+                  "document": "doc-qualified-purchase-request"
+                },
+                {
+                  "document": "doc-supplier-quotation"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-selected-offer",
+                  "name": "Selected offer",
+                  "medium": "email"
+                }
+              ]
+            }
+          },
+          {
+            "id": "review-costed-request-budget",
+            "lane": "approving-manager",
+            "label": "Review the costed request and the budget",
+            "column": 7,
+            "sheet": {
+              "purpose": "On the basis of the actual amount from the listed price or the selected offer, the approving manager checks that the need is justified, that budget is available and that the allocation is correct, then decides; after a difference on the acknowledgement, the corrected order is reviewed again.",
+              "free_text": "As applicable: Order acknowledgement (if there is a difference).",
+              "inputs": [
+                {
+                  "name": "Listed price",
+                  "medium": "software"
+                },
+                {
+                  "name": "Budget",
+                  "medium": "spreadsheet"
+                }
+              ],
+              "uses": [
+                {
+                  "document": "doc-qualified-purchase-request"
+                },
+                {
+                  "document": "doc-selected-offer"
+                },
+                {
+                  "document": "doc-order-acknowledgement"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-approval-opinion",
+                  "name": "Approval opinion",
+                  "medium": "email"
+                }
+              ]
+            }
+          },
+          {
+            "id": "costed-purchase-request-approved",
+            "lane": "approving-manager",
+            "label": "Is the costed purchase request approved?",
+            "type": "decision",
+            "column": 8,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-approval-opinion"
+                }
+              ]
+            }
+          },
+          {
+            "id": "issue-revise-purchase-order",
+            "lane": "buyer",
+            "label": "Issue or revise the purchase order",
+            "column": 9,
+            "sheet": {
+              "purpose": "After budget approval, the buyer draws up the official purchase order and sends it to the supplier; after a difference negotiated with the supplier and approved again by the approver, the buyer issues a revised purchase order.",
+              "free_text": "As applicable: Order acknowledgement (if revised).",
+              "inputs": [
+                {
+                  "name": "Listed price",
+                  "medium": "software"
+                }
+              ],
+              "uses": [
+                {
+                  "document": "doc-qualified-purchase-request"
+                },
+                {
+                  "document": "doc-selected-offer"
+                },
+                {
+                  "document": "doc-approval-opinion"
+                },
+                {
+                  "document": "doc-order-acknowledgement"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-purchase-order",
+                  "name": "Purchase order",
+                  "medium": "software"
+                }
+              ]
+            }
+          },
+          {
+            "id": "issue-order-acknowledgement",
+            "lane": "supplier",
+            "label": "Issue the order acknowledgement",
+            "column": 10,
+            "sheet": {
+              "purpose": "The supplier records the order and sends back an acknowledgement stating the quantities, prices and dates it commits to honour.",
+              "uses": [
+                {
+                  "document": "doc-purchase-order"
+                }
+              ],
+              "outputs": [
+                {
+                  "id": "doc-order-acknowledgement",
+                  "name": "Order acknowledgement",
+                  "medium": "email"
+                }
+              ]
+            }
+          },
+          {
+            "id": "acknowledgement-match-order",
+            "lane": "buyer",
+            "label": "Does the acknowledgement match the order?",
+            "type": "decision",
+            "column": 11,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-purchase-order"
+                },
+                {
+                  "document": "doc-order-acknowledgement"
+                }
+              ]
+            }
+          },
+          {
+            "id": "can-difference-resolved-supplier",
+            "lane": "buyer",
+            "label": "Can the difference be resolved with the supplier?",
+            "type": "decision",
+            "column": 12,
+            "sheet": {
+              "uses": [
+                {
+                  "document": "doc-purchase-order"
+                },
+                {
+                  "document": "doc-order-acknowledgement"
+                }
+              ]
+            }
+          },
+          {
+            "id": "order-confirmed",
+            "lane": "buyer",
+            "label": "Order confirmed",
+            "type": "end",
+            "column": 12,
+            "row": 1
+          },
+          {
+            "id": "purchase-refused-abandoned",
+            "lane": "buyer",
+            "label": "Purchase refused or abandoned",
+            "type": "end",
+            "column": 13
+          }
+        ],
+        "flows": [
+          {
+            "source": "purchase-need-identified",
+            "target": "draft-purchase-request"
+          },
+          {
+            "source": "draft-purchase-request",
+            "target": "check-supplier-listing-prices"
+          },
+          {
+            "source": "check-supplier-listing-prices",
+            "target": "listed-supplier-price-exist"
+          },
+          {
+            "source": "listed-supplier-price-exist",
+            "target": "review-costed-request-budget",
+            "label": "yes"
+          },
+          {
+            "source": "listed-supplier-price-exist",
+            "target": "consult-suppliers",
+            "label": "no"
+          },
+          {
+            "source": "consult-suppliers",
+            "target": "submit-quotation"
+          },
+          {
+            "source": "submit-quotation",
+            "target": "satisfactory-offer-selected"
+          },
+          {
+            "source": "satisfactory-offer-selected",
+            "target": "review-costed-request-budget",
+            "label": "yes"
+          },
+          {
+            "source": "satisfactory-offer-selected",
+            "target": "purchase-refused-abandoned",
+            "label": "no"
+          },
+          {
+            "source": "review-costed-request-budget",
+            "target": "costed-purchase-request-approved"
+          },
+          {
+            "source": "costed-purchase-request-approved",
+            "target": "issue-revise-purchase-order",
+            "label": "yes"
+          },
+          {
+            "source": "costed-purchase-request-approved",
+            "target": "purchase-refused-abandoned",
+            "label": "no"
+          },
+          {
+            "source": "issue-revise-purchase-order",
+            "target": "issue-order-acknowledgement"
+          },
+          {
+            "source": "issue-order-acknowledgement",
+            "target": "acknowledgement-match-order"
+          },
+          {
+            "source": "acknowledgement-match-order",
+            "target": "order-confirmed",
+            "label": "yes"
+          },
+          {
+            "source": "acknowledgement-match-order",
+            "target": "can-difference-resolved-supplier",
+            "label": "no"
+          },
+          {
+            "source": "can-difference-resolved-supplier",
+            "target": "review-costed-request-budget",
+            "label": "yes"
+          },
+          {
+            "source": "can-difference-resolved-supplier",
+            "target": "purchase-refused-abandoned",
+            "label": "no"
+          }
+        ]
+      },
+      "uncertainties": [
+        "Generic model: replace the actors, the documents and their media with those of your organisation.",
+        "Duration and lead time of each step: to be measured in your organisation, the model gives none.",
+        "Prior approval in principle: some organisations require a line-management agreement in principle before consultation for unbudgeted requests, in addition to budget approval on the actual amount.",
+        "Multi-level approval: depending on the amount or nature of the purchase, approval may involve in turn a line manager, the finance department and senior management.",
+        "Automation of recurring purchases: for catalogue purchases, purchases under a framework contract or purchases arising from industrial requirements planning, conversion into an order or a delivery call-off is often automated.",
+        "New supplier: if the selected supplier does not yet exist in the database, a listing and qualification sub-process (legal, banking and quality checks) takes place before the order is issued.",
+        "Cancellation and new consultation: if an unresolved difference leads to abandonment, the buyer cancels the purchase order with the supplier and may start a new consultation if the need persists.",
+        "Medium of each document (paper, email, spreadsheet, file, software): set by default in this model, to be adapted to your organisation."
+      ]
+    }
+  ]
+}
